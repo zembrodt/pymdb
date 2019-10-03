@@ -1,6 +1,5 @@
 import re, requests
 from selectolax.parser import HTMLParser
-from pymdb.models.title import Title
 
 
 class PyMDbScraper:
@@ -44,6 +43,7 @@ class PyMDbScraper:
         print('rating:'+rating)
         print('release date:' +release_date)
 
+        '''
         return Title(
             title_id=title_id,
             sub_title_id=None,
@@ -65,7 +65,6 @@ class PyMDbScraper:
             is_original_title=None
 
         )
-        '''
         credits = tree.css_first('div#fullcredits_content')
         i = 0
         found_title = False
