@@ -22,3 +22,30 @@ def gunzip_file(infile, outfile=None, delete_infile=False):
     if delete_infile:
         os.remove(infile)
     return outfile
+
+def preprocess_list(lst):
+    for i, item in enumerate(lst):
+        if item == '\\N':
+            lst[i] = None
+    return lst
+
+def is_bool(b):
+    try:
+        bool(b)
+        return True
+    except ValueError:
+        return False
+
+def is_float(f):
+    try:
+        float(f)
+        return True
+    except ValueError:
+        return False
+
+def is_int(i):
+    try:
+        int(i)
+        return True
+    except ValueError:
+        return False

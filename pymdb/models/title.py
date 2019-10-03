@@ -1,47 +1,82 @@
-class Title:
-    def __init__(
-            self, title_id, sub_title_id, title_type, primary_title, original_title, is_adult, start_year, end_year, 
-            runtime_minutes, plot, description, release_date, tagline, rating, title_localized, region, language, 
-            is_original_title):
-        self._title_id = title_id
-        self._sub_title_id = sub_title_id
-        self._title_type = title_type
-        self._primary_title = primary_title
-        self._original_title = original_title
-        self._is_adult = is_adult
-        self._start_year = start_year
-        self._end_year = end_year
-        self._runtime_minutes = runtime_minutes
-        self._plot = plot
-        self._description = description
-        self._release_date = release_date
-        self._tagline = tagline
-        self._rating = rating
-        self._title_localized = title_localized
-        self._region = region
-        self._language = language
-        self._is_original_title = is_original_title
-
-    def __str__(self):
-        return f'{self._primary_title} ({self._title_id}-{self._sub_title_id}): {self._title_type}'
-
+from pymdb.utils.util import (
+    is_bool,
+    is_float,
+    is_int
+)
 
 # Additional information for a title
 class TitleAkas:
-    def __init__(self, title_id, sub_title_id, localized_title, region, language, types, attributes, is_original_title):
+    def __init__(self, title_id, ordering, localized_title, region, language, types, attributes, is_original_title):
         self._title_id = title_id
-        self._sub_title_id = sub_title_id
+        self._ordering = None
         self._localized_title = localized_title
         self._region = region
         self._language = language
-        self._types = types
-        self._attributes = attributes
-        self._is_original_title = is_original_title
+        self._types = []
+        self._attributes = []
+        self._is_original_title = None
+
+        self.ordering = ordering
+        self.types = types
+        self.attributes = attributes
+        self.is_original_title = is_original_title
+
+    @property
+    def title_id(self):
+        return self._title_id
+
+    @property
+    def ordering(self):
+        return self._ordering
+
+    @ordering.setter
+    def ordering(self, value):
+        if value is not None and is_int(value):
+            self._ordering = int(value)
+
+    @property
+    def localized_title(self):
+        return self._localized_title
+
+    @property
+    def region(self):
+        return self._region
+
+    @property
+    def language(self):
+        return self._language
+
+    @property
+    def types(self):
+        return self._types
+
+    @types.setter
+    def types(self, value):
+        if value is not None:
+            self._types = value
+
+    @property
+    def attributes(self):
+        return self._attributes
+
+    @attributes.setter
+    def attributes(self, value):
+        if value is not None:
+            self._attributes = value
+
+    @property
+    def is_original_title(self):
+        return self._is_original_title
+
+    @is_original_title.setter
+    def is_original_title(self, value):
+        if value is not None and is_bool(value):
+            self._is_original_title = bool(value)
 
     def __str__(self):
-        return f'{self._localized_title} ({self._title_id}_{self._sub_title_id})' + \
-            f'{": " + self._region if self._region is not None else ""}' + \
-            f'{" - " + self._language if self._language is not None and self._region is not None else ": " + self._language if self._language is not None else ""}'
+        return f'{self.localized_title} ({self.title_id})' + \
+            f'{f": {self.region}" if self.region is not None else ""}' + \
+            f'{f" - {self.language}" if self.language is not None and self.region is not None else f": {self.language}" if self.language is not None else ""}'
 
 
 # Basic information for a title
@@ -52,64 +87,251 @@ class TitleBasics:
         self._title_type = title_type
         self._primary_title = primary_title
         self._original_title = original_title
-        self._is_adult = is_adult
-        self._start_year = start_year
-        self._end_year = end_year
-        self._runtime_minutes = runtime_minutes
-        self._genres = genres
+        self._is_adult = None
+        self._start_year = None
+        self._end_year = None
+        self._runtime_minutes = None
+        self._genres = []
+
+        self.is_adult = is_adult
+        self.start_year = start_year
+        self.end_year = end_year
+        self.runtime_minutes = runtime_minutes
+        self.genres = genres
+
+    @property
+    def title_id(self):
+        return self._title_id
+
+    @property
+    def title_type(self):
+        return self._title_type
+
+    @property
+    def primary_title(self):
+        return self._primary_title
+
+    @property
+    def original_title(self):
+        return self._original_title
+
+    @property
+    def is_adult(self):
+        return self._is_adult
+
+    @is_adult.setter
+    def is_adult(self, value):
+        if value is not None and is_bool(value):
+            self._is_adult = bool(value)
+
+    @property
+    def start_year(self):
+        return self._start_year
+
+    @start_year.setter
+    def start_year(self, value):
+        if value is not None and is_int(value):
+            self._start_year = int(value)
+
+    @property
+    def end_year(self):
+        return self._end_year
+
+    @end_year.setter
+    def end_year(self, value):
+        if value is not None and is_int(value):
+            self._end_year = int(value)
+
+    @property
+    def runtime_minutes(self):
+        return self._runtime_minutes
+
+    @runtime_minutes.setter
+    def runtime_minutes(self, value):
+        if value is not None and is_int(value):
+            self._runtime_minutes = int(value)
+
+    @property
+    def genres(self):
+        return self._genres
+
+    @genres.setter
+    def genres(self, value):
+        if value is not None:
+            self._genres = value
 
     def __str__(self):
-        return f'{self._primary_title} ({self._title_id}): {self._title_type}, ' + \
-            f'{self._start_year if self._start_year is not None else "????"}' + \
-            f'{" - " + str(self._end_year) if self._end_year is not None else ""}'
+        return f'{self.primary_title} ({self.title_id}): {self.title_type}, ' + \
+            f'{self.start_year if self.start_year is not None else "????"}' + \
+            f'{f" - {self.end_year}" if self.end_year is not None else ""}'
 
 
 # Director(s) and writer(s) for a title
 class TitleCrew:
     def __init__(self, title_id, director_ids, writer_ids):
         self._title_id = title_id
-        self._director_ids = director_ids
-        self._writer_ids = writer_ids
+        self._director_ids = []
+        self._writer_ids = []
+
+        self.director_ids = director_ids
+        self.writer_ids = writer_ids
+
+    @property
+    def title_id(self):
+        return self._title_id
+
+    @property
+    def director_ids(self):
+        return self._director_ids
+
+    @director_ids.setter
+    def director_ids(self, value):
+        if value is not None:
+            self._director_ids = value
+
+    @property
+    def writer_ids(self):
+        return self._writer_ids
+
+    @writer_ids.setter
+    def writer_ids(self, value):
+        if value is not None:
+            self._writer_ids = value
 
     def __str__(self):
         return f'{self._title_id}' + \
-            f'{" directed by " + str(self._director_ids) if self._director_ids is not None else ""}' + \
-            f'{" and written by " + str(self._writer_ids) if self._writer_ids is not None and self._director_ids is not None else " written by" + str(self._writer_ids) if self._director_ids is None else ""}'
+            f'{f" directed by {self.director_ids}" if self.director_ids is not None else ""}' + \
+            f'{f" and written by {self.writer_ids}" if self.writer_ids is not None and self.director_ids is not None else f" written by {self.writer_ids}" if self.director_ids is None else ""}'
 
 
 class TitleEpisode:
     def __init__(self, title_id, parent_title_id, season_number, episode_number):
         self._title_id = title_id
         self._parent_title_id = parent_title_id
-        self._season_number = season_number
-        self._episode_number = episode_number
+        self._season_number = None
+        self._episode_number = None
+
+        self.season_number = season_number
+        self.episode_number = episode_number
+
+    @property
+    def title_id(self):
+        return self._title_id
+
+    @property
+    def parent_title_id(self):
+        return self._parent_title_id
+
+    @property
+    def season_number(self):
+        return self._season_number
+
+    @season_number.setter
+    def season_number(self, value):
+        if value is not None and is_int(value):
+            self._season_number = int(value)
+
+    @property
+    def episode_number(self):
+        return self._episode_number
+
+    @episode_number.setter
+    def episode_number(self, value):
+        if value is not None and is_int(value):
+            self._episode_number = int(value)
 
     def __str__(self):
-        return f'{self._parent_title_id} {"S" + str(self._season_number) if self._season_number is not None else ""}' + \
-            f'{"E" + str(self._episode_number) if self._episode_number is not None else ""}: {self._title_id}'
+        return f'{self.parent_title_id} {f"S{self.season_number}" if self._season_number is not None else ""}' + \
+            f'{f"E{self.episode_number}" if self.episode_number is not None else ""}: {self.title_id}'
 
 
 # Principal cast/crew for a title
 class TitlePrincipalCrew:
-    def __init__(self, title_id, sub_title_id, name_id, category, job, characters):
+    def __init__(self, title_id, ordering, name_id, category, job, characters):
         self._title_id = title_id
-        self._sub_title_id = sub_title_id
+        self._ordering = None
         self._name_id = name_id
         self._category = category
         self._job = job
-        self._characters = characters
+        self._characters = []
+
+        self.ordering = ordering
+        self.characters = characters
+
+    @property
+    def title_id(self):
+        return self._title_id
+
+    @property
+    def ordering(self):
+        return self._ordering
+
+    @ordering.setter
+    def ordering(self, value):
+        if value is not None and is_int(value):
+            self._ordering = int(value)
+
+    @property
+    def name_id(self):
+        return self._name_id
+
+    @property
+    def category(self):
+        return self._category
+
+    @property
+    def job(self):
+        return self._job
+
+    @property
+    def characters(self):
+        return self._characters
+
+    @characters.setter
+    def characters(self, value):
+        if value is not None:
+            self._characters = value
 
     def __str__(self):
-        return f'{self._name_id} ({self._title_id}_{self._sub_title_id}): {self._category}' + \
-            f'{" as " + self._job if self._job is not None else ""}' + \
-            f'{" playing " + str(self._characters) if self._characters is not None else ""}'
+        return f'{self.name_id} ({self.title_id}): {self.category}' + \
+            f'{f" as {self.job}" if self.job is not None else ""}' + \
+            f'{f" playing {self.characters}" if len(self.characters) > 0 else ""}'
 
 
 class TitleRating:
     def __init__(self, title_id, average_rating, num_votes):
         self._title_id = title_id
-        self._average_rating = average_rating
-        self._num_votes = num_votes
+        self._average_rating = None
+        self._num_votes = None
+
+        self.average_rating = average_rating
+        self.num_votes = num_votes
+
+    @property
+    def title_id(self):
+        return self._title_id
+
+    @property
+    def average_rating(self):
+        return self._average_rating
+
+    @average_rating.setter
+    def average_rating(self, value):
+        if value is not None and is_float(value):
+            self._average_rating = float(value)
+
+    @property
+    def num_votes(self):
+        return self._num_votes
+
+    @num_votes.setter
+    def num_votes(self, value):
+        if value is not None and is_int(value):
+            self._num_votes = int(value)
 
     def __str__(self):
-        return f'{self._title_id}: Rated {self._average_rating} with {self._num_votes} votes'
+        return f'{self.title_id}: Rated {self.average_rating} with {self.num_votes} votes'
+
+class TitleScrape:
+    def __init__(self):
+        pass
