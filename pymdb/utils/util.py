@@ -1,4 +1,5 @@
 import gzip, os, shutil
+from datetime import datetime
 
 # TODO: add all error checking
 def append_filename_to_path(path, filename):
@@ -49,3 +50,23 @@ def is_int(i):
         return True
     except ValueError:
         return False
+
+def is_datetime(d):
+    try:
+        datetime.strptime(d, '%d %B %Y')
+        return True
+    except ValueError:
+        try:
+            datetime.strptime(d, '%Y')
+            return True
+        except ValueError:
+            return False
+
+def to_datetime(d):
+    try:
+        return datetime.strptime(d, '%d %B %Y')
+    except ValueError:
+        try:
+            return datetime.strptime(d, '%Y')
+        except ValueError as e:
+            raise e

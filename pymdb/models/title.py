@@ -1,8 +1,15 @@
+import re
 from pymdb.utils.util import (
     is_bool,
+    is_datetime,
     is_float,
-    is_int
+    is_int,
+    to_datetime
 )
+
+'''
+Models for the IMDb dataset parsers
+'''
 
 # Additional information for a title
 class TitleAkas:
@@ -332,6 +339,70 @@ class TitleRating:
     def __str__(self):
         return f'{self.title_id}: Rated {self.average_rating} with {self.num_votes} votes'
 
+'''
+Models for the IMDb web scrapers
+'''
+
+# top_cast: list
 class TitleScrape:
-    def __init__(self):
-        pass
+    def __init__(self, title_id, mpaa_rating, release_date, end_date, tagline, plot, storyline, production_company, top_cast):
+        self._title_id = title_id
+        self._mpaa_rating = mpaa_rating
+        self._release_date = None
+        self.end_date = None
+        self._tagline = tagline
+        self._plot = plot
+        self._storyline = storyline
+        self._production_company = production_company
+        self._top_cast = top_cast
+
+        self._release_date = release_date
+
+    @property
+    def title_id(self):
+        return self._title_id
+
+    @property
+    def mpaa_rating(self):
+        return self._mpaa_rating
+
+    @property
+    def release_date(self):
+        return self._release_date
+
+    @release_date.setter
+    def release_date(self, value):
+        if value is not None and is_datetime(value):
+            self._release_date = to_datetime(value)
+
+    @property
+    def end_date(self):
+        return self._end_date
+
+    @end_date.setter
+    def end_date(self, value):
+        if value is not None and is_datetime(value):
+            self._end_date = to_datetime(value)
+
+    @property
+    def tagline(self):
+        return self._tagline
+
+    @property
+    def plot(self):
+        return self._plot
+
+    @property
+    def storyline(self):
+        return self._storyline
+
+    @property
+    def production_company(self):
+        return self._production_company
+
+    @property
+    def top_cast(self):
+        return self._top_cast
+
+    def __str__(self):
+        return f'{self.title_id}: {self.mpaa_rating}, {self.release_date} by {self.production_company}. {self.tagline}'

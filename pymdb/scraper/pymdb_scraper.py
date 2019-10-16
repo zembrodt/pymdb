@@ -1,6 +1,6 @@
 import re, requests
 from selectolax.parser import HTMLParser
-
+from pymdb.models import TitleScrape, CreditScrape
 
 class PyMDbScraper:
     _headers = {
@@ -9,78 +9,113 @@ class PyMDbScraper:
     }
 
     def __init__(self):
-        self.blah = 5
+        pass
 
+    # Get information on title scraped from IMDb page
     def get_title(self, title_id):
         response = requests.get(f'https://www.imdb.com/title/{title_id}', headers=self._headers)
-
-        print(response.status_code)
         tree = HTMLParser(response.text)
 
         plot = tree.css_first('div.summary_text').text().strip()
         storyline_node = tree.css_first('div#titleStoryLine')
-        description = storyline_node.css_first('div > p > span').text().strip()
-        tagline = 'EMPTY'
-        tagline_nodes = storyline_node.css('div.txt-block > h4')
-        for node in tagline_nodes:
-            if 'Taglines' in node.text():
-                tagline = node.parent.text().strip()
-                break
+        storyline = storyline_node.css_first('div > p > span').text().strip()
+        tagline = tree.css_first('#titleStoryLine > div:nth-of-type(3)').text()
+        tagline = re.sub(r'(Taglines:|See more.*)', '', tagline).strip()
         title_node = tree.css_first('div.title_block > div > div > div.title_wrapper > div.subtext')
 
         release_date = None
+        end_date = None
         for link in title_node.css('a'):
             if 'title' in link.attributes and link.attributes['title'] == 'See more release dates':
-                release_date = re.search(r'\d+\s\w+\s\d+', link.text().strip()).group(0)
+                link = link.text().strip()
+                try:
+                    release_date = re.search(r'\d+\s\w+\s\d+', link).group(0)
+                except AttributeError:
+                    if 'TV Series' in link:
+                        release_date, end_date = re.sub(r'(\(|\))*', '', link).split('-')
                 break
 
         title_node.strip_tags(['span', 'a', 'time'])
-        rating = title_node.text().strip()
+        rating = tree.css_first('div.titleBar > div.title_wrapper > div.subtext').text()
+        rating = re.sub(r'(\s|,)*', '', rating).strip()
 
-        print('plot: '+plot)
-        print('desc:'+ description)
-        print('tagline:'+tagline)
-        print('rating:'+rating)
-        print('release date:' +release_date)
+        company_id = ''
+        company_name = ''
+        prod_company_nodes = tree.css('div#titleDetails > div.txt-block')
+        for n in prod_company_nodes:
+            if n.css_first('h4.inline') is not None and 'Production Co' in n.css_first('h4.inline').text().strip():
+                company = n.css_first('a')
+                company_id = re.search(r'co\d+', company.attributes['href']).group(0)
+                company_name = company.text().strip()
 
-        '''
-        return Title(
+        cast = tree.css_first('table.cast_list')
+        cast_members = []
+        for cast_member in cast.css('tr.odd, tr.even'):
+            cast_member_node = cast_member.css_first('td:nth-of-type(2) > a')
+            cast_member_id = re.search(r'nm\d+', cast_member_node.attributes['href']).group(0)
+            cast_member_name = cast_member_node.text().strip()
+            character_nodes = cast_member.css('td.character > a')
+            characters = []
+            for c in character_nodes:
+                characters.append(c.text().strip())
+            cast_members.append(f'{cast_member_name} ({cast_member_id}): {", ".join(characters)}')
+
+        return TitleScrape(
             title_id=title_id,
-            sub_title_id=None,
-            title_type=None,
-            primary_title=None,
-            original_title=None,
-            is_adult=None,
-            start_year=None,
-            end_year=None,
-            runtime_minutes=None,
-            plot=plot,
-            description=description,
+            mpaa_rating=rating,
             release_date=release_date,
+            end_date=end_date,
             tagline=tagline,
-            rating=rating,
-            title_localized=None,
-            region=None,
-            language=None,
-            is_original_title=None
-
+            plot=plot,
+            storyline=storyline,
+            production_company=company_id,
+            top_cast=cast_members
         )
-        credits = tree.css_first('div#fullcredits_content')
-        i = 0
+
+    # Get full credits of all actors
+    def get_full_cast(self, title_id):
+        response = requests.get(f'https://www.imdb.com/title/{title_id}/fullcredits', headers=self._headers)
+        tree = HTMLParser(response.text)
+
+        cast = tree.css_first('table.cast_list').css('tr')
+        for cast_member in cast:
+            actor_node = cast_member.css_first('td.primary_photo + td')
+            if actor_node is not None:
+                actor_node = actor_node.css_first('a')
+                actor_id = re.search(r'nm\d+', actor_node.attributes['href']).group(0)
+                actor_text = actor_node.text().strip()
+                character_node = cast_member.css_first('td.character')
+                credits = []
+                if character_node is not None:
+                    character_links = character_node.css('a')
+                    if character_links is not None and len(character_links) > 0:
+                        credits = [c.text().strip() for c in character_links]
+                    else:
+                        credits = [" ".join(character_node.text().split())]
+
+                yield CreditScrape(
+                    name_id=actor_id,
+                    name=actor_text,
+                    title_id=title_id,
+                    job_title='actor',
+                    credit=credits
+                )
+
+    # Get the full credits of all members minus actors
+    def get_full_credits(self, title_id):
+        response = requests.get(f'https://www.imdb.com/title/{title_id}/fullcredits', headers=self._headers)
+        tree = HTMLParser(response.text)
+
+        credits_node = tree.css_first('div#fullcredits_content')
         found_title = False
         curr_title = None
-        credits_dict = {}
-        for node in credits.iter():
-            # if i > 4:
-            # break
+        for node in credits_node.iter():
             if not found_title:
                 if node.tag == 'h4' and node.id is None:
                     title = node.text().strip()
                     if len(title) > 0:
                         found_title = True
-                        print(title)
                         curr_title = title
-                        credits_dict[title] = []
                         continue
             else:
                 if node.tag == 'table':
@@ -92,52 +127,23 @@ class PyMDbScraper:
                                 name_node = name_node.css_first('a')
                                 name_id = re.search(r'nm\d+', name_node.attributes['href']).group(0)
                                 name_text = name_node.text().strip()
-                                name = f'{name_text} ({name_id})'
                                 credit_node = item.css_first('td.credit')
                                 credit = credit_node.text().strip() if credit_node is not None else ''
                                 credits = [credit] if len(credit) > 0 else []
-                                print(f'\t{name}: {credit}')
-                                credits_dict[curr_title].append(Name(name_id, name_text, credits))
-                    else:
-                        print('\t[EMPTY]')
-            # i += 1
+
+                                yield CreditScrape(
+                                    name_id=name_id,
+                                    name=name_text,
+                                    title_id=title_id,
+                                    job_title=curr_title,
+                                    credit=credits
+                                )
             found_title = False  # only because we use continue when set to True for now...
 
-        cast = tree.css_first('table.cast_list').css('tr')
-        cast_members = []
-        print('CAST:')
-        for cast_member in cast:
-            actor_node = cast_member.css_first('td.primary_photo + td')
-            if actor_node is not None:
-                actor_node = actor_node.css_first('a')
-                actor_id = re.search(r'nm\d+', actor_node.attributes['href']).group(0)
-                actor_text = actor_node.text().strip()
-                actor = f'{actor_text} ({actor_id})'
-                character_node = cast_member.css_first('td.character')
-                credits = []
-                if character_node is not None:
-                    character_links = character_node.css('a')
-                    if character_links is not None and len(character_links) > 0:
-                        characters = ', '.join([c.text().strip() for c in character_links])
-                        print(f'\t{actor}: {characters}')
-                        credits = [c.text().strip() for c in character_links]
-                    else:
-                        print(f'\t{actor}: {" ".join(character_node.text().split())}')
-                        credits = [" ".join(character_node.text().split())]
-                else:
-                    print(f'\t{actor}: [NO CREDITS]')
-                cast_members.append(Name(actor_id, actor_text, credits))
+    # Get information on a person scraped from IMDb page
+    def get_name(self, name_id):
+        pass
 
-        title_node = tree.css_first('div.parent > h3')
-        title = title_node.css_first('a')
-        title_id = re.search(r'tt\d+', title.attributes['href']).group(0)
-        title_text = title.text().strip()
-        year = re.search(r'\d+', title_node.css_first('span').text()).group(0)
-
-        movie = Title(title_id, title_text, year, cast_members, credits_dict)
-
-        print(movie)
-        '''
-
-    def get_name(self, title):
+    # Get full credited information on a person from IMDb page
+    def get_name_credits(self, name_id):
         pass
