@@ -197,13 +197,14 @@ class PyMDbScraper:
         )
 
     # Get full credited information on a person from IMDb page
-    def get_name_credits(self, name_id):
+    def get_name_credits(self, name_id, include_episodes=False):
         response = requests.get(f'https://www.imdb.com/name/{name_id}/', headers=self._headers)
         tree = HTMLParser(response.text)
-
+        
         filmography_node = tree.css_first('div#filmography')
         for row_node in filmography_node.css('div.filmo-row'):
             category, title_id = row_node.attributes['id'].split('-')
+            category = '_'.join(category.split()).lower()
             start_year = None
             end_year = None
             title_info = None
@@ -218,6 +219,52 @@ class PyMDbScraper:
             if len(info) > 1:
                 title_info, role = info
                 role = re.sub(r'<.*?>', '', remove_divs(role)).strip()
+                if include_episodes and row_node.css_first('div.filmo-episodes'):
+                    # Send AJAX request if a "show all" link exists
+                    more_episodes_node = row_node.css_first(f'div#more-episodes-{title_id}-{category} ~ div.filmo-episodes')
+                    episode_nodes = row_node
+                    if more_episodes_node:
+                        onclick_action = more_episodes_node.css_first('div > a').attributes['onclick']
+                        ref_marker = re.search(r'\'nm_.*?\'', onclick_action).group(0).strip('\'')
+                        category_req = onclick_action.split(',')[3].strip('\'')
+                        request = f'https://www.imdb.com/name/{name_id}/episodes/_ajax?title={title_id}&category={category_req}&ref_marker={ref_marker}&start_index=0'
+                        episodes_reponse = requests.get(request)
+                        status_code = episodes_reponse.status_code
+                        if status_code == 200:
+                            episode_nodes = HTMLParser(episodes_reponse.text)
+                        elif status_code == 404:
+                            # Some AJAX calls seem to 404, so ignore them and remove the "show all" link
+                            more_episodes_node.decompose()
+                        else:
+                            # Log other responses
+                            print(f'Bad request ({status_code}):')
+                            print(request)
+                    episode_nodes = episode_nodes.css('div.filmo-episodes')
+                    for episode_node in episode_nodes:
+                        episode_info = episode_node.css_first('a')
+                        episode_title = episode_info.text().strip()
+                        episode_id = re.search(r'tt\d+', episode_info.attributes['href']).group(0)
+                        episode_year = None
+                        episode_info = episode_node.text().split('...')
+                        role = None
+                        if len(episode_info) > 1:
+                            year_info, role = episode_info[:2]
+                            role = role.strip()
+                        else:
+                            year_info, = episode_info
+                        year_info = re.search(r'\([\d]{4}\)', year_info)
+                        if year_info:
+                            episode_year = year_info.group(0).strip('()')
+
+                        yield NameCreditScrape(
+                            name_id=name_id,
+                            title_id=episode_id,
+                            category=category,
+                            start_year=episode_year,
+                            end_year=None,
+                            role=role,
+                            title_notes=[]
+                        )
             else:
                 title_info, = info
             title_info = re.sub(r'(<\s*a.*?>|<.*?a\s*>)', '', title_info)
