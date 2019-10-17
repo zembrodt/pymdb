@@ -1,6 +1,12 @@
 import re, requests
 from selectolax.parser import HTMLParser
-from pymdb.models import TitleScrape, CreditScrape, NameScrape
+from pymdb.models import (
+    CreditScrape,
+    NameScrape,
+    NameCreditScrape,
+    TitleScrape,
+)
+from pymdb.utils.util import split_by_br, trim_year, remove_divs
 
 class PyMDbScraper:
     _headers = {
@@ -170,8 +176,7 @@ class PyMDbScraper:
             elif label == 'Nicknames':
                 nicknames = row_node.css_first('td ~ td').html
                 nicknames = re.sub(r'</*td>', '', nicknames).strip()
-                nicknames = re.sub(r'<\s*b\s*r\s*\/?\s*>', '\t', nicknames)
-                nicknames = nicknames.split('\t')
+                nicknames = split_by_br(nicknames)
             elif label == 'Height':
                 height = row_node.css_first('td ~ td').text().strip()
                 height = re.search(r'\(\d+\.*\d*', height).group(0).strip('(')
@@ -194,5 +199,35 @@ class PyMDbScraper:
         tree = HTMLParser(response.text)
 
         filmography_node = tree.css_first('div#filmography')
+        for row_node in filmography_node.css('div.filmo-row'):
+            category, title_id = row_node.attributes['id'].split('-')
+            start_year = None
+            end_year = None
+            title_info = None
+            role = None
+            years = row_node.css_first('span.year_column').text().strip()
+            if len(years) > 0:
+                if '-' in years:
+                    start_year, end_year = years.split('-')
+                else:
+                    start_year = years
+            info = split_by_br(row_node.html)
+            if len(info) > 1:
+                title_info, role = info
+                role = re.sub(r'<.*?>', '', remove_divs(role)).strip()
+            else:
+                title_info, = info
+            title_info = re.sub(r'(<\s*a.*?>|<.*?a\s*>)', '', title_info)
+            title_notes = [note.strip('()') for note in re.findall(r'\(.*?\)', title_info)]
+
+            yield NameCreditScrape(
+                name_id=name_id,
+                title_id=title_id,
+                category=category,
+                start_year=trim_year(start_year),
+                end_year=trim_year(end_year),
+                role=role,
+                title_notes=title_notes
+            )
 
         

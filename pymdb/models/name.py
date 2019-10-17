@@ -169,3 +169,58 @@ class NameScrape:
 
     def __str__(self):
         return f'{self.birth_name} [{self.name_id}] ({self.birth_date} - {self.death_date if self.death_date is not None else ""}): {self.height}m'
+
+class NameCreditScrape:
+    def __init__(self, name_id, title_id, category, start_year, end_year, role, title_notes):
+        self._name_id = name_id
+        self._title_id = title_id
+        self._category = category
+        self._start_year = None
+        self._end_year = None
+        self._role = role
+        self._title_notes = title_notes
+
+        self.start_year = start_year
+        self.end_year = end_year
+
+    @property
+    def name_id(self):
+        return self._name_id
+
+    @property
+    def title_id(self):
+        return self._title_id
+
+    @property
+    def category(self):
+        return self._category
+
+    @property
+    def start_year(self):
+        return self._start_year
+
+    @start_year.setter
+    def start_year(self, value):
+        if value is not None and is_int(value):
+            self._start_year = int(value)
+
+    @property
+    def end_year(self):
+        return self._end_year
+
+    @end_year.setter
+    def end_year(self, value):
+        if value is not None and is_int(value):
+            self._end_year = int(value)
+
+    @property
+    def role(self):
+        return self._role
+
+    @property
+    def title_notes(self):
+        return self._title_notes
+
+    def __str__(self):
+        return f'{self.name_id} in {self.title_id} ({self.start_year}{f" - {self.end_year}" if self.end_year is not None else ""})' + \
+            f' as {self.category}. Role: {self.role}. {f"Notes: {self.title_notes}" if self.title_notes is not None else ""}'

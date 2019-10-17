@@ -1,4 +1,4 @@
-import gzip, os, shutil
+import gzip, os, re, shutil
 from datetime import datetime
 
 # TODO: add all error checking
@@ -29,6 +29,18 @@ def preprocess_list(lst):
         if item == '\\N':
             lst[i] = None
     return lst
+
+# Split a string of HTML by <br> tag
+def split_by_br(s):
+    return re.sub(r'<\s*b\s*r\s*\/?\s*>', '\t', s).split('\t')
+
+def remove_divs(s):
+    return re.sub(r'<\s*div.*>(.|\r|\n)*<\s*\/\s*div\s*>', '', s)
+
+# Duplicate movies of the same year are differentiated by YYYY/<Roman numeral>
+# This function removes the roman numerals
+def trim_year(year):
+    return re.sub(r'\/\w*', '', year) if year is not None else None
 
 def is_bool(b):
     try:
