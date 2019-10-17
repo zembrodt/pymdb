@@ -101,8 +101,9 @@ class CreditScrape:
         return f'{self.name} ({self.name_id}): {self.job_title} in {self.title_id} as {self.credit}'
 
 class NameScrape:
-    def __init__(self, name_id, birth_name, birth_date, birth_city, death_date, death_city, death_cause, nicknames, height):
+    def __init__(self, name_id, display_name, birth_name, birth_date, birth_city, death_date, death_city, death_cause, nicknames, height):
         self._name_id = name_id
+        self._display_name = display_name
         self._birth_name = birth_name
         self._birth_date = None
         self._birth_city = birth_city
@@ -119,6 +120,10 @@ class NameScrape:
     @property
     def name_id(self):
         return self._name_id
+
+    @property
+    def display_name(self):
+        return self._display_name
 
     @property
     def birth_name(self):
@@ -168,7 +173,7 @@ class NameScrape:
             self._height = float(value)
 
     def __str__(self):
-        return f'{self.birth_name} [{self.name_id}] ({self.birth_date} - {self.death_date if self.death_date is not None else ""}): {self.height}m'
+        return f'{self.display_name} [{self.name_id}] ({self.birth_date} - {self.death_date if self.death_date is not None else ""}): {self.height}m'
 
 class NameCreditScrape:
     def __init__(self, name_id, title_id, category, start_year, end_year, role, title_notes):

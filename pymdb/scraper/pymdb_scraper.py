@@ -153,6 +153,7 @@ class PyMDbScraper:
 
         bio_node = tree.css_first('div#bio_content')
         overview_node = bio_node.css_first('table#overviewTable')
+        display_name = tree.css_first('div#main > div:nth-of-type(1) > div:nth-of-type(1) > div > h3 > a').text().strip()
         birth_date = None
         birth_city = None
         death_date = None
@@ -161,28 +162,30 @@ class PyMDbScraper:
         birth_name = None
         nicknames = []
         height = None
-        for row_node in overview_node.css('tr'):
-            label = row_node.css_first('td.label').text().strip()
-            if label == 'Born':
-                birth_date = row_node.css_first('td > time').attributes['datetime']
-                birth_city = row_node.css_first('td > a').text().strip()
-            elif label == 'Died':
-                death_date = row_node.css_first('td > time').attributes['datetime']
-                death_city = row_node.css_first('td > a').text().strip()
-                death_cause = row_node.css_first('td ~ td').text()
-                death_cause = re.search(r'\(.*\)', death_cause).group(0).strip('()')
-            elif label == 'Birth Name':
-                birth_name = row_node.css_first('td ~ td').text().strip()
-            elif label == 'Nicknames':
-                nicknames = row_node.css_first('td ~ td').html
-                nicknames = re.sub(r'</*td>', '', nicknames).strip()
-                nicknames = split_by_br(nicknames)
-            elif label == 'Height':
-                height = row_node.css_first('td ~ td').text().strip()
-                height = re.search(r'\(\d+\.*\d*', height).group(0).strip('(')
+        if overview_node:
+            for row_node in overview_node.css('tr'):
+                label = row_node.css_first('td.label').text().strip()
+                if label == 'Born':
+                    birth_date = row_node.css_first('td > time').attributes['datetime']
+                    birth_city = row_node.css_first('td > a').text().strip()
+                elif label == 'Died':
+                    death_date = row_node.css_first('td > time').attributes['datetime']
+                    death_city = row_node.css_first('td > a').text().strip()
+                    death_cause = row_node.css_first('td ~ td').text()
+                    death_cause = re.search(r'\(.*\)', death_cause).group(0).strip('()')
+                elif label == 'Birth Name':
+                    birth_name = row_node.css_first('td ~ td').text().strip()
+                elif label == 'Nicknames':
+                    nicknames = row_node.css_first('td ~ td').html
+                    nicknames = re.sub(r'</*td>', '', nicknames).strip()
+                    nicknames = split_by_br(nicknames)
+                elif label == 'Height':
+                    height = row_node.css_first('td ~ td').text().strip()
+                    height = re.search(r'\(\d+\.*\d*', height).group(0).strip('(')
 
         return NameScrape(
             name_id=name_id,
+            display_name=display_name,
             birth_name=birth_name,
             birth_date=birth_date,
             birth_city=birth_city,
