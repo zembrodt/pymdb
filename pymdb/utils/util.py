@@ -60,7 +60,11 @@ def is_datetime(d):
             datetime.strptime(d, '%Y')
             return True
         except ValueError:
-            return False
+            try:
+                datetime.strptime(d, '%Y-%m-%d')
+                return True
+            except ValueError:
+                return False
 
 def to_datetime(d):
     try:
@@ -69,4 +73,7 @@ def to_datetime(d):
         try:
             return datetime.strptime(d, '%Y')
         except ValueError as e:
-            raise e
+            try:
+                return datetime.strptime(d, '%Y-%m-%d')
+            except ValueError as e:
+                raise e

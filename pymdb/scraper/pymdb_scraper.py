@@ -1,6 +1,6 @@
 import re, requests
 from selectolax.parser import HTMLParser
-from pymdb.models import TitleScrape, CreditScrape
+from pymdb.models import TitleScrape, CreditScrape, NameScrape
 
 class PyMDbScraper:
     _headers = {
@@ -142,8 +142,57 @@ class PyMDbScraper:
 
     # Get information on a person scraped from IMDb page
     def get_name(self, name_id):
-        pass
+        response = requests.get(f'https://www.imdb.com/name/{name_id}/bio', headers=self._headers)
+        tree = HTMLParser(response.text)
+
+        bio_node = tree.css_first('div#bio_content')
+        overview_node = bio_node.css_first('table#overviewTable')
+        birth_date = None
+        birth_city = None
+        death_date = None
+        death_city = None
+        death_cause = None
+        birth_name = None
+        nicknames = []
+        height = None
+        for row_node in overview_node.css('tr'):
+            label = row_node.css_first('td.label').text().strip()
+            if label == 'Born':
+                birth_date = row_node.css_first('td > time').attributes['datetime']
+                birth_city = row_node.css_first('td > a').text().strip()
+            elif label == 'Died':
+                death_date = row_node.css_first('td > time').attributes['datetime']
+                death_city = row_node.css_first('td > a').text().strip()
+                death_cause = row_node.css_first('td ~ td').text()
+                death_cause = re.search(r'\(.*\)', death_cause).group(0).strip('()')
+            elif label == 'Birth Name':
+                birth_name = row_node.css_first('td ~ td').text().strip()
+            elif label == 'Nicknames':
+                nicknames = row_node.css_first('td ~ td').html
+                nicknames = re.sub(r'</*td>', '', nicknames).strip()
+                nicknames = re.sub(r'<\s*b\s*r\s*\/?\s*>', '\t', nicknames)
+                nicknames = nicknames.split('\t')
+            elif label == 'Height':
+                height = row_node.css_first('td ~ td').text().strip()
+                height = re.search(r'\(\d+\.*\d*', height).group(0).strip('(')
+
+        return NameScrape(
+            name_id=name_id,
+            birth_name=birth_name,
+            birth_date=birth_date,
+            birth_city=birth_city,
+            death_date=death_date,
+            death_city=death_city,
+            death_cause=death_cause,
+            nicknames=nicknames,
+            height=height
+        )
 
     # Get full credited information on a person from IMDb page
     def get_name_credits(self, name_id):
-        pass
+        response = requests.get(f'https://www.imdb.com/name/{name_id}/', headers=self._headers)
+        tree = HTMLParser(response.text)
+
+        filmography_node = tree.css_first('div#filmography')
+
+        
