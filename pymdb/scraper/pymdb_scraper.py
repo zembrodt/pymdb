@@ -25,8 +25,10 @@ class PyMDbScraper:
         plot = tree.css_first('div.summary_text').text().strip()
         storyline_node = tree.css_first('div#titleStoryLine')
         storyline = storyline_node.css_first('div > p > span').text().strip()
-        tagline = tree.css_first('#titleStoryLine > div:nth-of-type(3)').text()
-        tagline = re.sub(r'(Taglines:|See more.*)', '', tagline).strip()
+        tagline_node = tree.css_first('#titleStoryLine > div:nth-of-type(3)')
+        tagline = None
+        if tagline_node and 'Taglines' in tagline_node.text():
+            tagline = re.sub(r'(Taglines:|See more.*)', '', tagline_node.text()).strip()
         title_node = tree.css_first('div.title_block > div > div > div.title_wrapper > div.subtext')
 
         release_date = None
@@ -45,14 +47,15 @@ class PyMDbScraper:
         rating = tree.css_first('div.titleBar > div.title_wrapper > div.subtext').text()
         rating = re.sub(r'(\s|,)*', '', rating).strip()
 
-        company_id = ''
-        company_name = ''
+        production_companies = []
         prod_company_nodes = tree.css('div#titleDetails > div.txt-block')
         for n in prod_company_nodes:
             if n.css_first('h4.inline') is not None and 'Production Co' in n.css_first('h4.inline').text().strip():
-                company = n.css_first('a')
-                company_id = re.search(r'co\d+', company.attributes['href']).group(0)
-                company_name = company.text().strip()
+                companies = n.css('a')
+                for company in companies:
+                    company_match = re.search(r'co\d+', company.attributes['href'])
+                    if company_match:
+                        production_companies.append(company_match.group(0))
 
         cast = tree.css_first('table.cast_list')
         cast_members = []
@@ -66,20 +69,35 @@ class PyMDbScraper:
                 characters.append(c.text().strip())
             cast_members.append(f'{cast_member_name} ({cast_member_id}): {", ".join(characters)}')
 
+        season_number = None
+        episode_number = None
+        heading_nodes = tree.css('div.bp_heading')
+        for heading_node in heading_nodes:
+            if 'Season' in heading_node.text():
+                heading_node_text = heading_node.text().lower()
+                season_number_match = re.search(r'season\s*\d+', heading_node_text)
+                if season_number_match:
+                    season_number = re.search(r'\d+', season_number_match.group(0)).group(0)
+                episode_number_match = re.search(r'episode\s*\d+', heading_node_text)
+                if episode_number_match:
+                    episode_number = re.search(r'\d+', episode_number_match.group(0)).group(0)
+
         return TitleScrape(
             title_id=title_id,
             mpaa_rating=rating,
             release_date=release_date,
             end_date=end_date,
+            season_number=season_number,
+            episode_number=episode_number,
             tagline=tagline,
             plot=plot,
             storyline=storyline,
-            production_company=company_id,
+            production_companies=production_companies,
             top_cast=cast_members
         )
 
     # Get full credits of all actors
-    def get_full_cast(self, title_id):
+    def get_full_cast(self, title_id, include_episodes=False):
         response = requests.get(f'https://www.imdb.com/title/{title_id}/fullcredits', headers=self._headers)
         tree = HTMLParser(response.text)
 
@@ -89,22 +107,78 @@ class PyMDbScraper:
             if actor_node is not None:
                 actor_node = actor_node.css_first('a')
                 actor_id = re.search(r'nm\d+', actor_node.attributes['href']).group(0)
-                actor_text = actor_node.text().strip()
-                character_node = cast_member.css_first('td.character')
-                credits = []
-                if character_node is not None:
-                    character_links = character_node.css('a')
-                    if character_links is not None and len(character_links) > 0:
-                        credits = [c.text().strip() for c in character_links]
+
+                # Check if this is a TV series
+                toggle_episodes_node = cast_member.css_first('a.toggle-episodes')
+                episode_count = None
+                episode_year_start = None
+                episode_year_end = None
+                if toggle_episodes_node:
+                    episode_info = re.sub(r'<\s*span.*?<\s*\/\s*span\s*>', '', toggle_episodes_node.text()).strip().split(',')
+                    if len(episode_info) > 1:
+                        episode_count, episode_year_info = episode_info
+                        episode_year_info = episode_year_info.split('-')
+                        if len(episode_year_info) > 1:
+                            episode_year_start, episode_year_end = episode_year_info
+                        else:
+                            episode_year_start, = episode_year_info
                     else:
-                        credits = [" ".join(character_node.text().split())]
+                        episode_count, = episode_info
+                    episode_count = re.search(r'\d+', episode_count).group(0)
+                
+                    if include_episodes:
+                        ref_marker = toggle_episodes_node.attributes['onclick'].split(',')[4].strip('\'')
+                        request = f'https://www.imdb.com/name/{actor_id}/episodes/_ajax?title={title_id}&category=actor&ref_marker={ref_marker}&start_index=0'
+                        episodes_reponse = requests.get(request)
+                        status_code = episodes_reponse.status_code
+
+                        if status_code == 200:
+                            episode_nodes = HTMLParser(episodes_reponse.text).css('div.filmo-episodes')
+                            for episode_node in episode_nodes:
+                                episode_title_info = episode_node.css_first('a')
+                                episode_id = re.search(r'tt\d+', episode_title_info.attributes['href']).group(0)
+                                episode_info = episode_node.text().strip().split('...')
+                                episode_year = None
+                                episode_credit = None
+                                if len(episode_info) > 1:
+                                    episode_year_info = episode_info[0]
+                                    episode_credit = '...'.join(episode_info[1:])
+                                else:
+                                    episode_year_info, = episode_info
+                                episode_year_match = re.search(r'\([\d]{4}\)', episode_year_info)
+                                if episode_year_match:
+                                    episode_year = episode_year_match.group(0).strip('()')
+
+                                yield CreditScrape(
+                                    name_id=actor_id,
+                                    title_id=episode_id,
+                                    job_title='actor',
+                                    credit=episode_credit,
+                                    episode_count=None,
+                                    episode_year_start=episode_year,
+                                    episode_year_end=None
+                                )
+                        else:
+                            print(f'Bad request: {status_code}')
+                            print(request)
+
+                # Remove the TV series info from character node if exists
+                if toggle_episodes_node:
+                    toggle_episodes_node.decompose()
+
+                character_node = cast_member.css_first('td.character')
+                credit = None
+                if character_node is not None:
+                    credit = re.sub(r'(\s|\r|\n)+', ' ', character_node.text().strip())
 
                 yield CreditScrape(
                     name_id=actor_id,
-                    name=actor_text,
                     title_id=title_id,
                     job_title='actor',
-                    credit=credits
+                    credit=credit,
+                    episode_count=episode_count,
+                    episode_year_start=episode_year_start,
+                    episode_year_end=episode_year_end
                 )
 
     # Get the full credits of all members minus actors
@@ -132,14 +206,12 @@ class PyMDbScraper:
                             if name_node is not None:
                                 name_node = name_node.css_first('a')
                                 name_id = re.search(r'nm\d+', name_node.attributes['href']).group(0)
-                                name_text = name_node.text().strip()
                                 credit_node = item.css_first('td.credit')
                                 credit = credit_node.text().strip() if credit_node is not None else ''
                                 credits = [credit] if len(credit) > 0 else []
 
                                 yield CreditScrape(
                                     name_id=name_id,
-                                    name=name_text,
                                     title_id=title_id,
                                     job_title=curr_title,
                                     credit=credits
@@ -248,7 +320,8 @@ class PyMDbScraper:
                         episode_info = episode_node.text().split('...')
                         role = None
                         if len(episode_info) > 1:
-                            year_info, role = episode_info[:2]
+                            year_info = episode_info[0]
+                            role = '...'.join(episode_info[1:])
                             role = role.strip()
                         else:
                             year_info, = episode_info

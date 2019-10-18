@@ -345,18 +345,23 @@ Models for the IMDb web scrapers
 
 # top_cast: list
 class TitleScrape:
-    def __init__(self, title_id, mpaa_rating, release_date, end_date, tagline, plot, storyline, production_company, top_cast):
+    def __init__(self, title_id, mpaa_rating, release_date, end_date, season_number, episode_number, tagline, plot, storyline, production_companies, top_cast):
         self._title_id = title_id
         self._mpaa_rating = mpaa_rating
         self._release_date = None
-        self.end_date = None
+        self._end_date = None
+        self._season_number = None
+        self._episode_number = None
         self._tagline = tagline
         self._plot = plot
         self._storyline = storyline
-        self._production_company = production_company
+        self._production_companies = production_companies
         self._top_cast = top_cast
 
-        self._release_date = release_date
+        self.release_date = release_date
+        self.end_date = end_date
+        self.season_number = season_number
+        self.episode_number = episode_number
 
     @property
     def title_id(self):
@@ -385,6 +390,24 @@ class TitleScrape:
             self._end_date = to_datetime(value)
 
     @property
+    def season_number(self):
+        return self._season_number
+
+    @season_number.setter
+    def season_number(self, value):
+        if value is not None and is_int(value):
+            self._season_number = int(value)
+
+    @property
+    def episode_number(self):
+        return self._episode_number
+
+    @episode_number.setter
+    def episode_number(self, value):
+        if value is not None and is_int(value):
+            self._episode_number = int(value)
+
+    @property
     def tagline(self):
         return self._tagline
 
@@ -397,12 +420,13 @@ class TitleScrape:
         return self._storyline
 
     @property
-    def production_company(self):
-        return self._production_company
+    def production_companies(self):
+        return self._production_companies
 
     @property
     def top_cast(self):
         return self._top_cast
 
     def __str__(self):
-        return f'{self.title_id}: {self.mpaa_rating}, {self.release_date} by {self.production_company}. {self.tagline}'
+        return f'{self.title_id}: {self.mpaa_rating}, {self.release_date} by {self.production_companies}. {self.tagline}' + \
+            f'{f" S{self.season_number}" if self.season_number is not None else ""}{f"E{self.episode_number}" if self.episode_number is not None else ""}'

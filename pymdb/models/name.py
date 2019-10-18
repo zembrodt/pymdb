@@ -70,20 +70,22 @@ class NameBasics:
 
 
 class CreditScrape:
-    def __init__(self, name_id, name, title_id, job_title, credit):
+    def __init__(self, name_id, title_id, job_title, credit, episode_count, episode_year_start, episode_year_end):
         self._name_id = name_id
-        self._name = name
         self._title_id = title_id
         self._job_title = job_title
         self._credit = credit
+        self._episode_count = None
+        self._episode_year_start = None
+        self._episode_year_end = None
+
+        self.episode_count = episode_count
+        self.episode_year_start = episode_year_start
+        self.episode_year_end = episode_year_end
 
     @property
     def name_id(self):
         return self._name_id
-
-    @property
-    def name(self):
-        return self._name
 
     @property
     def title_id(self):
@@ -97,8 +99,35 @@ class CreditScrape:
     def credit(self):
         return self._credit
 
+    @property
+    def episode_count(self):
+        return self._episode_count
+
+    @episode_count.setter
+    def episode_count(self, value):
+        if value is not None and is_int(value):
+            self._episode_count = int(value)
+
+    @property
+    def episode_year_start(self):
+        return self._episode_year_start
+
+    @episode_year_start.setter
+    def episode_year_start(self, value):
+        if value is not None and is_int(value):
+            self._episode_year_start = int(value)
+
+    @property
+    def episode_year_end(self):
+        return self._episode_year_end
+
+    @episode_year_end.setter
+    def episode_year_end(self, value):
+        if value is not None and is_int(value):
+            self._episode_year_end = int(value)
+
     def __str__(self):
-        return f'{self.name} ({self.name_id}): {self.job_title} in {self.title_id} as {self.credit}'
+        return f'{self.name_id}: {self.job_title} in {self.title_id} as {self.credit}'
 
 class NameScrape:
     def __init__(self, name_id, display_name, birth_name, birth_date, birth_city, death_date, death_city, death_cause, nicknames, height):
