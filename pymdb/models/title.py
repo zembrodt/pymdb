@@ -345,11 +345,15 @@ Models for the IMDb web scrapers
 
 # top_cast: list
 class TitleScrape:
-    def __init__(self, title_id, mpaa_rating, release_date, end_date, season_number, episode_number, tagline, plot, storyline, production_companies, top_cast):
+    def __init__(
+            self, title_id, mpaa_rating, country, language, release_date, end_year, season_number, episode_number, tagline, plot, storyline, production_companies, top_cast,
+            budget, opening_weekend_gross, opening_weekend_date, usa_gross, worldwide_gross):
         self._title_id = title_id
         self._mpaa_rating = mpaa_rating
+        self._country = country
+        self._language = language
         self._release_date = None
-        self._end_date = None
+        self._end_year = None
         self._season_number = None
         self._episode_number = None
         self._tagline = tagline
@@ -357,11 +361,21 @@ class TitleScrape:
         self._storyline = storyline
         self._production_companies = production_companies
         self._top_cast = top_cast
+        self._budget = None
+        self._opening_weekend_gross = None
+        self._opening_weekend_date = None
+        self._usa_gross = None
+        self._worldwide_gross = None
 
         self.release_date = release_date
-        self.end_date = end_date
+        self.end_year = end_year
         self.season_number = season_number
         self.episode_number = episode_number
+        self.budget = budget
+        self.opening_weekend_gross = opening_weekend_gross
+        self.opening_weekend_date = opening_weekend_date
+        self.usa_gross = usa_gross
+        self.worldwide_gross = worldwide_gross
 
     @property
     def title_id(self):
@@ -370,6 +384,14 @@ class TitleScrape:
     @property
     def mpaa_rating(self):
         return self._mpaa_rating
+
+    @property
+    def country(self):
+        return self._country
+
+    @property
+    def language(self):
+        return self._language
 
     @property
     def release_date(self):
@@ -381,13 +403,13 @@ class TitleScrape:
             self._release_date = to_datetime(value)
 
     @property
-    def end_date(self):
-        return self._end_date
+    def end_year(self):
+        return self._end_year
 
-    @end_date.setter
-    def end_date(self, value):
+    @end_year.setter
+    def end_year(self, value):
         if value is not None and is_datetime(value):
-            self._end_date = to_datetime(value)
+            self._end_year = to_datetime(value)
 
     @property
     def season_number(self):
@@ -427,6 +449,52 @@ class TitleScrape:
     def top_cast(self):
         return self._top_cast
 
+    @property
+    def budget(self):
+        return self._budget
+
+    @budget.setter
+    def budget(self, value):
+        if value is not None and is_int(value):
+            self._budget = int(value)
+
+    @property
+    def opening_weekend_gross(self):
+        return self._opening_weekend_gross
+
+    @opening_weekend_gross.setter
+    def opening_weekend_gross(self, value):
+        if value is not None and is_int(value):
+            self._opening_weekend_gross = int(value)
+
+    @property
+    def opening_weekend_date(self):
+        return self._opening_weekend_date
+
+    @opening_weekend_date.setter
+    def opening_weekend_date(self, value):
+        if value is not None and is_datetime(value):
+            self._opening_weekend_date = to_datetime(value)
+
+    @property
+    def usa_gross(self):
+        return self._usa_gross
+
+    @usa_gross.setter
+    def usa_gross(self, value):
+        if value is not None and is_int(value):
+            self._usa_gross = int(value)
+
+    @property
+    def worldwide_gross(self):
+        return self._worldwide_gross
+
+    @worldwide_gross.setter
+    def worldwide_gross(self, value):
+        if value is not None and is_int(value):
+            self._worldwide_gross = int(value)
+
     def __str__(self):
-        return f'{self.title_id}: {self.mpaa_rating}, {self.release_date} by {self.production_companies}. {self.tagline}' + \
-            f'{f" S{self.season_number}" if self.season_number is not None else ""}{f"E{self.episode_number}" if self.episode_number is not None else ""}'
+        return f'{self.title_id}: {self.mpaa_rating}, {self.release_date} by {self.production_companies}. {f"Ended {self.end_year}" if self.end_year is not None else ""} {self.tagline}' + \
+            f'{f" S{self.season_number}" if self.season_number is not None else ""}{f"E{self.episode_number}" if self.episode_number is not None else ""}' + \
+                '\n\t' + f'Budget: ${self.budget}, grossed ${self.opening_weekend_gross} on opening weekend of {self.opening_weekend_date}. USA total: ${self.usa_gross}, World total: ${self.worldwide_gross}'

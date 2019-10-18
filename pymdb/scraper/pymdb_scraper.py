@@ -33,43 +33,79 @@ class PyMDbScraper:
             tagline = re.sub(r'(Taglines:|See more.*)', '', tagline_node.text()).strip()
         title_node = tree.css_first('div.title_block > div > div > div.title_wrapper > div.subtext')
 
-        release_date = None
-        end_date = None
-        for link in title_node.css('a'):
-            if 'title' in link.attributes and link.attributes['title'] == 'See more release dates':
-                link = link.text().strip()
-                try:
-                    release_date = re.search(r'\d+\s\w+\s\d+', link).group(0)
-                except AttributeError:
-                    if 'TV Series' in link:
-                        release_date, end_date = re.sub(r'(\(|\))*', '', link).split('-')
-                break
+        # If this is a TV series, get the year the show ended
+        end_year = None
+        for link_node in title_node.css('a'):
+            if 'title' in link_node.attributes and link_node.attributes['title'] == 'See more release dates' and 'TV Series' in link_node.text():
+                series_dates_match = re.search(r'[\d]{4}(-|–)[\d]{4}', link_node.text())
+                if series_dates_match:
+                    end_year_split = re.sub(r'(-|–)', '\t', series_dates_match.group(0)).split('\t')
+                    if len(end_year_split) > 1:
+                        end_year = end_year_split[1]
 
         title_node.strip_tags(['span', 'a', 'time'])
         rating = tree.css_first('div.titleBar > div.title_wrapper > div.subtext').text()
         rating = re.sub(r'(\s|,)*', '', rating).strip()
 
+        country = None
+        language = None
+        release_date = None
         production_companies = []
-        prod_company_nodes = tree.css('div#titleDetails > div.txt-block')
-        for n in prod_company_nodes:
-            if n.css_first('h4.inline') is not None and 'Production Co' in n.css_first('h4.inline').text().strip():
-                companies = n.css('a')
-                for company in companies:
-                    company_match = re.search(r'co\d+', company.attributes['href'])
-                    if company_match:
-                        production_companies.append(company_match.group(0))
+        budget = None
+        opening_weekend_gross = None
+        opening_weekend_date = None
+        usa_gross = None
+        worldwide_gross = None
+        text_block_nodes = tree.css('div#titleDetails > div.txt-block')
+        for text_block_node in text_block_nodes:
+            text_block_id = text_block_node.css_first('h4.inline')
+            if text_block_id:
+                text_block_id = text_block_id.text().lower().strip()
+                if 'country' in text_block_id:
+                    country = text_block_node.css_first('a').text().strip()
+                elif 'language' in text_block_id:
+                    language = text_block_node.css_first('a').text().strip()
+                elif 'release date' in text_block_id:
+                    release_date_match = re.search(r'\d+?\s*\w+?\s*[\d]{4}', text_block_node.text())
+                    if release_date_match:
+                        release_date = release_date_match.group(0)
+                elif 'production co' in text_block_id:
+                    companies = text_block_node.css('a')
+                    for company in companies:
+                        company_match = re.search(r'co\d+', company.attributes['href'])
+                        if company_match:
+                            production_companies.append(company_match.group(0))
+                # Box office info
+                elif 'budget' in text_block_id:
+                    budget_match = re.search(r'\$(\d|,)+', text_block_node.text())
+                    if budget_match:
+                        budget = re.sub(r'(\$|,)+', '', budget_match.group(0))
+                elif 'opening weekend' in text_block_id:
+                    opening_weekend_gross_match = re.search(r'\$(\d|,)+', text_block_node.text())
+                    if opening_weekend_gross_match:
+                        opening_weekend_gross = re.sub(r'(\$|,)+', '', opening_weekend_gross_match.group(0))
+                    opening_weekend_date = text_block_node.css_first('span').text().strip()
+                elif 'gross usa' in text_block_id:
+                    usa_gross_match = re.search(r'\$(\d|,)+', text_block_node.text())
+                    if usa_gross_match:
+                        usa_gross = re.sub(r'(\$|,)+', '', usa_gross_match.group(0))
+                elif 'worldwide gross' in text_block_id:
+                    worldwide_gross_match = re.search(r'\$(\d|,)+', text_block_node.text())
+                    if worldwide_gross_match:
+                        worldwide_gross = re.sub(r'(\$|,)+', '', worldwide_gross_match.group(0))
 
         cast = tree.css_first('table.cast_list')
         cast_members = []
         for cast_member in cast.css('tr.odd, tr.even'):
             cast_member_node = cast_member.css_first('td:nth-of-type(2) > a')
-            cast_member_id = re.search(r'nm\d+', cast_member_node.attributes['href']).group(0)
-            cast_member_name = cast_member_node.text().strip()
-            character_nodes = cast_member.css('td.character > a')
-            characters = []
-            for c in character_nodes:
-                characters.append(c.text().strip())
-            cast_members.append(f'{cast_member_name} ({cast_member_id}): {", ".join(characters)}')
+            if cast_member_node:
+                cast_member_id = re.search(r'nm\d+', cast_member_node.attributes['href']).group(0)
+                cast_member_name = cast_member_node.text().strip()
+                character_nodes = cast_member.css('td.character > a')
+                characters = []
+                for c in character_nodes:
+                    characters.append(c.text().strip())
+                cast_members.append(f'{cast_member_name} ({cast_member_id}): {", ".join(characters)}')
 
         season_number = None
         episode_number = None
@@ -87,15 +123,22 @@ class PyMDbScraper:
         return TitleScrape(
             title_id=title_id,
             mpaa_rating=rating,
+            country=country,
+            language=language,
             release_date=release_date,
-            end_date=end_date,
+            end_year=end_year,
             season_number=season_number,
             episode_number=episode_number,
             tagline=tagline,
             plot=plot,
             storyline=storyline,
             production_companies=production_companies,
-            top_cast=cast_members
+            top_cast=cast_members,
+            budget=budget,
+            opening_weekend_gross=opening_weekend_gross,
+            opening_weekend_date=opening_weekend_date,
+            usa_gross=usa_gross,
+            worldwide_gross=worldwide_gross
         )
 
     # Get full credits of all actors
