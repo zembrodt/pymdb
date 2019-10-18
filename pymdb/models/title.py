@@ -498,3 +498,66 @@ class TitleScrape:
         return f'{self.title_id}: {self.mpaa_rating}, {self.release_date} by {self.production_companies}. {f"Ended {self.end_year}" if self.end_year is not None else ""} {self.tagline}' + \
             f'{f" S{self.season_number}" if self.season_number is not None else ""}{f"E{self.episode_number}" if self.episode_number is not None else ""}' + \
                 '\n\t' + f'Budget: ${self.budget}, grossed ${self.opening_weekend_gross} on opening weekend of {self.opening_weekend_date}. USA total: ${self.usa_gross}, World total: ${self.worldwide_gross}'
+
+class TitleTechSpecsScrape:
+    def __init__(self, title_id, runtime, sound_mix, color, aspect_ratio, camera, laboratory, negative_format, cinematographic_process, printed_film_format):
+        self._title_id = title_id
+        self._runtime = None
+        self._sound_mix = sound_mix
+        self._color = color
+        self._aspect_ratio = aspect_ratio
+        self._camera = camera
+        self._laboratory = laboratory
+        self._negative_format = negative_format
+        self._cinematographic_process = cinematographic_process
+        self._printed_film_format = printed_film_format
+
+        self.runtime = runtime
+
+    @property
+    def title_id(self):
+        return self._title_id
+
+    @property
+    def runtime(self):
+        return self._runtime
+
+    @runtime.setter
+    def runtime(self, value):
+        if value is not None and is_int(value):
+            self._runtime = int(value)
+
+    @property
+    def sound_mix(self):
+        return self._sound_mix
+
+    @property
+    def color(self):
+        return self._color
+
+    @property
+    def aspect_ratio(self):
+        return self._aspect_ratio
+
+    @property
+    def camera(self):
+        return self._camera
+
+    @property
+    def laboratory(self):
+        return self._laboratory
+
+    @property
+    def negative_format(self):
+        return self._negative_format
+
+    @property
+    def cinematographic_process(self):
+        return self._cinematographic_process
+
+    @property
+    def printed_film_format(self):
+        return self._printed_film_format
+
+    def __str__(self):
+        return f'{self.title_id} tech specs: {self.runtime}m runtime, {self.aspect_ratio} ratio'

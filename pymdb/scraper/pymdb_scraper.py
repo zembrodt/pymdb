@@ -7,6 +7,7 @@ from pymdb.models import (
     NameScrape,
     NameCreditScrape,
     TitleScrape,
+    TitleTechSpecsScrape
 )
 from pymdb.utils.util import split_by_br, trim_year, remove_divs
 
@@ -485,3 +486,59 @@ class PyMDbScraper:
                     category=category,
                     notes=notes
                 )
+
+    def get_tech_specs(self, title_id):
+        request = f'https://www.imdb.com/title/{title_id}/technical/'
+        response = requests.get(request, headers=self._headers)
+        status_code = response.status_code
+        if status_code != 200:
+            print(f'Bad request: {status_code}')
+            print(request)
+            print(self._headers)
+            return None
+        
+        tree = HTMLParser(response.text)
+
+        runtime = None
+        sound_mix = None
+        color = None
+        aspect_ratio = None
+        camera = None
+        laboratory = None
+        negative_format = None
+        cinematographic_process = None
+        printed_film_format = None
+
+        for tech_spec_node in tree.css_first('div#technical_content').css('tr.even, tr.odd'):
+            label = tech_spec_node.css_first('td.label').text().lower().strip()
+            if 'runtime' in label:
+                pass
+            elif 'sound mix' in label:
+                pass
+            elif 'color' in label:
+                pass
+            elif 'aspect' in label:
+                pass
+            elif 'camera' in label:
+                pass
+            elif 'laboratory' in label:
+                pass
+            elif 'negative' in label:
+                pass
+            elif 'cinematographic' in label:
+                pass
+            elif 'printed film' in label:
+                pass
+
+        return TitleTechSpecsScrape(
+            title_id=title_id,
+            runtime=runtime,
+            sound_mix=sound_mix,
+            color=color,
+            aspect_ratio=aspect_ratio,
+            camera=camera,
+            laboratory=laboratory,
+            negative_format=negative_format,
+            cinematographic_process=cinematographic_process,
+            printed_film_format=printed_film_format
+        )
