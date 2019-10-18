@@ -1,6 +1,7 @@
 import re, requests
 from selectolax.parser import HTMLParser
 from pymdb.models import (
+    CompanyScrape,
     CreditScrape,
     NameScrape,
     NameCreditScrape,
@@ -353,4 +354,62 @@ class PyMDbScraper:
                 title_notes=title_notes
             )
 
-        
+    def get_company(self, company_id):
+        index = 1
+        finding_titles = True
+        while finding_titles:
+            request = f'https://www.imdb.com/search/title/?companies={company_id}&view=simple&start={index}'
+            response = requests.get(request, headers=self._headers)
+            status_code = response.status_code
+            if status_code == 200:
+                tree = HTMLParser(response.text)
+                title_list_node = tree.css_first('div.lister-list')
+                if not title_list_node:
+                    finding_titles = False
+                else:
+                    for title_info_node in title_list_node.css('span.lister-item-header'):
+                        title_id = None
+                        start_year = None
+                        end_year = None
+                        notes = None
+
+                        year_info_node = None
+                        # Check if this is a TV episode
+                        episode_node = title_info_node.css_first('small')
+                        if episode_node and 'Episode' in episode_node.text():
+                            episode_link_node = title_info_node.css_first('small ~ a')
+                            title_id = re.search(r'tt\d+', episode_link_node.attributes['href']).group(0)
+                            year_info_node = title_info_node.css_first('small ~ a ~ span.lister-item-year')
+                        else:
+                            title_info_node = title_info_node.css_first('span.lister-item-index ~ span')
+                            title_id = re.search(r'tt\d+', title_info_node.css_first('a').attributes['href']).group(0)
+                            year_info_node = title_info_node.css_first('span.lister-item-year')
+
+                        year_info_text = year_info_node.text().strip('()')
+                        years_match = re.search(r'(\d|–|-)+', year_info_text)
+                        notes_match = re.search(r'([A-Za-z]+\s*)+', year_info_text)
+                        if years_match:
+                            year_info = re.sub(r'(–|-)+', '\t', years_match.group(0)).split('\t')
+                            if len(year_info) > 1:
+                                start_year, end_year = year_info
+                                # Handle shows that are still on-air (ex: '2005- ')
+                                if len(end_year.strip()) == 0:
+                                    end_year = None
+                            else:
+                                start_year, = year_info
+                        if notes_match:
+                            notes = notes_match.group(0)
+
+                        yield CompanyScrape(
+                            company_id=company_id,
+                            title_id=title_id,
+                            start_year=start_year,
+                            end_year=end_year,
+                            notes=notes
+                        )
+            else:
+                print(f'Bad request: {status_code}')
+                print(request)
+                print(self._headers)
+                finding_titles = False
+            index += 50
