@@ -2,6 +2,7 @@ import re, requests
 from selectolax.parser import HTMLParser
 from pymdb.models import (
     CompanyScrape,
+    CompanyCreditScrape,
     CreditScrape,
     NameScrape,
     NameCreditScrape,
@@ -413,3 +414,31 @@ class PyMDbScraper:
                 print(self._headers)
                 finding_titles = False
             index += 50
+
+    def get_company_credits(self, title_id):
+        request = f'https://www.imdb.com/title/{title_id}/companycredits'
+        response = requests.get(request, headers=self._headers)
+        status_code = response.status_code
+        if status_code != 200:
+            print(f'Bad request: {status_code}')
+            print(request)
+            print(self._headers)
+            return None
+        
+        tree = HTMLParser(response.text)
+        company_category_nodes = tree.css_first('div#company_credits_content').css('h4.dataHeaderWithBorder')
+        for category_node in company_category_nodes:
+            category = category_node.attributes['id']
+            company_nodes = category_node.next.next.css('li')
+            for company_node in company_nodes:
+                link_node = company_node.css_first('a')
+                company_id = re.search(r'co\d+', link_node.attributes['href']).group(0)
+                company_name = link_node.text().strip()
+                notes = [note.strip('()') for note in re.findall(r'\(.*?\)', company_node.text())]
+                yield CompanyCreditScrape(
+                    company_id=company_id,
+                    title_id=title_id,
+                    company_name=company_name,
+                    category=category,
+                    notes=notes
+                )
