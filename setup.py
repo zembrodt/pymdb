@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="py-mdb",
-    version="0.0.1a3",
+    version="0.0.1a5",
     author="Ryan Zembrodt",
     author_email="ryan.zembrodt@gmail.com",
     description="Package for parsing IMDb datasets and scraping web pages",
@@ -17,5 +17,9 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+    ],
+    install_requires=[
+        "requests",
+        "selectolax"
     ],
 )
