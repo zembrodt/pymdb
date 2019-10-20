@@ -9,7 +9,7 @@ from pymdb.models import (
     TitleScrape,
     TitleTechSpecsScrape
 )
-from pymdb.utils.util import split_by_br, trim_year, remove_divs
+from pymdb.utils.util import split_by_br, trim_year, remove_divs, remove_tags
 
 class PyMDbScraper:
     _headers = {
@@ -512,23 +512,36 @@ class PyMDbScraper:
         for tech_spec_node in tree.css_first('div#technical_content').css('tr.even, tr.odd'):
             label = tech_spec_node.css_first('td.label').text().lower().strip()
             if 'runtime' in label:
-                pass
+                runtime_match = re.search(r'\(\d+.*min\)', tech_spec_node.css_first('td.label ~ td').text())
+                if runtime_match:
+                    runtime = re.sub(r'[\(\)\smin]+', '', runtime_match.group(0))
             elif 'sound mix' in label:
-                pass
+                sound_mix = [
+                    sound.strip() for sound in re.sub(r'\s+', ' ', tech_spec_node.css_first('td.label ~ td').text().strip()).split('|')
+                ]
             elif 'color' in label:
-                pass
+                color = re.sub(r'\s+', ' ', tech_spec_node.css_first('td.label ~ td').text().strip())
             elif 'aspect' in label:
-                pass
+                aspect_ratio = [
+                    asp.strip() for asp in split_by_br(
+                        re.sub(r'\s+', ' ', remove_tags(tech_spec_node.css_first('td.label ~ td').html, 'td')))
+                ]
             elif 'camera' in label:
-                pass
+                camera = [cam.strip() for cam in re.sub(r'(and|,)', '\t', tech_spec_node.css_first('td.label ~ td').text().strip()).split('\t')]
             elif 'laboratory' in label:
-                pass
+                laboratory = [
+                    lab.strip() for lab in split_by_br(
+                        re.sub(r'\s+', ' ', remove_tags(tech_spec_node.css_first('td.label ~ td').html, 'td')))
+                ]
             elif 'negative' in label:
-                pass
+                negative_format = tech_spec_node.css_first('td.label ~ td').text().strip()
             elif 'cinematographic' in label:
-                pass
+                cinematographic_process = [
+                    cin.strip() for cin in split_by_br(
+                        re.sub(r'\s+', ' ', remove_tags(tech_spec_node.css_first('td.label ~ td').html, 'td')))
+                ]
             elif 'printed film' in label:
-                pass
+                printed_film_format = re.sub(r'\s+', ' ', tech_spec_node.css_first('td.label ~ td').text().strip())
 
         return TitleTechSpecsScrape(
             title_id=title_id,

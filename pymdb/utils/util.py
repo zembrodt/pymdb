@@ -11,7 +11,6 @@ def append_filename_to_path(path, filename):
         else:
             return f'{path}/{filename}'
 
-
 def gunzip_file(infile, outfile=None, delete_infile=False):
     if outfile is None and len(infile) > 3 and infile[-3:] == '.gz':
         outfile = infile[:-3]
@@ -36,6 +35,9 @@ def split_by_br(s):
 
 def remove_divs(s):
     return re.sub(r'<\s*div.*>(.|\r|\n)*<\s*\/\s*div\s*>', '', s)
+
+def remove_tags(s, tag):
+    return re.sub(f'(<\s*{tag}.*>|<\s*\/{tag}\s*>)', '', s)
 
 # Duplicate movies of the same year are differentiated by YYYY/<Roman numeral>
 # This function removes the roman numerals
