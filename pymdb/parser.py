@@ -17,7 +17,16 @@ from pymdb.models.title import (
 )
 
 class _IMDbDataset:
+    """Private class to match dataset files with column counts."""
+
     def __init__(self, default_filename, column_count):
+        """Initialize with the dataset's default filename and column count.
+
+        Args:
+            default_filename: A string of the default filename for the dataset provided by IMDb.
+            column_count: An integer of the amount of columns in the dataset.
+        """
+
         self.default_filename = default_filename
         self.column_count = column_count
 
@@ -30,12 +39,37 @@ _TITLE_RATINGS = _IMDbDataset('title.ratings.tsv', 3)
 _NAME_BASICS = _IMDbDataset('name.basics.tsv', 6)
 
 class PyMDbParser:
+    """Object used to parse the tsv datasets provided by IMDb.
+
+    Parses each row in the tsv file into a specific PyMDb object.
+    """
+
     def __init__(self, use_default_filenames=True, gunzip_files=False, delete_gzip_files=False):
+        """Initialized with optional booleans on how the IMDb datasets are formatted.
+
+        Args:
+            use_default_filenames: A boolean for whether the filenames for each dataset are the same as
+                when they are provided by IMDb.
+            gunzip_files: A boolean to notify if the files are gzipped or not.
+            delete_gzip_files: A boolean to determine if gzip files should be deleted after gunzipped.
+        """
+
         self._use_default_filenames = use_default_filenames
         self._gunzip_files = gunzip_files
         self._delete_gzip_files = delete_gzip_files
 
     def get_title_akas(self, path, contains_headers=True):
+        """Parse the 'title.akas.tsv' dataset provided by IMDb.
+
+        Args:
+            path: A string for the system path to the dataset file. If not using
+                default filenames, this string will include the dataset file.
+            contains_headers: A boolean to determine if the first line is column titles or a data row.
+
+        Yields:
+            A TitleAkas object for each row in the dataset.
+        """
+
         path = self._build_path(path, _TITLE_AKAS.default_filename)
 
         with open(path, mode='r', encoding='utf8') as f:
@@ -58,6 +92,17 @@ class PyMDbParser:
                         print('Found title akas in incorrect format')
 
     def get_title_basics(self, path, contains_headers=True):
+        """Parse the 'title.basics.tsv' dataset provided by IMDb.
+
+        Args:
+            path: A string for the system path to the dataset file. If not using
+                default filenames, this string will include the dataset file.
+            contains_headers: A boolean to determine if the first line is column titles or a data row.
+
+        Yields:
+            A TitleBasics object for each row in the dataset.
+        """
+
         path = self._build_path(path, _TITLE_BASICS.default_filename)
 
         with open(path, mode='r', encoding='utf8') as f:
@@ -78,6 +123,17 @@ class PyMDbParser:
                         print('Found title basic in incorrect format')
 
     def get_title_crew(self, path, contains_headers=True):
+        """Parse the 'title.crew.tsv' dataset provided by IMDb.
+
+        Args:
+            path: A string for the system path to the dataset file. If not using
+                default filenames, this string will include the dataset file.
+            contains_headers: A boolean to determine if the first line is column titles or a data row.
+
+        Yields:
+            A TitleCrew object for each row in the dataset.
+        """
+
         path = self._build_path(path, _TITLE_CREW.default_filename)
 
         with open(path, mode='r', encoding='utf8') as f:
@@ -99,6 +155,17 @@ class PyMDbParser:
                         print('Found title crew in incorrect format')
 
     def get_title_episodes(self, path, contains_headers=True):
+        """Parse the 'title.episodes.tsv' dataset provided by IMDb.
+
+        Args:
+            path: A string for the system path to the dataset file. If not using
+                default filenames, this string will include the dataset file.
+            contains_headers: A boolean to determine if the first line is column titles or a data row.
+
+        Yields:
+            A TitleEpisode object for each row in the dataset.
+        """
+
         path = self._build_path(path, _TITLE_EPISODE.default_filename)
         
         with open(path, mode='r', encoding='utf8') as f:
@@ -116,6 +183,17 @@ class PyMDbParser:
                         print('Found title episode in incorrect format')
 
     def get_title_principals(self, path, contains_headers=True):
+        """Parse the 'title.principals.tsv' dataset provided by IMDb.
+
+        Args:
+            path: A string for the system path to the dataset file. If not using
+                default filenames, this string will include the dataset file.
+            contains_headers: A boolean to determine if the first line is column titles or a data row.
+
+        Yields:
+            A TitlePrincipalCrew object for each row in the dataset.
+        """
+
         path = self._build_path(path, _TITLE_PRINCIPALS.default_filename)
 
         with open(path, mode='r', encoding='utf8') as f:
@@ -136,6 +214,17 @@ class PyMDbParser:
                         print('Found title principals in incorrect format')
 
     def get_title_ratings(self, path, contains_headers=True):
+        """Parse the 'title.ratings.tsv' dataset provided by IMDb.
+
+        Args:
+            path: A string for the system path to the dataset file. If not using
+                default filenames, this string will include the dataset file.
+            contains_headers: A boolean to determine if the first line is column titles or a data row.
+
+        Yields:
+            A TitleRating object for each row in the dataset.
+        """
+
         path = self._build_path(path, _TITLE_RATINGS.default_filename)
 
         with open(path, mode='r', encoding='utf8') as f:
@@ -153,6 +242,17 @@ class PyMDbParser:
                         print('Found title rating in incorrect format')
 
     def get_name_basics(self, path, contains_headers=True):
+        """Parse the 'name.basics.tsv' dataset provided by IMDb.
+
+        Args:
+            path: A string for the system path to the dataset file. If not using
+                default filenames, this string will include the dataset file.
+            contains_headers: A boolean to determine if the first line is column titles or a data row.
+
+        Yields:
+            A NameBasics object for each row in the dataset.
+        """
+
         path = self._build_path(path, _NAME_BASICS.default_filename)
         
         with open(path, 'r', encoding='utf8') as f:
@@ -177,6 +277,20 @@ class PyMDbParser:
                         print('UNKNOWN NAME BASICS FORMAT!')
 
     def _build_path(self, path, default_filename):
+        """Private function to combine a system path with a default filename.
+
+        This method will append the default filename of a dataset to the given path
+        it is located in. If the files are to be gunzipped, it will also append the correct
+        gzip extension used by IMDb.
+
+        Args:
+            path: A string for the system path to the directory where the dataset is located.
+            default_filename: A string for the default filename of the dataset.
+        
+        Returns:
+            A string path and default filename combined correctly.
+        """
+
         if self._use_default_filenames:
             path = append_filename_to_path(path, default_filename)
         if self._gunzip_files:

@@ -1,3 +1,10 @@
+"""The classes used to represent various information about persons on IMDb.
+
+This will contain classes for both information gathered from the datasets provided by IMDb
+and information scraped from IMDb web pages. Class names ending with 'Scrape' are scraped
+from the web pages, otherwise they are gathered from the datasets.
+"""
+
 from pymdb.utils import (
     is_datetime,
     is_float,
@@ -6,7 +13,21 @@ from pymdb.utils import (
 )
 
 class NameBasics:
+    """Class to store the row information from IMDb's 'name.basics.tsv' dataset."""
+
     def __init__(self, name_id, primary_name, birth_year, death_year, primary_professions, known_for_titles):
+        """Initialize the object with all values in the row.
+
+        Args:
+            name_id: A string for the IMDb ID for the person prefixed with 'nm'.
+            primary_name: A string for the person's name.
+            birth_year: A datetime object or correctly formatted string representing the person's birth year.
+            death_year: A datetime object or correctly formatted string representing the person's death year,
+                or None if it does not exist.
+            primary_professions: A list of strings for all the person's primary professions.
+            known_for_titles: A list of strings of title IDs for each title the person is known for.
+        """
+
         self._name_id = name_id
         self._primary_name = primary_name
         self._birth_year = None
@@ -70,7 +91,28 @@ class NameBasics:
 
 
 class CreditScrape:
+    """Object to represent information for each person scraped from IMDb's fullcredits page for a title.
+
+    This information is scraped from the fullcredits IMDb web page, and will either represent an actor or
+    another crew member.
+    """
+
     def __init__(self, name_id, title_id, job_title, credit, episode_count, episode_year_start, episode_year_end):
+        """Initialize a CreditScrape object with all information it will store.
+
+        Args:
+            name_id: A string of the person's ID used by IMDb prefixed with 'nm'.
+            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
+            job_title: A string for the job title the person is credited for on the title.
+            credit: A string of further credits for the person on the title.
+            episode_count: An integer or string representation of how many episodes the person is credited for
+                if a TV series, otherwise None.
+            episode_year_start: An integer or string representation of what year the person began being
+                credited for if a TV series, otherwise None.
+            episode_year_end: An integer or string representation of what year the person stopped being
+                credited for if a TV series, otherwise None.
+        """
+
         self._name_id = name_id
         self._title_id = title_id
         self._job_title = job_title
@@ -130,7 +172,29 @@ class CreditScrape:
         return f'{self.name_id}: {self.job_title} in {self.title_id} as {self.credit}'
 
 class NameScrape:
+    """Specific information on a person scraped from IMDb.
+
+    This information is taken from IMDb's bio web page on a person to find detailed information.
+    """
+
     def __init__(self, name_id, display_name, birth_name, birth_date, birth_city, death_date, death_city, death_cause, nicknames, height):
+        """Initialize a NameScrape object with all information it will store.
+
+        Args:
+            name_id: A string of the person's ID used by IMDb prefixed with 'nm'.
+            display_name: A string of the name IMDb lists the person having currently. Usually
+                how they are well known or credited.
+            birth_name: A string of the name IMDb lists the person born as.
+            birth_date: A datetime object or formatted string of the date the person was born.
+            birth_city: A string of the city the person was born in.
+            death_date: A datetime object or formatted string of the date the person died,
+                or None otherwise.
+            death_city: A string of the city the person died in, or None otherwise.
+            death_cause: A string of the person's cause of death, or None otherwise.
+            nicknames: A list of strings of all the person's nicknames.
+            height: A float or string representation of how tall the person is in meters.
+        """
+
         self._name_id = name_id
         self._display_name = display_name
         self._birth_name = birth_name
@@ -205,7 +269,27 @@ class NameScrape:
         return f'{self.display_name} [{self.name_id}] ({self.birth_date} - {self.death_date if self.death_date is not None else ""}): {self.height}m'
 
 class NameCreditScrape:
+    """Stores credit information from a person's full filmography on IMDb.
+
+    This information is taken from IMDb's full filmography section of a person's
+    personal web page.
+    """
+
     def __init__(self, name_id, title_id, category, start_year, end_year, role, title_notes):
+        """Initialize a NameCreditScrape object with all information it will store.
+
+        Args:
+            name_id: A string of the person's ID used by IMDb prefixed with 'nm'.
+            title_id: A string of the titles's ID used by IMDb prefixed with 'tt'.
+            category: A string of the category this credit is listed under in the filmography section.
+            start_year: An integer or string representation of the year the title released, or the starting
+                year they were credited for on a TV series.
+            end_year: An integer or string representation of the year the person stopped being credited,
+                or None if not a TV series.
+            role: A string of the role the person is credited for the title, such as character.
+            title_notes: A list of strings of further notes for a person's credit on a title.
+        """
+
         self._name_id = name_id
         self._title_id = title_id
         self._category = category

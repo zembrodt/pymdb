@@ -21,10 +21,12 @@ from pymdb.utils import (
     trim_year,
 )
 
-'''
-Object containing functions to scrape various information from IMDb based on the given ID
-'''
 class PyMDbScraper:
+    """Scrapes various information from IMDb web pages.
+
+    Contains functions for various IMDb pages and scrapes information into Python classes.
+    """
+
     _headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
         'accept': 'text/html,application/xhtml+xml,application/xml'
@@ -33,8 +35,19 @@ class PyMDbScraper:
     def __init__(self):
         pass
 
-    # Get information on title scraped from IMDb page
     def get_title(self, title_id):
+        """Scrapes information from the IMDb web page for the specified title.
+
+        Uses the given title ID to request the IMDb page for the title and scrapes
+        the page's information into a new TitleScrape object.
+
+        Args:
+            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
+
+        Returns:
+            A TitleScrape object containing the page's information, or None if the request failed.
+        """
+
         request = f'https://www.imdb.com/title/{title_id}/'
         response = requests.get(request, headers=self._headers)
         status_code = response.status_code
@@ -212,8 +225,21 @@ class PyMDbScraper:
             worldwide_gross=worldwide_gross
         )
 
-    # Get full credits of all actors
     def get_full_cast(self, title_id, include_episodes=False):
+        """Scrapes the full cast of actors for a specified title.
+
+        Will scrape the full cast of actors for a title, each into their own CreditScrape object.
+        An optional argument include_episodes will also scrape each episode an actor is in
+        if the title is a TV series.
+
+        Args:
+            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
+            include_episodes: An optional boolean to specify if individual episodes of a TV series should also be scraped.
+
+        Yields:
+            A CreditScrape object for each cast member in the title, or None if the request failed.
+        """
+
         request = f'https://www.imdb.com/title/{title_id}/fullcredits'
         response = requests.get(request, headers=self._headers)
         status_code = response.status_code
@@ -229,8 +255,6 @@ class PyMDbScraper:
         for cast_member in cast_node:
             actor_node = cast_member.css_first('td.primary_photo + td > a')
             if actor_node:
-                #actor_node = actor_node.css_first('a')
-
                 name_id = None
                 credit = None
                 episode_count = None
@@ -320,8 +344,19 @@ class PyMDbScraper:
                     episode_year_end=episode_year_end
                 )
 
-    # Get the full credits of all members minus actors
     def get_full_credits(self, title_id):
+        """Scrapes the full list of credited people for a title, not including actors.
+
+        Will scrape the all credited members of a title, without the actors. For example, this will
+        include all directors, writers, producers, cinematographers, etc.
+
+        Args:
+            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
+
+        Yields:
+            A CreditScrape object for each credited member in the title, or None if the request failed.
+        """
+
         request = f'https://www.imdb.com/title/{title_id}/fullcredits'
         response = requests.get(request, headers=self._headers)
         status_code = response.status_code
@@ -354,14 +389,12 @@ class PyMDbScraper:
                                 name_id = None
                                 credit = None
 
-                                #name_node = name_node.css_first('a')
                                 name_id_match = re.search(r'nm\d+', name_node.attributes['href'])
                                 if name_id_match:
                                     name_id = name_id_match.group(0)
                                 credit_node = item.css_first('td.credit')
                                 if credit_node:
                                     credit = credit_node.text().strip()
-                                    #credits = [credit] if len(credit) > 0 else []
 
                                 yield CreditScrape(
                                     name_id=name_id,
@@ -374,8 +407,18 @@ class PyMDbScraper:
                                 )
                 found_title = False  # only because we use continue when set to True for now...
 
-    # Get information on a person scraped from IMDb page
     def get_name(self, name_id):
+        """Scrapes detailed information from a person's personal IMDb web page.
+
+        Will scrape detailed information on a person's IMDb page into a new
+        NameScrape object.
+
+        Args:
+            name_id: A string of the person's ID used by IMDb prefixed with 'nm'.
+
+        Returns:
+            A NameScrape object with the person's information, or None if the request failed.
+        """
         request = f'https://www.imdb.com/name/{name_id}/bio'
         response = requests.get(request, headers=self._headers)
         status_code = response.status_code
@@ -456,8 +499,20 @@ class PyMDbScraper:
             height=height
         )
 
-    # Get full credited information on a person from IMDb page
     def get_name_credits(self, name_id, include_episodes=False):
+        """Scrapes all title credits a person is included in.
+
+        Scrapes the full filmography from a person's IMDb page to get each
+        title they are credited in, and what category that credit is under.
+        Each credit is created with a new NameCreditScrape object.
+
+        Args:
+            name_id: A string of the person's ID used by IMDb prefixed with 'nm'.
+            include_episodes: An optional boolean to specify if individual episodes of a TV series should also be scraped.
+
+        Yields: A NameCreditScrape object for each credit in the person's filmography, or None if the request failed.
+        """
+
         request = f'https://www.imdb.com/name/{name_id}/'
         response = requests.get(request, headers=self._headers)
         status_code = response.status_code
@@ -500,8 +555,6 @@ class PyMDbScraper:
                         onclick_node = more_episodes_node.css_first('div > a')
                         ref_marker = get_ref_marker(onclick_node)
                         category_req = get_category(onclick_node)
-                        #ref_marker = re.search(r'\'nm_.*?\'', onclick_action).group(0).strip('\'')
-                        #category_req = onclick_action.split(',')[3].strip('\'')
                         request = f'https://www.imdb.com/name/{name_id}/episodes/_ajax?title={title_id}&category={category_req}&ref_marker={ref_marker}&start_index=0'
                         episodes_reponse = requests.get(request)
                         status_code = episodes_reponse.status_code
@@ -556,8 +609,20 @@ class PyMDbScraper:
                 title_notes=title_notes
             )
 
-    # Get all titles company has worked on
     def get_company(self, company_id):
+        """Scrapes all titles a company is credited for on IMDb.
+
+        Will scrape all titles listed under a company on IMDb by going through each page
+        in IMDb's company search. This only gives the year(s) the company was involved with
+        each title and 'notes' for each listed on IMDb.
+
+        Args:
+            company_id: A string of the company's ID used by IMDb prefixed with 'co'.
+
+        Yields:
+            A CompanyScrape object for each title the company is credited for, or None if the initial request failed.
+        """
+
         index = 1
         finding_titles = True
         while finding_titles:
@@ -620,8 +685,19 @@ class PyMDbScraper:
                 finding_titles = False
             index += 50
 
-    # Get all companies credited for title
     def get_company_credits(self, title_id):
+        """Gets all companies credited for a title.
+
+        Scrapes a title's company credits page on IMDb to find information for each
+        company that was credited. Each company creates a new CompanyCreditScrape object.
+
+        Args:
+            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
+
+        Yields:
+            A CompanyCreditScrape object for each company, or None if the request failed.
+        """
+
         request = f'https://www.imdb.com/title/{title_id}/companycredits'
         response = requests.get(request, headers=self._headers)
         status_code = response.status_code
@@ -660,8 +736,19 @@ class PyMDbScraper:
                         notes=notes
                     )
 
-    # Get full tech spec information for a title
     def get_tech_specs(self, title_id):
+        """Gets information for all tech specs for a title.
+
+        Uses a title's technical web page on IMDb to scrape all technical
+        specifications listed. Each tech spec creates a new TitleTechSpecScrape object.
+
+        Args:
+            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
+
+        Returns:
+            A TitleTechSpecScrape object containing the information, or None if the request failed.
+        """
+
         request = f'https://www.imdb.com/title/{title_id}/technical/'
         response = requests.get(request, headers=self._headers)
         status_code = response.status_code
