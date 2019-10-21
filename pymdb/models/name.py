@@ -1,4 +1,4 @@
-from pymdb.utils.util import (
+from pymdb.utils import (
     is_datetime,
     is_float,
     is_int,

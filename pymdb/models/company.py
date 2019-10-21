@@ -1,4 +1,4 @@
-from pymdb.utils.util import is_int
+from pymdb.utils import is_int
 
 class CompanyScrape:
     def __init__(self, company_id, title_id, start_year, end_year, notes):

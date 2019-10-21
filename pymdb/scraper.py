@@ -4,23 +4,26 @@ from pymdb.models import (
     CompanyScrape,
     CompanyCreditScrape,
     CreditScrape,
-    NameScrape,
     NameCreditScrape,
+    NameScrape,
     TitleScrape,
     TitleTechSpecsScrape,
 )
-from pymdb.utils.util import (
+from pymdb.utils import (
+    get_category,
     get_company_id,
     get_name_id,
-    get_title_id,
     get_ref_marker,
-    get_category,
+    get_title_id,
     remove_divs,
     remove_tags,
     split_by_br,
     trim_year,
 )
 
+'''
+Object containing functions to scrape various information from IMDb based on the given ID
+'''
 class PyMDbScraper:
     _headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',

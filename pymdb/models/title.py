@@ -1,5 +1,5 @@
 import re
-from pymdb.utils.util import (
+from pymdb.utils import (
     is_bool,
     is_datetime,
     is_float,

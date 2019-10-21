@@ -1,5 +1,5 @@
 import re
-from pymdb.utils.util import (
+from pymdb.utils import (
     append_filename_to_path,
     gunzip_file,
     preprocess_list
