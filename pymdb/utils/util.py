@@ -1,6 +1,9 @@
 import gzip, os, re, shutil
 from datetime import datetime
 
+_CATEGORY_INDEX = 3
+_REF_MARKER_INDEX = 4
+
 # TODO: add all error checking
 def append_filename_to_path(path, filename):
     if len(path) > 0 and path[-1] in ('/', '\\'):
@@ -38,6 +41,39 @@ def remove_divs(s):
 
 def remove_tags(s, tag):
     return re.sub(f'(<\s*{tag}.*>|<\s*\/{tag}\s*>)', '', s)
+
+# IMDb IDs
+def _get_id(node, prefix):
+    if node and 'href' in node.attributes:
+        id_match = re.search(f'{prefix}\d+', node.attributes['href'])
+        if id_match:
+            return id_match.group(0)
+    return None
+
+def get_company_id(node):
+    return _get_id(node, 'co')
+
+def get_name_id(node):
+    return _get_id(node, 'nm')
+
+def get_title_id(node):
+    return _get_id(node, 'tt')
+
+# Get value from onclick
+def _get_from_onclick(node, index):
+    if 'onclick' in node.attributes:
+        onclick_split = node.attributes['onclick'].split(',')
+        if len(onclick_split) >= index:
+            return onclick_split[index].strip('\'')
+    return None
+
+# Get a category
+def get_category(node):
+    return _get_from_onclick(node, _CATEGORY_INDEX)
+
+# Get a ref marker
+def get_ref_marker(node):
+    return _get_from_onclick(node, _REF_MARKER_INDEX)
 
 # Duplicate movies of the same year are differentiated by YYYY/<Roman numeral>
 # This function removes the roman numerals

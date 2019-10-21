@@ -346,9 +346,11 @@ Models for the IMDb web scrapers
 # top_cast: list
 class TitleScrape:
     def __init__(
-            self, title_id, mpaa_rating, country, language, release_date, end_year, season_number, episode_number, tagline, plot, storyline, production_companies, top_cast,
+            self, title_id, title_text, title_parent_id, mpaa_rating, country, language, release_date, end_year, season_number, episode_number, tagline, plot, storyline, production_companies, top_cast,
             budget, opening_weekend_gross, opening_weekend_date, usa_gross, worldwide_gross):
         self._title_id = title_id
+        self._title_text = title_text
+        self._title_parent_id = title_parent_id
         self._mpaa_rating = mpaa_rating
         self._country = country
         self._language = language
@@ -380,6 +382,14 @@ class TitleScrape:
     @property
     def title_id(self):
         return self._title_id
+
+    @property
+    def title_text(self):
+        return self._title_text
+
+    @property
+    def title_parent_id(self):
+        return self._title_parent_id
 
     @property
     def mpaa_rating(self):
@@ -495,7 +505,7 @@ class TitleScrape:
             self._worldwide_gross = int(value)
 
     def __str__(self):
-        return f'{self.title_id}: {self.mpaa_rating}, {self.release_date} by {self.production_companies}. {f"Ended {self.end_year}" if self.end_year is not None else ""} {self.tagline}' + \
+        return f'{self.title_text} ({self.title_id}): {self.mpaa_rating}, {self.release_date} by {self.production_companies}. {f"Ended {self.end_year}" if self.end_year is not None else ""} {self.tagline}' + \
             f'{f" S{self.season_number}" if self.season_number is not None else ""}{f"E{self.episode_number}" if self.episode_number is not None else ""}' + \
                 '\n\t' + f'Budget: ${self.budget}, grossed ${self.opening_weekend_gross} on opening weekend of {self.opening_weekend_date}. USA total: ${self.usa_gross}, World total: ${self.worldwide_gross}'
 
