@@ -3,11 +3,15 @@
 The functions within here are not intended to be used outside of the PyMDb package.
 """
 
-import gzip, os, re, shutil
+import gzip
+import os
+import re
+import shutil
 from datetime import datetime
 
 _CATEGORY_INDEX = 3
 _REF_MARKER_INDEX = 4
+
 
 # TODO: add all error checking
 def append_filename_to_path(path, filename):
@@ -31,6 +35,7 @@ def append_filename_to_path(path, filename):
             return f'{path}\\{filename}'
         else:
             return f'{path}/{filename}'
+
 
 def gunzip_file(infile, outfile=None, delete_infile=False):
     """Unzips a gzip file and returns the unzipped filename.
@@ -62,6 +67,7 @@ def gunzip_file(infile, outfile=None, delete_infile=False):
         os.remove(infile)
     return outfile
 
+
 def preprocess_list(lst):
     """Process a row of data from the IMDb datasets.
 
@@ -79,6 +85,7 @@ def preprocess_list(lst):
             lst[i] = None
     return lst
 
+
 def split_by_br(s):
     """Split a string by <br> tags.
 
@@ -92,7 +99,8 @@ def split_by_br(s):
         A list of strings split around the <br> tags.
     """
 
-    return re.sub(r'<\s*b\s*r\s*\/?\s*>', '\t', s).split('\t')
+    return re.sub(r'<\s*b\s*r\s*/?\s*>', '\t', s).split('\t')
+
 
 def remove_divs(s):
     """Removes all <div> tags from the string including their children.
@@ -107,7 +115,8 @@ def remove_divs(s):
         A string with all <div> tags and their content removed.
     """
 
-    return re.sub(r'<\s*div.*>(.|\r|\n)*<\s*\/\s*div\s*>', '', s)
+    return re.sub(r'<\s*div.*>(.|\r|\n)*<\s*/\s*div\s*>', '', s)
+
 
 def remove_tags(s, tag):
     """Removes the specified opening and closing tags of the given type.
@@ -125,7 +134,8 @@ def remove_tags(s, tag):
         HTML information intact.
     """
 
-    return re.sub(f'(<\s*{tag}.*>|<\s*\/{tag}\s*>)', '', s)
+    return re.sub(rf'(<\s*{tag}.*>|<\s*/{tag}\s*>)', '', s)
+
 
 def _get_id(node, prefix):
     """Private function to find an IMDb ID within a link node
@@ -141,10 +151,11 @@ def _get_id(node, prefix):
         A string of the IMDb ID, or None if none was found.
     """
     if node and 'href' in node.attributes:
-        id_match = re.search(f'{prefix}\d+', node.attributes['href'])
+        id_match = re.search(rf'{prefix}\d+', node.attributes['href'])
         if id_match:
             return id_match.group(0)
     return None
+
 
 def get_company_id(node):
     """Find the IMDb company ID within a selectolax Node.
@@ -160,6 +171,7 @@ def get_company_id(node):
 
     return _get_id(node, 'co')
 
+
 def get_name_id(node):
     """Find the IMDb name ID within a selectolax Node.
 
@@ -174,6 +186,7 @@ def get_name_id(node):
 
     return _get_id(node, 'nm')
 
+
 def get_title_id(node):
     """Find the IMDb title ID within a selectolax Node.
 
@@ -187,6 +200,7 @@ def get_title_id(node):
     """
 
     return _get_id(node, 'tt')
+
 
 def _get_from_onclick(node, index):
     """Private function to grab a value in the 'onclick' attribute.
@@ -209,6 +223,7 @@ def _get_from_onclick(node, index):
             return onclick_split[index].strip('\'')
     return None
 
+
 def get_category(node):
     """Gets the category value from a selectolax Node.
 
@@ -222,6 +237,7 @@ def get_category(node):
     """
 
     return _get_from_onclick(node, _CATEGORY_INDEX)
+
 
 def get_ref_marker(node):
     """Gets the ref marker value from a selectolax Node.
@@ -237,6 +253,7 @@ def get_ref_marker(node):
 
     return _get_from_onclick(node, _REF_MARKER_INDEX)
 
+
 def trim_year(year):
     """Used to trim roman numerals from year values.
 
@@ -251,31 +268,71 @@ def trim_year(year):
         A string representation of the year, or None if year was None.
     """
 
-    return re.sub(r'\/\w*', '', year) if year is not None else None
+    return re.sub(r'/\w*', '', year) if year is not None else None
+
+
+def is_money_string(s):
+    """Determine if a string is in a money format.
+
+    Determines if the string represents a monetary value, for example: $123,456,789.
+
+    Args:
+        s: A string representation of the monetary amount.
+
+    Returns:
+        A boolean for if the string does represent a monetary value for not.
+    """
+
+    return True if re.search(r'\$[\d,]+', s) else False
+
+
+def trim_money_string(s):
+    """Trims excess characters from a monetary value
+
+    Only keeps the digits within a monetary value, such as $123,456 to 123456. Trims dollar signs and commas.
+
+    Args:
+        s: A string representation of the monetary amount.
+
+    Returns:
+        A string of the same amount with excess characters removed.
+    """
+
+    money_match = re.search(r'\$[\d,]+', s)
+    if money_match:
+        return re.sub(r'[$,]+', '', money_match.group(0))
+    return None
+
 
 def is_bool(b):
     """Check if a variable is a boolean type."""
+
     try:
         bool(b)
         return True
     except ValueError:
         return False
 
+
 def is_float(f):
     """Check if a variable is a float type."""
+
     try:
         float(f)
         return True
     except ValueError:
         return False
 
+
 def is_int(i):
     """Check if a variable is an int type."""
+
     try:
         int(i)
         return True
     except ValueError:
         return False
+
 
 def is_datetime(d):
     """Check if a variable can be converted to a datetime object.
@@ -307,6 +364,7 @@ def is_datetime(d):
             except ValueError:
                 return False
 
+
 def to_datetime(d):
     """Convert a variable can be converted to a datetime object.
 
@@ -323,7 +381,7 @@ def to_datetime(d):
         A datetime object that was represented by the string.
     
     Raises:
-        ValueError: If the string could not be convereted.
+        ValueError: If the string could not be converted.
     """
 
     try:
@@ -331,7 +389,7 @@ def to_datetime(d):
     except ValueError:
         try:
             return datetime.strptime(d, '%Y')
-        except ValueError as e:
+        except ValueError:
             try:
                 return datetime.strptime(d, '%Y-%m-%d')
             except ValueError as e:

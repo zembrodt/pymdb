@@ -12,6 +12,7 @@ from pymdb.utils import (
     to_datetime
 )
 
+
 class NameBasics:
     """Class to store the row information from IMDb's 'name.basics.tsv' dataset."""
 
@@ -171,13 +172,17 @@ class CreditScrape:
     def __str__(self):
         return f'{self.name_id}: {self.job_title} in {self.title_id} as {self.credit}'
 
+
 class NameScrape:
     """Specific information on a person scraped from IMDb.
 
     This information is taken from IMDb's bio web page on a person to find detailed information.
     """
 
-    def __init__(self, name_id, display_name, birth_name, birth_date, birth_city, death_date, death_city, death_cause, nicknames, height):
+    def __init__(
+            self, name_id, display_name, birth_name, birth_date, birth_city,
+            death_date, death_city, death_cause, nicknames, height
+    ):
         """Initialize a NameScrape object with all information it will store.
 
         Args:
@@ -266,7 +271,9 @@ class NameScrape:
             self._height = float(value)
 
     def __str__(self):
-        return f'{self.display_name} [{self.name_id}] ({self.birth_date} - {self.death_date if self.death_date is not None else ""}): {self.height}m'
+        return f'{self.display_name} [{self.name_id}] ({self.birth_date} - ' + \
+               f'{self.death_date if self.death_date is not None else ""}): {self.height}m'
+
 
 class NameCreditScrape:
     """Stores credit information from a person's full filmography on IMDb.
@@ -340,5 +347,6 @@ class NameCreditScrape:
         return self._title_notes
 
     def __str__(self):
-        return f'{self.name_id} in {self.title_id} ({self.start_year}{f" - {self.end_year}" if self.end_year is not None else ""})' + \
-            f' as {self.category}. Role: {self.role}. {f"Notes: {self.title_notes}" if self.title_notes is not None else ""}'
+        return f'{self.name_id} in {self.title_id} ({self.start_year}' + \
+               f'{f" - {self.end_year}" if self.end_year is not None else ""}) as {self.category}. ' + \
+               f'Role: {self.role}. {f"Notes: {self.title_notes}" if self.title_notes is not None else ""}'

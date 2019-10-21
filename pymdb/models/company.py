@@ -5,6 +5,7 @@ All information for the classes here will be scraped from IMDb web pages.
 
 from pymdb.utils import is_int
 
+
 class CompanyScrape:
     """Stores a title a company is credited in on IMDb.
 
@@ -65,7 +66,9 @@ class CompanyScrape:
         return self._notes
 
     def __str__(self):
-        return f'{self.company_id} produced {self.title_id} ({self.start_year}{f"-{self.end_year}" if self.end_year is not None else ""}). Notes: {self.notes}'
+        return f'{self.company_id} produced {self.title_id} ({self.start_year}' + \
+               f'{f"-{self.end_year}" if self.end_year is not None else ""}). Notes: {self.notes}'
+
 
 class CompanyCreditScrape:
     """Stores a company that is credited on a title's IMDb page.

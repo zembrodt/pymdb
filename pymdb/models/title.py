@@ -5,7 +5,6 @@ and information scraped from IMDb web pages. Class names ending with 'Scrape' ar
 from the web pages, otherwise they are gathered from the datasets.
 """
 
-import re
 from pymdb.utils import (
     is_bool,
     is_datetime,
@@ -13,6 +12,7 @@ from pymdb.utils import (
     is_int,
     to_datetime
 )
+
 
 class TitleAkas:
     """Class to store the row information from IMDb's 'title.akas.tsv' dataset.
@@ -103,9 +103,12 @@ class TitleAkas:
             self._is_original_title = bool(value)
 
     def __str__(self):
-        return f'{self.localized_title} ({self.title_id})' + \
-            f'{f": {self.region}" if self.region is not None else ""}' + \
-            f'{f" - {self.language}" if self.language is not None and self.region is not None else f": {self.language}" if self.language is not None else ""}'
+        ret_str = f'{self.localized_title} ({self.title_id}) {f": {self.region}" if self.region is not None else ""}'
+        if self.language:
+            if self.region:
+                ret_str += f' - {self.language}'
+            else:
+                ret_str += f': {self.language}'
 
 
 class TitleBasics:
@@ -265,9 +268,13 @@ class TitleCrew:
             self._writer_ids = value
 
     def __str__(self):
-        return f'{self._title_id}' + \
-            f'{f" directed by {self.director_ids}" if self.director_ids is not None else ""}' + \
-            f'{f" and written by {self.writer_ids}" if self.writer_ids is not None and self.director_ids is not None else f" written by {self.writer_ids}" if self.director_ids is None else ""}'
+        ret_str = f'{self._title_id}{f" directed by {self.director_ids}" if self.director_ids is not None else ""}'
+        if self.writer_ids:
+            if self.director_ids:
+                ret_str += f' and written by {self.writer_ids}'
+            else:
+                ret_str += f' written by {self.writer_ids}'
+        return ret_str
 
 
 class TitleEpisode:
@@ -440,7 +447,7 @@ class TitleRating:
     def __str__(self):
         return f'{self.title_id}: Rated {self.average_rating} with {self.num_votes} votes'
 
-# top_cast: list
+
 class TitleScrape:
     """Object to represent detailed information for a title on its IMDb web page.
 
@@ -448,8 +455,10 @@ class TitleScrape:
     """
 
     def __init__(
-            self, title_id, title_text, title_parent_id, mpaa_rating, country, language, release_date, end_year, season_number, episode_number, tagline, plot, storyline, production_companies, top_cast,
-            budget, opening_weekend_gross, opening_weekend_date, usa_gross, worldwide_gross):
+            self, title_id, title_text, title_parent_id, mpaa_rating, country, language, release_date, end_year,
+            season_number, episode_number, tagline, plot, storyline, production_companies, top_cast,
+            budget, opening_weekend_gross, opening_weekend_date, usa_gross, worldwide_gross
+    ):
         """Initialize a CreditScrape object with all information it will store.
 
         Args:
@@ -641,9 +650,13 @@ class TitleScrape:
             self._worldwide_gross = int(value)
 
     def __str__(self):
-        return f'{self.title_text} ({self.title_id}): {self.mpaa_rating}, {self.release_date} by {self.production_companies}. {f"Ended {self.end_year}" if self.end_year is not None else ""} {self.tagline}' + \
-            f'{f" S{self.season_number}" if self.season_number is not None else ""}{f"E{self.episode_number}" if self.episode_number is not None else ""}' + \
-                '\n\t' + f'Budget: ${self.budget}, grossed ${self.opening_weekend_gross} on opening weekend of {self.opening_weekend_date}. USA total: ${self.usa_gross}, World total: ${self.worldwide_gross}'
+        return f'{self.title_text} ({self.title_id}): {self.mpaa_rating}, {self.release_date} by ' + \
+               f'{self.production_companies}. {f"Ended {self.end_year}" if self.end_year is not None else ""} ' + \
+               f'{self.tagline} {f" S{self.season_number}" if self.season_number is not None else ""}' + \
+               f'{f"E{self.episode_number}" if self.episode_number is not None else ""}' + \
+                '\n\t' + f'Budget: ${self.budget}, grossed ${self.opening_weekend_gross} on opening weekend of ' + \
+               f'{self.opening_weekend_date}. USA total: ${self.usa_gross}, World total: ${self.worldwide_gross}'
+
 
 class TitleTechSpecsScrape:
     """Object to represent information for a title's technical specifications.
@@ -651,7 +664,10 @@ class TitleTechSpecsScrape:
     This information is scraped from the technical IMDb web page for a title
     """
 
-    def __init__(self, title_id, runtime, sound_mix, color, aspect_ratio, camera, laboratory, negative_format, cinematographic_process, printed_film_format):
+    def __init__(
+            self, title_id, runtime, sound_mix, color, aspect_ratio, camera, laboratory, negative_format,
+            cinematographic_process, printed_film_format
+    ):
         """Initialize a CreditScrape object with all information it will store.
 
         Args:

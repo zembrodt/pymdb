@@ -1,3 +1,5 @@
+"""Module containing the PyMDbParser class."""
+
 import re
 from pymdb.utils import (
     append_filename_to_path,
@@ -16,6 +18,7 @@ from pymdb.models.title import (
     TitleRating
 )
 
+
 class _IMDbDataset:
     """Private class to match dataset files with column counts."""
 
@@ -30,6 +33,7 @@ class _IMDbDataset:
         self.default_filename = default_filename
         self.column_count = column_count
 
+
 _TITLE_AKAS = _IMDbDataset('title.akas.tsv', 8)
 _TITLE_BASICS = _IMDbDataset('title.basics.tsv', 9)
 _TITLE_CREW = _IMDbDataset('title.crew.tsv', 3)
@@ -37,6 +41,7 @@ _TITLE_EPISODE = _IMDbDataset('title.episode.tsv', 4)
 _TITLE_PRINCIPALS = _IMDbDataset('title.principals.tsv', 6)
 _TITLE_RATINGS = _IMDbDataset('title.ratings.tsv', 3)
 _NAME_BASICS = _IMDbDataset('name.basics.tsv', 6)
+
 
 class PyMDbParser:
     """Object used to parse the tsv datasets provided by IMDb.
@@ -114,7 +119,8 @@ class PyMDbParser:
                     line = line.strip().split('\t')
                     if len(line) == _TITLE_BASICS.column_count:
                         line = preprocess_list(line)
-                        title_id, title_type, primary_title, original_title, is_adult, start_year, end_year, runtime, genres = line
+                        title_id, title_type, primary_title, original_title, \
+                            is_adult, start_year, end_year, runtime, genres = line
                         if genres is not None:
                             genres = [genre for genre in genres.split(',')]
                         yield TitleBasics(title_id, title_type, primary_title, original_title, is_adult, start_year,
@@ -206,9 +212,10 @@ class PyMDbParser:
                     if len(line) == _TITLE_PRINCIPALS.column_count:
                         line = preprocess_list(line)
                         title_id, ordering, name_id, category, job, characters = line
-                        if characters is not None and len(characters) > 0 and characters[0] == '[' and characters[-1] == ']':
-                                characters = [result.group(0).replace('"', '') for result in
-                                              re.finditer(r'".+?"', characters)]
+                        if characters is not None and len(characters) > 0 and characters[0] == '[' \
+                                and characters[-1] == ']':
+                            characters = [result.group(0).replace('"', '') for result in
+                                          re.finditer(r'".+?"', characters)]
                         yield TitlePrincipalCrew(title_id, ordering, name_id, category, job, characters)
                     else:
                         print('Found title principals in incorrect format')
