@@ -2,6 +2,7 @@
 
 import unittest
 from pymdb.utils import *
+from datetime import datetime
 
 
 class TestAppendFilenameToPath(unittest.TestCase):
@@ -56,7 +57,26 @@ class TestPreprocessList(unittest.TestCase):
 
 
 class TestSplitByBr(unittest.TestCase):
-    pass
+    def test_split_by_br(self):
+        html1 = 'this is <br> a test'
+        html2 = 'this is < br > a test'
+        html3 = 'this is < br / > a test'
+        html4 = 'this is <br/> a test'
+        correct_split = ['this is ', ' a test']
+        self.assertEqual(split_by_br(html1), correct_split)
+        self.assertEqual(split_by_br(html2), correct_split)
+        self.assertEqual(split_by_br(html3), correct_split)
+        self.assertEqual(split_by_br(html4), correct_split)
+
+    def test_split_by_br_no_br(self):
+        html = 'this is a test'
+        correct_split = ['this is a test']
+        self.assertEqual(split_by_br(html), correct_split)
+
+    def test_split_by_br_other_tags(self):
+        html = '<a>this is</a><br><span>a test</span>'
+        correct_split = ['<a>this is</a>', '<span>a test</span>']
+        self.assertEqual(split_by_br(html), correct_split)
 
 
 class TestRemoveDivs(unittest.TestCase):
@@ -144,8 +164,48 @@ class TestIsInt(unittest.TestCase):
 
 
 class TestIsDatetime(unittest.TestCase):
-    pass
+    def test_is_datetime_format1(self):
+        d = '21 August 1999'
+        self.assertTrue(is_datetime(d))
+
+    def test_is_datetime_format2(self):
+        d = '1999'
+        self.assertTrue(is_datetime(d))
+
+    def test_is_datetime_format3(self):
+        d = '1999-08-21'
+        self.assertTrue(is_datetime(d))
+
+    def test_is_datetime_unsupported_format(self):
+        d = 'August 21, 1999'
+        self.assertFalse(is_datetime(d))
+
+    def test_is_datetime_not_date(self):
+        d = 'test'
+        self.assertFalse(is_datetime(d))
 
 
 class TestToDatetime(unittest.TestCase):
-    pass
+    _correct_date = datetime(1999, 8, 21)
+
+    def test_to_datetime_format1(self):
+        d = '21 August 1999'
+        self.assertEqual(to_datetime(d), self._correct_date)
+
+    def test_to_datetime_format2(self):
+        d = '1999'
+        self.assertEqual(to_datetime(d), self._correct_date)
+
+    def test_to_datetime_format3(self):
+        d = '1999-08-21'
+        self.assertEqual(to_datetime(d), self._correct_date)
+
+    def test_to_datetime_unsupported_format(self):
+        d = 'August 21, 1999'
+        with self.assertRaises(ValueError):
+            to_datetime(d)
+
+    def test_to_datetime_not_date(self):
+        d = 'test'
+        with self.assertRaises(ValueError):
+            to_datetime(d)
