@@ -453,7 +453,7 @@ class TitleScrape:
 
     def __init__(
             self, title_id, title_text, title_parent_id, mpaa_rating, country, language, release_date, end_year,
-            season_number, episode_number, tagline, plot, storyline, production_companies, top_cast,
+            season_number, episode_number, taglines, plot, storyline, production_companies, top_cast,
             budget, opening_weekend_gross, opening_weekend_date, usa_gross, worldwide_gross
     ):
         """Initialize a CreditScrape object with all information it will store.
@@ -474,7 +474,7 @@ class TitleScrape:
                 the episode is in, otherwise None.
             episode_number: An integer or string representation for the episode's
                 number in the season, otherwise None.
-            tagline: A list of strings for all of the title's taglines.
+            taglines: A list of strings for all of the title's taglines.
             plot: A string for the title's plot.
             storyline: A string for the title's storyline.
             production_companies: A list of strings of company IDs credited with
@@ -500,7 +500,7 @@ class TitleScrape:
         self._end_year = None
         self._season_number = None
         self._episode_number = None
-        self._tagline = tagline
+        self._taglines = taglines
         self._plot = plot
         self._storyline = storyline
         self._production_companies = production_companies
@@ -580,8 +580,8 @@ class TitleScrape:
             self._episode_number = int(value)
 
     @property
-    def tagline(self):
-        return self._tagline
+    def taglines(self):
+        return self._taglines
 
     @property
     def plot(self):
@@ -646,7 +646,7 @@ class TitleScrape:
     def __str__(self):
         return f'{self.title_text} ({self.title_id}): {self.mpaa_rating}, {self.release_date} by ' + \
                f'{self.production_companies}. {f"Ended {self.end_year}" if self.end_year is not None else ""} ' + \
-               f'{self.tagline} {f" S{self.season_number}" if self.season_number is not None else ""}' + \
+               f'{self.taglines} {f" S{self.season_number}" if self.season_number is not None else ""}' + \
                f'{f"E{self.episode_number}" if self.episode_number is not None else ""}' + \
                 '\n\t' + f'Budget: ${self.budget}, grossed ${self.opening_weekend_gross} on opening weekend of ' + \
                f'{self.opening_weekend_date}. USA total: ${self.usa_gross}, World total: ${self.worldwide_gross}'

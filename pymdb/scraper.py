@@ -42,7 +42,7 @@ class PyMDbScraper:
     def __init__(self):
         pass
 
-    def get_title(self, title_id):
+    def get_title(self, title_id, include_taglines=False):
         """Scrapes information from the IMDb web page for the specified title.
 
         Uses the given title ID to request the IMDb page for the title and scrapes
@@ -50,6 +50,8 @@ class PyMDbScraper:
 
         Args:
             title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
+            include_taglines: A boolean to determine if an extra request should be
+                made to get all the taglines for the title
 
         Returns:
             A TitleScrape object containing the page's information, or None if the request failed.
@@ -57,8 +59,6 @@ class PyMDbScraper:
 
         request = f'https://www.imdb.com/title/{title_id}/'
         tree = self._get_tree(request)
-        if not tree:
-            return None
 
         title_text = None
         title_parent_id = None
@@ -69,7 +69,7 @@ class PyMDbScraper:
         end_year = None
         season_number = None
         episode_number = None
-        tagline = None
+        taglines = []
         plot = None
         storyline = None
         production_companies = []
@@ -106,28 +106,32 @@ class PyMDbScraper:
             if storyline_node:
                 storyline = storyline_node.text().strip()
 
-        # Get tagline
-        tagline_node = tree.css_first('#titleStoryLine > div:nth-of-type(3)')
-        if tagline_node and 'Taglines' in tagline_node.text():
-            tagline = re.sub(r'(Taglines:|See more.*)', '', tagline_node.text()).strip()
+        # Get taglines
+        if include_taglines:
+            tagline_request = f'https://www.imdb.com/title/{title_id}/taglines'
+            tagline_tree = self._get_tree(tagline_request)
+            if not tagline_tree.css_first('div#no_content'):
+                for tagline_node in tagline_tree.css('div.soda'):
+                    # TODO: should a Tagline object be created that stores the note for each tagline separately?
+                    taglines.append(tagline_node.text().strip())
 
-        # Get MPAA Rating
         title_node = tree.css_first('div.title_block > div > div > div.title_wrapper > div.subtext')
         if title_node:
+            # If this is a TV series, get the year the show ended
+            for link_node in title_node.css('a'):
+                if 'href' in link_node.attributes and 'releaseinfo' in link_node.attributes['href']:
+                    series_dates_match = re.search(r'[\d]{4}[-–][\d]{4}', link_node.text())
+                    if series_dates_match:
+                        end_year_split = re.sub(r'[-–]', '\t', series_dates_match.group(0)).split('\t')
+                        if len(end_year_split) > 1:
+                            end_year = end_year_split[1]
+                            break
+
+            # Get MPAA Rating
             title_node.strip_tags(['span', 'a', 'time'])
             rating_node = tree.css_first('div.titleBar > div.title_wrapper > div.subtext')
             if rating_node:
                 rating = re.sub(r'(\s|,)*', '', rating_node.text()).strip()
-
-        # If this is a TV series, get the year the show ended
-        for link_node in title_node.css('a'):
-            if 'title' in link_node.attributes and link_node.attributes['title'] == 'See more release dates' \
-                    and 'TV Series' in link_node.text():
-                series_dates_match = re.search(r'[\d]{4}[-–][\d]{4}', link_node.text())
-                if series_dates_match:
-                    end_year_split = re.sub(r'([-–])', '\t', series_dates_match.group(0)).split('\t')
-                    if len(end_year_split) > 1:
-                        end_year = end_year_split[1]
 
         # Parse through text blocks
         text_block_nodes = tree.css('div#titleDetails > div.txt-block')
@@ -178,12 +182,14 @@ class PyMDbScraper:
                 cast_member_node = cast_member.css_first('td:nth-of-type(2) > a')
                 if cast_member_node:
                     cast_member_id = get_name_id(cast_member_node)
-                    cast_member_name = cast_member_node.text().strip()
-                    character_nodes = cast_member.css('td.character > a')
-                    characters = []
-                    for c_node in character_nodes:
-                        characters.append(c_node.text().strip())
-                    cast_members.append(f'{cast_member_name} ({cast_member_id}): {", ".join(characters)}')
+                    # TODO: should this be modified to store a list of Credit objects?
+                    #cast_member_name = cast_member_node.text().strip()
+                    #character_nodes = cast_member.css('td.character > a')
+                    #characters = []
+                    #for c_node in character_nodes:
+                    #    characters.append(c_node.text().strip())
+                    #cast_members.append(f'{cast_member_name} ({cast_member_id}): {", ".join(characters)}')
+                    cast_members.append(cast_member_id)
 
         # Get season and episode numbers if TV episode
         heading_nodes = tree.css('div.bp_heading')
@@ -212,7 +218,7 @@ class PyMDbScraper:
             end_year=end_year,
             season_number=season_number,
             episode_number=episode_number,
-            tagline=tagline,
+            taglines=taglines,
             plot=plot,
             storyline=storyline,
             production_companies=production_companies,
@@ -242,8 +248,6 @@ class PyMDbScraper:
 
         request = f'https://www.imdb.com/title/{title_id}/fullcredits'
         tree = self._get_tree(request)
-        if not tree:
-            return None
 
         cast_node = tree.css_first('table.cast_list').css('tr')
         for cast_member in cast_node:
@@ -279,45 +283,40 @@ class PyMDbScraper:
                         ref_marker = get_ref_marker(toggle_episodes_node)
                         request = f'https://www.imdb.com/name/{name_id}/episodes/_ajax?title={title_id}' + \
                                   f'&category=actor&ref_marker={ref_marker}&start_index=0'
-                        episodes_reponse = requests.get(request)
-                        status_code = episodes_reponse.status_code
+                        episodes_tree = self._get_tree(request)
 
-                        if status_code == 200:
-                            episode_nodes = HTMLParser(episodes_reponse.text).css('div.filmo-episodes')
-                            for episode_node in episode_nodes:
-                                episode_id = None
-                                episode_year = None
-                                episode_credit = None
+                        episode_nodes = episodes_tree.css('div.filmo-episodes')
+                        for episode_node in episode_nodes:
+                            episode_id = None
+                            episode_year = None
+                            episode_credit = None
 
-                                episode_title_info = episode_node.css_first('a')
-                                if episode_title_info and 'href' in episode_title_info:
-                                    episode_id_match = re.search(r'tt\d+', episode_title_info.attributes['href'])
-                                    if episode_id_match:
-                                        episode_id = episode_id_match.group(0)
-                                
-                                episode_info = episode_node.text().strip().split('...')
-                                if len(episode_info) > 1:
-                                    episode_year_info = episode_info[0]
-                                    episode_credit = '...'.join(episode_info[1:])
-                                else:
-                                    episode_year_info, = episode_info
+                            episode_title_info = episode_node.css_first('a')
+                            if episode_title_info and 'href' in episode_title_info:
+                                episode_id_match = re.search(r'tt\d+', episode_title_info.attributes['href'])
+                                if episode_id_match:
+                                    episode_id = episode_id_match.group(0)
+                            
+                            episode_info = episode_node.text().strip().split('...')
+                            if len(episode_info) > 1:
+                                episode_year_info = episode_info[0]
+                                episode_credit = '...'.join(episode_info[1:])
+                            else:
+                                episode_year_info, = episode_info
 
-                                episode_year_match = re.search(r'\([\d]{4}\)', episode_year_info)
-                                if episode_year_match:
-                                    episode_year = episode_year_match.group(0).strip('()')
+                            episode_year_match = re.search(r'\([\d]{4}\)', episode_year_info)
+                            if episode_year_match:
+                                episode_year = episode_year_match.group(0).strip('()')
 
-                                yield CreditScrape(
-                                    name_id=name_id,
-                                    title_id=episode_id,
-                                    job_title='actor',
-                                    credit=episode_credit,
-                                    episode_count=None,
-                                    episode_year_start=episode_year,
-                                    episode_year_end=None
-                                )
-                        else:
-                            print(f'Bad request: {status_code}')
-                            print(request)
+                            yield CreditScrape(
+                                name_id=name_id,
+                                title_id=episode_id,
+                                job_title='actor',
+                                credit=episode_credit,
+                                episode_count=None,
+                                episode_year_start=episode_year,
+                                episode_year_end=None
+                            )
 
                 # Remove the TV series info from character node if exists
                 if toggle_episodes_node:
@@ -353,8 +352,6 @@ class PyMDbScraper:
 
         request = f'https://www.imdb.com/title/{title_id}/fullcredits'
         tree = self._get_tree(request)
-        if not tree:
-            return None
 
         credits_node = tree.css_first('div#fullcredits_content')
         if credits_node:
@@ -409,8 +406,6 @@ class PyMDbScraper:
         """
         request = f'https://www.imdb.com/name/{name_id}/bio'
         tree = self._get_tree(request)
-        if not tree:
-            return None
 
         display_name = None
         birth_date = None
@@ -498,8 +493,6 @@ class PyMDbScraper:
 
         request = f'https://www.imdb.com/name/{name_id}/'
         tree = self._get_tree(request)
-        if not tree:
-            return None
         
         filmography_node = tree.css_first('div#filmography')
         if not filmography_node:
@@ -536,17 +529,16 @@ class PyMDbScraper:
                         category_req = get_category(onclick_node)
                         request = f'https://www.imdb.com/name/{name_id}/episodes/_ajax?title={title_id}' + \
                                   f'&category={category_req}&ref_marker={ref_marker}&start_index=0'
-                        episodes_reponse = requests.get(request)
-                        status_code = episodes_reponse.status_code
-                        if status_code == 200:
+                        try:
+                            episodes_tree = self._get_tree(request)
                             episode_nodes = HTMLParser(episodes_reponse.text)
-                        elif status_code == 404:
+                        except requests.exceptions.HTTPError as e:
                             # Some AJAX calls seem to 404, so ignore them and remove the "show all" link
-                            more_episodes_node.decompose()
-                        else:
-                            # Log other responses
-                            print(f'Bad request ({status_code}):')
-                            print(request)
+                            if e.response.status_code == 404:
+                                more_episodes_node.decompose()
+                            else:
+                                raise e
+
                     episode_nodes = episode_nodes.css('div.filmo-episodes')
                     for episode_node in episode_nodes:
                         episode_info_node = episode_node.css_first('a')
@@ -607,57 +599,60 @@ class PyMDbScraper:
         finding_titles = True
         while finding_titles:
             request = f'https://www.imdb.com/search/title/?companies={company_id}&view=simple&start={index}'
-            tree = self._get_tree(request)
-            if not tree:
-                finding_titles = False
-            else:
-                title_list_node = tree.css_first('div.lister-list')
-                if not title_list_node:
+            try:
+                tree = self._get_tree(request)
+            except requests.exceptions.HTTPError as e:
+                if e.response.status_code == 404:
                     finding_titles = False
                 else:
-                    for title_info_node in title_list_node.css('span.lister-item-header'):
-                        title_id = None
-                        start_year = None
-                        end_year = None
-                        notes = None
+                    raise e
+            title_list_node = tree.css_first('div.lister-list')
+            if not title_list_node:
+                finding_titles = False
+            else:
+                for title_info_node in title_list_node.css('span.lister-item-header'):
+                    title_id = None
+                    start_year = None
+                    end_year = None
+                    notes = None
 
-                        year_info_node = None
-                        # Check if this is a TV episode
-                        episode_node = title_info_node.css_first('small')
-                        if episode_node and 'Episode' in episode_node.text():
-                            episode_link_node = title_info_node.css_first('small ~ a')
-                            title_id = get_title_id(episode_link_node)
-                            year_info_node = title_info_node.css_first('small ~ a ~ span.lister-item-year')
-                        else:
-                            title_info_node = title_info_node.css_first('span.lister-item-index ~ span')
-                            if title_info_node:
-                                title_link_node = title_info_node.css_first('a')
-                                title_id = get_title_id(title_link_node)
-                                year_info_node = title_info_node.css_first('span.lister-item-year')
+                    year_info_node = None
+                    # Check if this is a TV episode
+                    episode_node = title_info_node.css_first('small')
+                    if episode_node and 'Episode' in episode_node.text():
+                        episode_link_node = title_info_node.css_first('small ~ a')
+                        title_id = get_title_id(episode_link_node)
+                        year_info_node = title_info_node.css_first('small ~ a ~ span.lister-item-year')
+                    else:
+                        title_info_node = title_info_node.css_first('span.lister-item-index ~ span')
+                        if title_info_node:
+                            title_link_node = title_info_node.css_first('a')
+                            title_id = get_title_id(title_link_node)
+                            year_info_node = title_info_node.css_first('span.lister-item-year')
 
-                        if year_info_node:
-                            year_info_text = year_info_node.text().strip('()')
-                            years_match = re.search(r'(\d|–|-)+', year_info_text)
-                            notes_match = re.search(r'([A-Za-z]+\s*)+', year_info_text)
-                            if years_match:
-                                year_info = re.sub(r'[–\-]+', '\t', years_match.group(0)).split('\t')
-                                if len(year_info) > 1:
-                                    start_year, end_year = year_info
-                                    # Handle shows that are still on-air (ex: '2005- ')
-                                    if len(end_year.strip()) == 0:
-                                        end_year = None
-                                else:
-                                    start_year, = year_info
-                            if notes_match:
-                                notes = notes_match.group(0)
+                    if year_info_node:
+                        year_info_text = year_info_node.text().strip('()')
+                        years_match = re.search(r'(\d|–|-)+', year_info_text)
+                        notes_match = re.search(r'([A-Za-z]+\s*)+', year_info_text)
+                        if years_match:
+                            year_info = re.sub(r'[–\-]+', '\t', years_match.group(0)).split('\t')
+                            if len(year_info) > 1:
+                                start_year, end_year = year_info
+                                # Handle shows that are still on-air (ex: '2005- ')
+                                if len(end_year.strip()) == 0:
+                                    end_year = None
+                            else:
+                                start_year, = year_info
+                        if notes_match:
+                            notes = notes_match.group(0)
 
-                        yield CompanyScrape(
-                            company_id=company_id,
-                            title_id=title_id,
-                            start_year=start_year,
-                            end_year=end_year,
-                            notes=notes
-                        )
+                    yield CompanyScrape(
+                        company_id=company_id,
+                        title_id=title_id,
+                        start_year=start_year,
+                        end_year=end_year,
+                        notes=notes
+                    )
             index += 50
 
     def get_company_credits(self, title_id):
@@ -675,8 +670,6 @@ class PyMDbScraper:
 
         request = f'https://www.imdb.com/title/{title_id}/companycredits'
         tree = self._get_tree(request)
-        if not tree:
-            return None
 
         credits_content_node = tree.css_first('div#company_credits_content')
         if credits_content_node:
@@ -717,11 +710,7 @@ class PyMDbScraper:
         """
 
         request = f'https://www.imdb.com/title/{title_id}/technical/'
-        response = self._get_tree(request)
-        if not response:
-            return None
-        
-        tree = HTMLParser(response.text)
+        tree = self._get_tree(request)
 
         runtime = None
         sound_mix = None
@@ -798,10 +787,5 @@ class PyMDbScraper:
         """
 
         response = requests.get(request, headers=self._headers)
-        status_code = response.status_code
-        if status_code != 200:
-            print(f'Bad request: {status_code}')
-            print(request)
-            print(self._headers)
-            return None
+        response.raise_for_status()
         return HTMLParser(response.text)
