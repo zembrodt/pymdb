@@ -285,7 +285,7 @@ def is_money_string(s):
         A boolean for if the string does represent a monetary value for not.
     """
 
-    return True if re.search(r'\$[\d,]+', s) else False
+    return True if re.search(r'(\$|GBP)[\d,]+', s) else False
 
 
 def trim_money_string(s):
@@ -300,9 +300,9 @@ def trim_money_string(s):
         A string of the same amount with excess characters removed.
     """
 
-    money_match = re.search(r'\$[\d,]+', s)
+    money_match = re.search(r'(\$|GBP)[\d,]+', s)
     if money_match:
-        return re.sub(r'[$,]+', '', money_match.group(0))
+        return re.sub(r'(\$|GBP|,)+', '', money_match.group(0))
     return s
 
 
