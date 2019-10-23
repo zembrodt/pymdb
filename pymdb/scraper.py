@@ -19,8 +19,8 @@ from pymdb.utils import (
     get_ref_marker,
     get_title_id,
     is_money_string,
-    remove_divs,
     remove_tags,
+    remove_tags_and_content,
     split_by_br,
     trim_year,
     trim_money_string,
@@ -523,7 +523,7 @@ class PyMDbScraper:
             info = split_by_br(row_node.html)
             if len(info) > 1:
                 title_info, role = info
-                role = re.sub(r'<.*?>', '', remove_divs(role)).strip()
+                role = re.sub(r'<.*?>', '', remove_tags_and_content(role, 'div')).strip()
                 if include_episodes and row_node.css_first('div.filmo-episodes'):
                     # Send AJAX request if a "show all" link exists
                     more_episodes_node = row_node.css_first(

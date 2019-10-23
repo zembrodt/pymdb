@@ -49,7 +49,7 @@ class CompanyScrape:
 
     @start_year.setter
     def start_year(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._start_year = int(value)
 
     @property
@@ -58,7 +58,7 @@ class CompanyScrape:
 
     @end_year.setter
     def end_year(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._end_year = int(value)
 
     @property

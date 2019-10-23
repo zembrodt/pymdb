@@ -6,7 +6,6 @@ from the web pages, otherwise they are gathered from the datasets.
 """
 
 from pymdb.utils import (
-    is_datetime,
     is_float,
     is_int,
     to_datetime
@@ -55,7 +54,7 @@ class NameBasics:
 
     @birth_year.setter
     def birth_year(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._birth_year = int(value)
 
     @property
@@ -64,7 +63,7 @@ class NameBasics:
 
     @death_year.setter
     def death_year(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._death_year = int(value)
 
     @property
@@ -148,7 +147,7 @@ class CreditScrape:
 
     @episode_count.setter
     def episode_count(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._episode_count = int(value)
 
     @property
@@ -157,7 +156,7 @@ class CreditScrape:
 
     @episode_year_start.setter
     def episode_year_start(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._episode_year_start = int(value)
 
     @property
@@ -166,7 +165,7 @@ class CreditScrape:
 
     @episode_year_end.setter
     def episode_year_end(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._episode_year_end = int(value)
 
     def __str__(self):
@@ -233,8 +232,7 @@ class NameScrape:
 
     @birth_date.setter
     def birth_date(self, value):
-        if value is not None and is_datetime(value):
-            self._birth_date = to_datetime(value)
+        self._birth_date = to_datetime(value)
 
     @property
     def birth_city(self):
@@ -246,8 +244,7 @@ class NameScrape:
 
     @death_date.setter
     def death_date(self, value):
-        if value is not None and is_datetime(value):
-            self._death_date = to_datetime(value)
+        self._death_date = to_datetime(value)
 
     @property
     def death_city(self):
@@ -267,7 +264,7 @@ class NameScrape:
 
     @height.setter
     def height(self, value):
-        if value is not None and is_float(value):
+        if is_float(value):
             self._height = float(value)
 
     def __str__(self):
@@ -326,7 +323,7 @@ class NameCreditScrape:
 
     @start_year.setter
     def start_year(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._start_year = int(value)
 
     @property
@@ -335,7 +332,7 @@ class NameCreditScrape:
 
     @end_year.setter
     def end_year(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._end_year = int(value)
 
     @property

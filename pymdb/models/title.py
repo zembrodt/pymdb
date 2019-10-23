@@ -6,10 +6,9 @@ from the web pages, otherwise they are gathered from the datasets.
 """
 
 from pymdb.utils import (
-    is_bool,
-    is_datetime,
     is_float,
     is_int,
+    to_bool,
     to_datetime
 )
 
@@ -60,7 +59,7 @@ class TitleAkas:
 
     @ordering.setter
     def ordering(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._ordering = int(value)
 
     @property
@@ -99,8 +98,7 @@ class TitleAkas:
 
     @is_original_title.setter
     def is_original_title(self, value):
-        if value is not None and is_bool(value):
-            self._is_original_title = bool(value)
+        self._is_original_title = to_bool(value)
 
     def __str__(self):
         ret_str = f'{self.localized_title} ({self.title_id}) {f": {self.region}" if self.region is not None else ""}'
@@ -176,8 +174,7 @@ class TitleBasics:
 
     @is_adult.setter
     def is_adult(self, value):
-        if value is not None and is_bool(value):
-            self._is_adult = bool(value)
+        self._is_adult = to_bool(value)
 
     @property
     def start_year(self):
@@ -185,7 +182,7 @@ class TitleBasics:
 
     @start_year.setter
     def start_year(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._start_year = int(value)
 
     @property
@@ -194,7 +191,7 @@ class TitleBasics:
 
     @end_year.setter
     def end_year(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._end_year = int(value)
 
     @property
@@ -203,7 +200,7 @@ class TitleBasics:
 
     @runtime_minutes.setter
     def runtime_minutes(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._runtime_minutes = int(value)
 
     @property
@@ -315,7 +312,7 @@ class TitleEpisode:
 
     @season_number.setter
     def season_number(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._season_number = int(value)
 
     @property
@@ -324,7 +321,7 @@ class TitleEpisode:
 
     @episode_number.setter
     def episode_number(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._episode_number = int(value)
 
     def __str__(self):
@@ -371,7 +368,7 @@ class TitlePrincipalCrew:
 
     @ordering.setter
     def ordering(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._ordering = int(value)
 
     @property
@@ -432,7 +429,7 @@ class TitleRating:
 
     @average_rating.setter
     def average_rating(self, value):
-        if value is not None and is_float(value):
+        if is_float(value):
             self._average_rating = float(value)
 
     @property
@@ -441,7 +438,7 @@ class TitleRating:
 
     @num_votes.setter
     def num_votes(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._num_votes = int(value)
 
     def __str__(self):
@@ -554,8 +551,7 @@ class TitleScrape:
 
     @release_date.setter
     def release_date(self, value):
-        if value is not None and is_datetime(value):
-            self._release_date = to_datetime(value)
+        self._release_date = to_datetime(value)
 
     @property
     def end_year(self):
@@ -563,8 +559,7 @@ class TitleScrape:
 
     @end_year.setter
     def end_year(self, value):
-        if value is not None and is_datetime(value):
-            self._end_year = to_datetime(value)
+        self._end_year = to_datetime(value)
 
     @property
     def season_number(self):
@@ -572,7 +567,7 @@ class TitleScrape:
 
     @season_number.setter
     def season_number(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._season_number = int(value)
 
     @property
@@ -581,7 +576,7 @@ class TitleScrape:
 
     @episode_number.setter
     def episode_number(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._episode_number = int(value)
 
     @property
@@ -610,7 +605,7 @@ class TitleScrape:
 
     @budget.setter
     def budget(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._budget = int(value)
 
     @property
@@ -619,7 +614,7 @@ class TitleScrape:
 
     @opening_weekend_gross.setter
     def opening_weekend_gross(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._opening_weekend_gross = int(value)
 
     @property
@@ -628,8 +623,7 @@ class TitleScrape:
 
     @opening_weekend_date.setter
     def opening_weekend_date(self, value):
-        if value is not None and is_datetime(value):
-            self._opening_weekend_date = to_datetime(value)
+        self._opening_weekend_date = to_datetime(value)
 
     @property
     def usa_gross(self):
@@ -637,7 +631,7 @@ class TitleScrape:
 
     @usa_gross.setter
     def usa_gross(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._usa_gross = int(value)
 
     @property
@@ -646,7 +640,7 @@ class TitleScrape:
 
     @worldwide_gross.setter
     def worldwide_gross(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._worldwide_gross = int(value)
 
     def __str__(self):
@@ -709,7 +703,7 @@ class TitleTechSpecsScrape:
 
     @runtime.setter
     def runtime(self, value):
-        if value is not None and is_int(value):
+        if is_int(value):
             self._runtime = int(value)
 
     @property

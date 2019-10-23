@@ -71,13 +71,13 @@ def gunzip_file(infile, outfile=None, delete_infile=False):
 def preprocess_list(lst):
     """Process a row of data from the IMDb datasets.
 
-    Replaces all '\N' characters in the IMDb dataset with None.
+    Replaces all '\\N' characters in the IMDb dataset with None.
 
     Args:
         lst: A list of strings after the row has been tab-split.
 
     Returns:
-        A list of strings with all '\N' strings being set to None.
+        A list of strings with all '\\N' strings being set to None.
     """
 
     for i, item in enumerate(lst):
@@ -102,22 +102,6 @@ def split_by_br(s):
     return re.sub(r'<\s*b\s*r\s*/?\s*>', '\t', s).split('\t')
 
 
-def remove_divs(s):
-    """Removes all <div> tags from the string including their children.
-
-    Greedily finds an opening and closing <div> tag and removes all content
-    between the two.
-
-    Args:
-        s: A string containing HTML information.
-
-    Returns:
-        A string with all <div> tags and their content removed.
-    """
-
-    return re.sub(r'<\s*div.*>(.|\r|\n)*<\s*/\s*div\s*>', '', s)
-
-
 def remove_tags(s, tag):
     """Removes the specified opening and closing tags of the given type.
 
@@ -134,7 +118,25 @@ def remove_tags(s, tag):
         HTML information intact.
     """
 
-    return re.sub(rf'(<\s*{tag}.*>|<\s*/{tag}\s*>)', '', s)
+    return re.sub(rf'(<\s*{tag}.*?>|<\s*/\s*{tag}\s*>)', '', s)
+
+
+def remove_tags_and_content(s, tag):
+    """Removes all of the specified tags from the string including their children.
+
+    Greedily finds an opening and closing of specified tag and removes all content
+    between the two. Not intended to remove multiple sibling nodes with content
+    in between.
+
+    Args:
+        s: A string containing HTML information.
+        tag: A string with the tagname to be removed.
+
+    Returns:
+        A string with all of the specified tags and their content removed.
+    """
+
+    return re.sub(rf'<\s*{tag}.*?>(.|\r|\n)*<\s*/\s*{tag}\s*>', '', s)
 
 
 def _get_id(node, prefix):
@@ -217,9 +219,9 @@ def _get_from_onclick(node, index):
         or None if it was not found.
     """
 
-    if 'onclick' in node.attributes:
+    if node and 'onclick' in node.attributes:
         onclick_split = node.attributes['onclick'].split(',')
-        if len(onclick_split) >= index:
+        if len(onclick_split) > index:
             return onclick_split[index].strip('\'')
     return None
 
@@ -301,22 +303,14 @@ def trim_money_string(s):
     money_match = re.search(r'\$[\d,]+', s)
     if money_match:
         return re.sub(r'[$,]+', '', money_match.group(0))
-    return None
-
-
-def is_bool(b):
-    """Check if a variable is a boolean type."""
-
-    try:
-        bool(b)
-        return True
-    except ValueError:
-        return False
+    return s
 
 
 def is_float(f):
     """Check if a variable is a float type."""
 
+    if not f:
+        return False
     try:
         float(f)
         return True
@@ -327,6 +321,8 @@ def is_float(f):
 def is_int(i):
     """Check if a variable is an int type."""
 
+    if not i:
+        return False
     try:
         int(i)
         return True
@@ -334,35 +330,12 @@ def is_int(i):
         return False
 
 
-def is_datetime(d):
-    """Check if a variable can be converted to a datetime object.
+def to_bool(b):
+    """Convert a variable is a boolean type."""
 
-    Checks various formats used in IMDb if the variable can be
-    formatted to a datetime object under those types. The types include:
-    - %d %B %Y
-    - %Y
-    - %Y-%m-%d
-
-    Args:
-        d: A variable to check.
-    
-    Returns:
-        A boolean determining the variable can be converted or not.
-    """
-
-    try:
-        datetime.strptime(d, '%d %B %Y')
-        return True
-    except ValueError:
-        try:
-            datetime.strptime(d, '%Y')
-            return True
-        except ValueError:
-            try:
-                datetime.strptime(d, '%Y-%m-%d')
-                return True
-            except ValueError:
-                return False
+    if is_int(b):
+        return bool(int(b))
+    return bool(b)
 
 
 def to_datetime(d):
@@ -378,12 +351,14 @@ def to_datetime(d):
         d: A string to convert to a datetime object.
     
     Returns:
-        A datetime object that was represented by the string.
+        A datetime object that was represented by the string, or None if d is None.
     
     Raises:
         ValueError: If the string could not be converted.
     """
 
+    if not d:
+        return None
     try:
         return datetime.strptime(d, '%d %B %Y')
     except ValueError:
