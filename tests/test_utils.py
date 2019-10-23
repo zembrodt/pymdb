@@ -2,7 +2,9 @@
 
 import unittest
 from pymdb.utils import *
+from pymdb.utils import _get_id, _get_from_onclick
 from datetime import datetime
+from selectolax.parser import HTMLParser
 
 
 class TestAppendFilenameToPath(unittest.TestCase):
@@ -30,8 +32,8 @@ class TestAppendFilenameToPath(unittest.TestCase):
 
 
 # TODO: test gunzip_file
-class TestGunzipFile(unittest.TestCase):
-    pass
+#class TestGunzipFile(unittest.TestCase):
+#    pass
 
 
 class TestPreprocessList(unittest.TestCase):
@@ -79,60 +81,233 @@ class TestSplitByBr(unittest.TestCase):
         self.assertEqual(split_by_br(html), correct_split)
 
 
-class TestRemoveDivs(unittest.TestCase):
-    pass
-
-
 class TestRemoveTags(unittest.TestCase):
-    pass
+    _tag = 'td'
+
+    def test_remove_tags_empty(self):
+        html = '<td></td>'
+        correct_result = ''
+        self.assertEqual(remove_tags(html, self._tag), correct_result)
+
+    def test_remove_tags_no_class(self):
+        html = '<td>test</td>'
+        correct_result = 'test'
+        self.assertEqual(remove_tags(html, self._tag), correct_result)
+
+    def test_remove_tags_class(self):
+        html = '<td class="testClass">test</td>'
+        correct_result = 'test'
+        self.assertEqual(remove_tags(html, self._tag), correct_result)
+
+    def test_remove_tags_spaces(self):
+        html = '< td  class="testClass" >test< /  td >'
+        correct_result = 'test'
+        self.assertEqual(remove_tags(html, self._tag), correct_result)
+
+    def test_remove_tags_multiple(self):
+        html = '<td class="testClass">test</td ><div>blah</div><td>test2</td>'
+        correct_result = 'test<div>blah</div>test2'
+        self.assertEqual(remove_tags(html, self._tag), correct_result)
+
+    def test_remove_tags_none(self):
+        html = 'test'
+        correct_result = 'test'
+        self.assertEqual(remove_tags(html, self._tag), correct_result)
+
+
+class TestRemoveDivs(unittest.TestCase):
+    _tag = 'div'
+
+    def test_remove_divs_empty(self):
+        html = '<div></div><td>test</td>'
+        correct_result = '<td>test</td>'
+        self.assertEqual(remove_tags_and_content(html, self._tag), correct_result)
+
+    def test_remove_divs_no_class(self):
+        html = '<div>this should be <strong>removed</strong></div><td>test</td>'
+        correct_result = '<td>test</td>'
+        self.assertEqual(remove_tags_and_content(html, self._tag), correct_result)
+
+    def test_remove_divs_class(self):
+        html = '<div class="testClass">this should be <strong>removed</strong></div><td>test</td>'
+        correct_result = '<td>test</td>'
+        self.assertEqual(remove_tags_and_content(html, self._tag), correct_result)
+
+    def test_remove_divs_spaces(self):
+        html = '<  div   class="testClass"  >this should be <strong>removed</strong>< /  div ><td>test</td>'
+        correct_result = '<td>test</td>'
+        self.assertEqual(remove_tags_and_content(html, self._tag), correct_result)
+
+    def test_remove_divs_no_divs(self):
+        html = '<td>test</td>'
+        correct_result = '<td>test</td>'
+        self.assertEqual(remove_tags_and_content(html, self._tag), correct_result)
+
+    def test_remove_divs_multiple(self):
+        html = '''
+        <div class="testClass">this should be <strong>removed</strong></div>
+        <div>also this should be removed</div>
+        <td>test</td>
+        '''
+        correct_result = '<td>test</td>'
+        self.assertEqual(remove_tags_and_content(html, self._tag).strip(), correct_result)
+
+    def test_remove_divs_with_children(self):
+        html = '''
+        <div class="testClass">this should be <strong>removed</strong>
+            <div>also this should be removed</div>
+        </div>
+        <td>test</td>
+        '''
+        correct_result = '<td>test</td>'
+        self.assertEqual(remove_tags_and_content(html, self._tag).strip(), correct_result)
+
+
+class TestGetId(unittest.TestCase):
+    _prefix = 'tt'
+
+    def test_get_id_correct(self):
+        html = '<a href="www.blah.com/blah/tt123456/blah/" onclick="test">my link</a>'
+        node = HTMLParser(html).css_first('a')
+        correct_result = 'tt123456'
+        self.assertEqual(_get_id(node, self._prefix), correct_result)
+
+    def test_get_id_no_id(self):
+        html = '<a href="www.blah.com/blah/" onclick="test">my link</a>'
+        node = HTMLParser(html).css_first('a')
+        self.assertIsNone(_get_id(node, self._prefix))
+
+    def test_get_id_no_href(self):
+        html = '<a onclick="test">my link</a>'
+        node = HTMLParser(html).css_first('a')
+        self.assertIsNone(_get_id(node, self._prefix))
+
+    def test_get_id_none(self):
+        self.assertIsNone(_get_id(None, self._prefix))
 
 
 class TestGetCompanyId(unittest.TestCase):
-    pass
+    def test_get_company_id(self):
+        html = '<a href="www.blah.com/blah/co123456/blah/" onclick="test">my link</a>'
+        node = HTMLParser(html).css_first('a')
+        correct_result = 'co123456'
+        self.assertEqual(get_company_id(node), correct_result)
 
 
 class TestGetNameId(unittest.TestCase):
-    pass
+    def test_get_name_id(self):
+        html = '<a href="www.blah.com/blah/nm123456/blah/" onclick="test">my link</a>'
+        node = HTMLParser(html).css_first('a')
+        correct_result = 'nm123456'
+        self.assertEqual(get_name_id(node), correct_result)
 
 
 class TestGetTitleId(unittest.TestCase):
-    pass
+    def test_get_name_id(self):
+        html = '<a href="www.blah.com/blah/tt123456/blah/" onclick="test">my link</a>'
+        node = HTMLParser(html).css_first('a')
+        correct_result = 'tt123456'
+        self.assertEqual(get_title_id(node), correct_result)
+
+
+class TestGetFromOnclick(unittest.TestCase):
+    _index = 1
+
+    def test_get_from_onclick_correct(self):
+        html = '<a href="www.blah.com" onclick="\'test1\',\'test2\',\'test3\'" class="testClass">my link</a>'
+        node = HTMLParser(html).css_first('a')
+        correct_result = 'test2'
+        self.assertEqual(_get_from_onclick(node, self._index), correct_result)
+
+    def test_get_from_onclick_too_few(self):
+        html = '<a href="www.blah.com" onclick="\'test1\'" class="testClass">my link</a>'
+        node = HTMLParser(html).css_first('a')
+        self.assertIsNone(_get_from_onclick(node, self._index))
+
+    def test_get_from_onclick_no_onclick(self):
+        html = '<a href="www.blah.com" class="testClass">my link</a>'
+        node = HTMLParser(html).css_first('a')
+        self.assertIsNone(_get_from_onclick(node, self._index))
+
+    def test_get_from_onclick_none(self):
+        self.assertIsNone(_get_from_onclick(None, self._index))
 
 
 class TestGetCategory(unittest.TestCase):
-    pass
+    def test_get_category(self):
+        html = '<a href="www.blah.com" onclick="\'test1\',\'test2\',\'test3\',\'test4\',\'test5\',\'test6\'"' + \
+                'class="testClass">my link</a>'
+        node = HTMLParser(html).css_first('a')
+        correct_result = 'test4'
+        self.assertEqual(get_category(node), correct_result)
 
 
 class TestGetRefMarker(unittest.TestCase):
-    pass
+    def test_get_category(self):
+        html = '<a href="www.blah.com" onclick="\'test1\',\'test2\',\'test3\',\'test4\',\'test5\',\'test6\'"' + \
+               'class="testClass">my link</a>'
+        node = HTMLParser(html).css_first('a')
+        correct_result = 'test5'
+        self.assertEqual(get_ref_marker(node), correct_result)
 
 
 class TestTrimYear(unittest.TestCase):
-    pass
+    def test_trim_year_None(self):
+        self.assertIsNone(trim_year(None))
+
+    def test_trim_year_no_roman_numerals(self):
+        s = '1999'
+        correct_result = '1999'
+        self.assertEqual(trim_year(s), correct_result)
+
+    def test_trim_year_roman_numerals(self):
+        s1 = '1999/I'
+        s2 = '1999/IV'
+        s3 = '1999/VII'
+        correct_result = '1999'
+        self.assertEqual(trim_year(s1), correct_result)
+        self.assertEqual(trim_year(s2), correct_result)
+        self.assertEqual(trim_year(s3), correct_result)
 
 
 class TestIsMoneyString(unittest.TestCase):
-    pass
+    def test_is_money_string_no_commas(self):
+        s = '$123'
+        self.assertTrue(is_money_string(s))
+
+    def test_is_money_string_single_comma(self):
+        s = '$123,456'
+        self.assertTrue(is_money_string(s))
+
+    def test_is_money_string_multiple_commas(self):
+        s = '$123,456,789'
+        self.assertTrue(is_money_string(s))
+
+    def test_is_money_string_incorrect_format(self):
+        s = '123,456'
+        self.assertFalse(is_money_string(s))
 
 
 class TestTrimMoneyString(unittest.TestCase):
-    pass
+    def test_trim_money_string_no_commas(self):
+        s = '$123'
+        correct_result = '123'
+        self.assertEqual(trim_money_string(s), correct_result)
 
+    def test_trim_money_string_single_comma(self):
+        s = '$123,456'
+        correct_result = '123456'
+        self.assertEqual(trim_money_string(s), correct_result)
 
-class TestIsBool(unittest.TestCase):
-    def test_is_bool_boolean(self):
-        b1 = True
-        b2 = False
-        self.assertTrue(is_bool(b1))
-        self.assertTrue(is_bool(b2))
+    def test_trim_money_string_multiple_commas(self):
+        s = '$123,456,789'
+        correct_result = '123456789'
+        self.assertEqual(trim_money_string(s), correct_result)
 
-    def test_is_bool_string_correct(self):
-        b = 'True'
-        self.assertTrue(is_bool(b))
-
-    def test_is_bool_string_incorrect(self):
-        b = 'is this true?'
-        self.assertFalse(is_bool(b))
+    def test_trim_money_string_incorrect_format(self):
+        s = '123,456'
+        correct_result = '123,456'
+        self.assertEqual(trim_money_string(s), correct_result)
 
 
 class TestIsFloat(unittest.TestCase):
@@ -148,6 +323,9 @@ class TestIsFloat(unittest.TestCase):
         f = 'one point two three'
         self.assertFalse(is_float(f))
 
+    def test_is_float_none(self):
+        self.assertFalse(is_float(None))
+
 
 class TestIsInt(unittest.TestCase):
     def test_is_int_integer(self):
@@ -162,27 +340,37 @@ class TestIsInt(unittest.TestCase):
         i = 'five'
         self.assertFalse(is_int(i))
 
+    def test_is_int_none(self):
+        self.assertFalse(is_int(None))
 
-class TestIsDatetime(unittest.TestCase):
-    def test_is_datetime_format1(self):
-        d = '21 August 1999'
-        self.assertTrue(is_datetime(d))
 
-    def test_is_datetime_format2(self):
-        d = '1999'
-        self.assertTrue(is_datetime(d))
+class TestToBool(unittest.TestCase):
+    def test_to_bool_boolean_true(self):
+        b = True
+        self.assertTrue(to_bool(b))
 
-    def test_is_datetime_format3(self):
-        d = '1999-08-21'
-        self.assertTrue(is_datetime(d))
+    def test_to_bool_boolean_false(self):
+        b = False
+        self.assertFalse(to_bool(b))
 
-    def test_is_datetime_unsupported_format(self):
-        d = 'August 21, 1999'
-        self.assertFalse(is_datetime(d))
+    def test_to_bool_string_true(self):
+        b = '1'
+        self.assertTrue(to_bool(b))
 
-    def test_is_datetime_not_date(self):
-        d = 'test'
-        self.assertFalse(is_datetime(d))
+    def test_to_bool_string_false(self):
+        b = '0'
+        self.assertFalse(to_bool(b))
+
+    def test_to_bool_int_true(self):
+        b = 1
+        self.assertTrue(to_bool(b))
+
+    def test_to_bool_int_false(self):
+        b = 0
+        self.assertFalse(to_bool(b))
+
+    def test_to_bool_none(self):
+        self.assertFalse(to_bool(None))
 
 
 class TestToDatetime(unittest.TestCase):
@@ -194,7 +382,7 @@ class TestToDatetime(unittest.TestCase):
 
     def test_to_datetime_format2(self):
         d = '1999'
-        self.assertEqual(to_datetime(d), self._correct_date)
+        self.assertEqual(to_datetime(d).year, self._correct_date.year)
 
     def test_to_datetime_format3(self):
         d = '1999-08-21'
@@ -209,3 +397,10 @@ class TestToDatetime(unittest.TestCase):
         d = 'test'
         with self.assertRaises(ValueError):
             to_datetime(d)
+
+    def test_to_datetime_none(self):
+        self.assertIsNone(to_datetime(None))
+
+
+if __name__ == '__main__':
+    unittest.main()
