@@ -4,6 +4,7 @@ import unittest
 import re
 from datetime import datetime
 from requests.exceptions import HTTPError
+from pymdb.exceptions import InvalidCompanyId
 from pymdb.scraper import PyMDbScraper
 
 
@@ -261,7 +262,8 @@ class TestGetFullCast(unittest.TestCase):
         title_id = 'nm123456789'
         scraper = PyMDbScraper()
         with self.assertRaises(HTTPError):
-            scraper.get_full_cast(title_id)
+            for c in scraper.get_full_cast(title_id):
+                pass
 
 
 class TestGetFullCredits(unittest.TestCase):
@@ -278,7 +280,8 @@ class TestGetFullCredits(unittest.TestCase):
         title_id = 'nm123456789'
         scraper = PyMDbScraper()
         with self.assertRaises(HTTPError):
-            scraper.get_full_credits(title_id)
+            for c in scraper.get_full_credits(title_id):
+                pass
 
 
 class TestGetName(unittest.TestCase):
@@ -324,7 +327,8 @@ class TestGetNameCredits(unittest.TestCase):
         name_id = 'tt123456789'
         scraper = PyMDbScraper()
         with self.assertRaises(HTTPError):
-            scraper.get_name_credits(name_id)
+            for n in scraper.get_name_credits(name_id):
+                pass
 
 
 class TestGetCompany(unittest.TestCase):
@@ -342,7 +346,7 @@ class TestGetCompany(unittest.TestCase):
         company_id = 'co0076091'
         scraper = PyMDbScraper()
         valid_titles = {
-            'tt1856101', 'tt1219827', 'tt0338526', 'tt1136608', 'tt1596576', 'tt0477407', 'tt0806017', 'tt4649420'
+            'tt1856101', 'tt1219827', 'tt0338526', 'tt1136608', 'tt1596576', 'tt0477407', 'tt0806017', 'tt4656248'
         }
         for company in scraper.get_company(company_id):
             self.assertEqual(company.company_id, company_id)
@@ -353,8 +357,9 @@ class TestGetCompany(unittest.TestCase):
     def test_get_company_bad_request(self):
         company_id = 'tt123456789'
         scraper = PyMDbScraper()
-        with self.assertRaises(HTTPError):
-            scraper.get_company(company_id)
+        with self.assertRaises(InvalidCompanyId):
+            for c in scraper.get_company(company_id):
+                pass
 
 
 class TestGetCompanyCredits(unittest.TestCase):
@@ -371,7 +376,8 @@ class TestGetCompanyCredits(unittest.TestCase):
         title_id = 'nm123456789'
         scraper = PyMDbScraper()
         with self.assertRaises(HTTPError):
-            scraper.get_company_credits(title_id)
+            for c in scraper.get_company_credits(title_id):
+                pass
 
 
 class TestGetTechSpecs(unittest.TestCase):

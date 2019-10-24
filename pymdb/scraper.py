@@ -3,6 +3,7 @@
 import re
 import requests
 from selectolax.parser import HTMLParser
+from pymdb.exceptions import InvalidCompanyId
 from pymdb.models import (
     CompanyScrape,
     CompanyCreditScrape,
@@ -606,6 +607,13 @@ class PyMDbScraper:
                     finding_titles = False
                 else:
                     raise e
+            # Check if this was a valid company ID
+            company_title_node = tree.css_first('div.article > h1.header')
+            if company_title_node:
+                company_title = company_title_node.text().replace('(Sorted by Popularity Ascending)', '').strip()
+                if len(company_title) == 0:
+                    raise InvalidCompanyId(f'Invalid company ID: {company_id}')
+
             title_list_node = tree.css_first('div.lister-list')
             if not title_list_node:
                 finding_titles = False
