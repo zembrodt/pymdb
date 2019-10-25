@@ -721,13 +721,13 @@ class PyMDbScraper:
         tree = self._get_tree(request)
 
         runtime = None
-        sound_mix = None
+        sound_mix = []
         color = None
-        aspect_ratio = None
-        camera = None
-        laboratory = None
+        aspect_ratio = []
+        camera = []
+        laboratory = []
         negative_format = None
-        cinematographic_process = None
+        cinematographic_process = []
         printed_film_format = None
 
         tech_content_node = tree.css_first('div#technical_content')
@@ -738,7 +738,11 @@ class PyMDbScraper:
                 if label_node and content_node:
                     label = label_node.text().lower().strip()
                     if 'runtime' in label:
-                        runtime_match = re.search(r'\(\d+.*min\)', content_node.text())
+                        runtime_regex = r'\d+.*min'
+                        content_node_text = content_node.text()
+                        if '(' in content_node_text:
+                            runtime_regex = rf'\({runtime_regex}\)'
+                        runtime_match = re.search(runtime_regex, content_node_text)
                         if runtime_match:
                             runtime = re.sub(r'[()\smin]+', '', runtime_match.group(0))
                     elif 'sound mix' in label:
