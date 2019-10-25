@@ -372,12 +372,8 @@ class PyMDbScraper:
                         for item in content:
                             name_node = item.css_first('td.name > a')
                             if name_node:
-                                name_id = None
+                                name_id = get_name_id(name_node)
                                 credit = None
-
-                                name_id_match = re.search(r'nm\d+', name_node.attributes['href'])
-                                if name_id_match:
-                                    name_id = name_id_match.group(0)
                                 credit_node = item.css_first('td.credit')
                                 if credit_node:
                                     credit = credit_node.text().strip()
