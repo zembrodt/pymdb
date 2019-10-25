@@ -2,6 +2,7 @@
 
 import unittest
 import re
+from collections import defaultdict
 from datetime import datetime
 from requests.exceptions import HTTPError
 from pymdb.exceptions import InvalidCompanyId
@@ -460,13 +461,158 @@ class TestGetCompany(unittest.TestCase):
 
 class TestGetCompanyCredits(unittest.TestCase):
     def test_get_company_credits_movie(self):
-        pass
+        title_id = 'tt4154796'
+        scraper = PyMDbScraper()
+        company_credits = scraper.get_company_credits(title_id)
+
+        # Correct results
+        production_company_id = 'co0051941'
+        production_company_name = 'Marvel Studios'
+        production_companies = 'production'
+        production_companies_num = 1
+        distributors = 'distributors'
+        distributors_num = 53
+        special_effects = 'specialEffects'
+        special_effects_num = 25
+        special_effects_company_id = 'co0072491'
+        special_effects_company_name = 'Industrial Light & Magic (ILM)'
+        other_companies = 'other'
+        other_companies_num = 59
+        other_company_id = 'co0057495'
+        other_company_name = 'IMAX'
+
+        company_info = defaultdict(int)
+        discovered_ids = 0
+        for company_credit in company_credits:
+            if company_credit.category not in company_info:
+                company_info[company_credit.category] = 0
+            company_info[company_credit.category] += 1
+
+            if company_credit.company_id == production_company_id:
+                discovered_ids += 1
+                self.assertEqual(company_credit.company_id, production_company_id)
+                self.assertEqual(company_credit.title_id, title_id)
+                self.assertEqual(company_credit.company_name, production_company_name)
+                self.assertEqual(company_credit.category, production_companies)
+                self.assertEqual(company_credit.notes, [])
+            elif company_credit.company_id == special_effects_company_id:
+                discovered_ids += 1
+                self.assertEqual(company_credit.company_id, special_effects_company_id)
+                self.assertEqual(company_credit.title_id, title_id)
+                self.assertEqual(company_credit.company_name, special_effects_company_name)
+                self.assertEqual(company_credit.category, special_effects)
+                self.assertEqual(sorted(company_credit.notes), sorted(['ILM', 'visual effects and animation']))
+            elif company_credit.company_id == other_company_id:
+                discovered_ids += 1
+                self.assertEqual(company_credit.company_id, other_company_id)
+                self.assertEqual(company_credit.title_id, title_id)
+                self.assertEqual(company_credit.company_name, other_company_name)
+                self.assertEqual(company_credit.category, other_companies)
+                self.assertEqual(sorted(company_credit.notes), sorted(['specially formatted in',]))
+        self.assertEqual(discovered_ids, 3)
+        self.assertEqual(company_info[production_companies], production_companies_num)
+        self.assertEqual(company_info[distributors], distributors_num)
+        self.assertEqual(company_info[special_effects], special_effects_num)
+        self.assertEqual(company_info[other_companies], other_companies_num)
 
     def test_get_company_credits_tv_series(self):
-        pass
+        title_id = 'tt0149460'
+        scraper = PyMDbScraper()
+        company_credits = scraper.get_company_credits(title_id)
+
+        # Correct results
+        production_company_id = 'co0223402'
+        production_company_name = 'The Curiosity Company'
+        production_companies = 'production'
+        production_companies_num = 3
+        distributors = 'distributors'
+        distributors_num = 39
+        special_effects = 'specialEffects'
+        special_effects_num = 0
+        other_companies = 'other'
+        other_companies_num = 6
+        other_company_id = 'co0055255'
+        other_company_name = 'Rough Draft Studios'
+
+        company_info = defaultdict(int)
+        discovered_ids = 0
+        for company_credit in company_credits:
+            if company_credit.category not in company_info:
+                company_info[company_credit.category] = 0
+            company_info[company_credit.category] += 1
+
+            if company_credit.company_id == production_company_id:
+                discovered_ids += 1
+                self.assertEqual(company_credit.company_id, production_company_id)
+                self.assertEqual(company_credit.title_id, title_id)
+                self.assertEqual(company_credit.company_name, production_company_name)
+                self.assertEqual(company_credit.category, production_companies)
+                self.assertEqual(company_credit.notes, [])
+            elif company_credit.company_id == other_company_id:
+                discovered_ids += 1
+                self.assertEqual(company_credit.company_id, other_company_id)
+                self.assertEqual(company_credit.title_id, title_id)
+                self.assertEqual(company_credit.company_name, other_company_name)
+                self.assertEqual(company_credit.category, other_companies)
+                self.assertEqual(sorted(company_credit.notes), sorted(['animation produced by']))
+        self.assertEqual(discovered_ids, 2)
+        self.assertEqual(company_info[production_companies], production_companies_num)
+        self.assertEqual(company_info[distributors], distributors_num)
+        self.assertEqual(company_info[special_effects], special_effects_num)
+        self.assertEqual(company_info[other_companies], other_companies_num)
 
     def test_get_company_credits_tv_episode(self):
-        pass
+        title_id = 'tt4283088'
+        scraper = PyMDbScraper()
+        company_credits = scraper.get_company_credits(title_id)
+
+        # Correct results
+        production_company_id = 'co0418998'
+        production_company_name = 'Startling'
+        production_companies = 'production'
+        production_companies_num = 3
+        distributors = 'distributors'
+        distributors_num = 4
+        special_effects = 'specialEffects'
+        special_effects_num = 11
+        special_effects_company_id = 'co0069055'
+        special_effects_company_name = 'Image Engine Design'
+        other_companies = 'other'
+        other_companies_num = 33
+        other_company_id = 'co0280563'
+        other_company_name = 'Elastic'
+
+        company_info = defaultdict(int)
+        discovered_ids = 0
+        for company_credit in company_credits:
+            company_info[company_credit.category] += 1
+
+            if company_credit.company_id == production_company_id:
+                discovered_ids += 1
+                self.assertEqual(company_credit.company_id, production_company_id)
+                self.assertEqual(company_credit.title_id, title_id)
+                self.assertEqual(company_credit.company_name, production_company_name)
+                self.assertEqual(company_credit.category, production_companies)
+                self.assertEqual(company_credit.notes, [])
+            elif company_credit.company_id == special_effects_company_id:
+                discovered_ids += 1
+                self.assertEqual(company_credit.company_id, special_effects_company_id)
+                self.assertEqual(company_credit.title_id, title_id)
+                self.assertEqual(company_credit.company_name, special_effects_company_name)
+                self.assertEqual(company_credit.category, special_effects)
+                self.assertEqual(sorted(company_credit.notes), sorted(['additional visual effects', 'as Image Engine']))
+            elif company_credit.company_id == other_company_id:
+                discovered_ids += 1
+                self.assertEqual(company_credit.company_id, other_company_id)
+                self.assertEqual(company_credit.title_id, title_id)
+                self.assertEqual(company_credit.company_name, other_company_name)
+                self.assertEqual(company_credit.category, other_companies)
+                self.assertEqual(sorted(company_credit.notes), sorted(['main title design',]))
+        self.assertEqual(discovered_ids, 3)
+        self.assertEqual(company_info[production_companies], production_companies_num)
+        self.assertEqual(company_info[distributors], distributors_num)
+        self.assertEqual(company_info[special_effects], special_effects_num)
+        self.assertEqual(company_info[other_companies], other_companies_num)
 
     def test_get_company_credits_bad_request(self):
         title_id = 'nm123456789'
