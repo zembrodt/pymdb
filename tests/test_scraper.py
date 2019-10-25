@@ -286,16 +286,112 @@ class TestGetFullCredits(unittest.TestCase):
 
 class TestGetName(unittest.TestCase):
     def test_get_name_actor_alive(self):
-        pass
+        name_id = 'nm0000375'
+        scraper = PyMDbScraper()
+        name = scraper.get_name(name_id)
+
+        # Correct values
+        display_name = 'Robert Downey Jr.'
+        birth_date = datetime(1965, 4, 4)
+        birth_city = 'Manhattan, New York City, New York, USA'
+        death_date = None
+        death_city = None
+        death_cause = None
+        birth_name = 'Robert John Downey Jr'
+        nicknames = ['Bob', 'RDJ']
+        height = 1.74
+
+        self.assertEqual(name.name_id, name_id)
+        self.assertEqual(name.display_name, display_name)
+        self.assertEqual(name.birth_date, birth_date)
+        self.assertEqual(name.birth_city, birth_city)
+        self.assertEqual(name.death_date, death_date)
+        self.assertEqual(name.death_city, death_city)
+        self.assertEqual(name.death_cause, death_cause)
+        self.assertEqual(name.birth_name, birth_name)
+        self.assertEqual(sorted(name.nicknames), sorted(nicknames))
+        self.assertEqual(name.height, height)
 
     def test_get_name_actor_deceased(self):
-        pass
+        name_id = 'nm0000122'
+        scraper = PyMDbScraper()
+        name = scraper.get_name(name_id)
+
+        # Correct values
+        display_name = 'Charles Chaplin'
+        birth_date = datetime(1889, 4, 16)
+        birth_city = 'Walworth, London, England, UK'
+        death_date = datetime(1977, 12, 25)
+        death_city = 'Vevey, Vaud, Switzerland'
+        death_cause = 'stroke'
+        birth_name = 'Charles Spencer Chaplin'
+        nicknames = ['Charlie', 'Charlot', 'The Little Tramp']
+        height = 1.63
+
+        self.assertEqual(name.name_id, name_id)
+        self.assertEqual(name.display_name, display_name)
+        self.assertEqual(name.birth_date, birth_date)
+        self.assertEqual(name.birth_city, birth_city)
+        self.assertEqual(name.death_date, death_date)
+        self.assertEqual(name.death_city, death_city)
+        self.assertEqual(name.death_cause, death_cause)
+        self.assertEqual(name.birth_name, birth_name)
+        self.assertEqual(sorted(name.nicknames), sorted(nicknames))
+        self.assertEqual(name.height, height)
 
     def test_get_name_director(self):
-        pass
+        name_id = 'nm0796117'
+        scraper = PyMDbScraper()
+        name = scraper.get_name(name_id)
+
+        # Correct values
+        display_name = 'M. Night Shyamalan'
+        birth_date = datetime(1970, 8, 6)
+        birth_city = 'Mahé, Pondicherry, India'
+        death_date = None
+        death_city = None
+        death_cause = None
+        birth_name = 'Manoj Nelliyattu Shyamalan'
+        nicknames = []
+        height = 1.78
+
+        self.assertEqual(name.name_id, name_id)
+        self.assertEqual(name.display_name, display_name)
+        self.assertEqual(name.birth_date, birth_date)
+        self.assertEqual(name.birth_city, birth_city)
+        self.assertEqual(name.death_date, death_date)
+        self.assertEqual(name.death_city, death_city)
+        self.assertEqual(name.death_cause, death_cause)
+        self.assertEqual(name.birth_name, birth_name)
+        self.assertEqual(sorted(name.nicknames), sorted(nicknames))
+        self.assertEqual(name.height, height)
 
     def test_get_name_crew_member(self):
-        pass
+        name_id = 'nm2361112'
+        scraper = PyMDbScraper()
+        name = scraper.get_name(name_id)
+
+        # Correct values
+        display_name = 'James Sled'
+        birth_date = None
+        birth_city = None
+        death_date = None
+        death_city = None
+        death_cause = None
+        birth_name = None
+        nicknames = []
+        height = None
+
+        self.assertEqual(name.name_id, name_id)
+        self.assertEqual(name.display_name, display_name)
+        self.assertEqual(name.birth_date, birth_date)
+        self.assertEqual(name.birth_city, birth_city)
+        self.assertEqual(name.death_date, death_date)
+        self.assertEqual(name.death_city, death_city)
+        self.assertEqual(name.death_cause, death_cause)
+        self.assertEqual(name.birth_name, birth_name)
+        self.assertEqual(sorted(name.nicknames), sorted(nicknames))
+        self.assertEqual(name.height, height)
 
     def test_get_name_bad_request(self):
         name_id = 'tt123456789'
@@ -382,13 +478,117 @@ class TestGetCompanyCredits(unittest.TestCase):
 
 class TestGetTechSpecs(unittest.TestCase):
     def test_get_tech_specs_movie(self):
-        pass
+        title_id = 'tt4154796'
+        scraper = PyMDbScraper()
+        tech_specs = scraper.get_tech_specs(title_id)
+
+        # Correct values
+        runtime = 181
+        sound_mix = [
+            'Dolby Atmos',
+            'Auro 11.1',
+            'Dolby Surround 7.1',
+            'DTS (DTS: X)',
+            'Dolby Digital',
+            'Sonics-DDP',
+            '12-Track Digital Sound',
+            'IMAX 6-Track',
+            'SDDS'
+        ]
+        color = 'Color (ACES)'
+        aspect_ratio = ['1.90 : 1 (IMAX)', '2.39 : 1']
+        camera = [
+            'Arri Alexa 65 IMAX',
+            'Panavision Sphero 65',
+            'APO Panatar Lenses'
+        ]
+        laboratory = [
+            'Company 3 (digital intermediate)',
+            'PIX System, San Francisco (CA), USA (additional dailies services)',
+            'Pinewood Digital, London, UK (digital dailies)',
+            'Technicolor, Hollywood (CA), USA (digital intermediate)'
+        ]
+        negative_format = 'Codex'
+        cinematographic_process = [
+            'ARRIRAW (6.5K) (source format)',
+            'Digital Intermediate (2K) (master format)',
+            'Ultra Panavision 70 (anamorphic) (source format)'
+        ]
+        printed_film_format = 'D-Cinema (also 3-D version)'
+
+        self.assertEqual(tech_specs.title_id, title_id)
+        self.assertEqual(tech_specs.runtime, runtime)
+        self.assertEqual(sorted(tech_specs.sound_mix), sorted(sound_mix))
+        self.assertEqual(tech_specs.color, color)
+        self.assertEqual(sorted(tech_specs.aspect_ratio), sorted(aspect_ratio))
+        self.assertEqual(sorted(tech_specs.camera), sorted(camera))
+        self.assertEqual(sorted(tech_specs.laboratory), sorted(laboratory))
+        self.assertEqual(tech_specs.negative_format, negative_format)
+        self.assertEqual(sorted(tech_specs.cinematographic_process), sorted(cinematographic_process))
+        self.assertEqual(tech_specs.printed_film_format, printed_film_format)
 
     def test_get_tech_specs_tv_series(self):
-        pass
+        title_id = 'tt0149460'
+        scraper = PyMDbScraper()
+        tech_specs = scraper.get_tech_specs(title_id)
+
+        # Correct values
+        runtime = 22
+        sound_mix = [
+            'Dolby',
+            'Dolby Digital (seasons 6-)',
+        ]
+        color = 'Color'
+        aspect_ratio = [
+            '1.78 : 1 (seasons 6-)',
+            '1.33 : 1 (seasons 1-5)'
+        ]
+        camera = []
+        laboratory = []
+        negative_format = None
+        cinematographic_process = []
+        printed_film_format = None
+
+        self.assertEqual(tech_specs.title_id, title_id)
+        self.assertEqual(tech_specs.runtime, runtime)
+        self.assertEqual(sorted(tech_specs.sound_mix), sorted(sound_mix))
+        self.assertEqual(tech_specs.color, color)
+        self.assertEqual(sorted(tech_specs.aspect_ratio), sorted(aspect_ratio))
+        self.assertEqual(sorted(tech_specs.camera), sorted(camera))
+        self.assertEqual(sorted(tech_specs.laboratory), sorted(laboratory))
+        self.assertEqual(tech_specs.negative_format, negative_format)
+        self.assertEqual(sorted(tech_specs.cinematographic_process), sorted(cinematographic_process))
+        self.assertEqual(tech_specs.printed_film_format, printed_film_format)
 
     def test_get_tech_specs_tv_episode(self):
-        pass
+        title_id = 'tt4283088'
+        scraper = PyMDbScraper()
+        tech_specs = scraper.get_tech_specs(title_id)
+
+        # Correct values
+        runtime = 60
+        sound_mix = [
+            'Dolby Digital',
+            'Dolby Atmos (Blu-ray release)',
+        ]
+        color = 'Color'
+        aspect_ratio = ['1.78 : 1']
+        camera = []
+        laboratory = []
+        negative_format = None
+        cinematographic_process = []
+        printed_film_format = None
+
+        self.assertEqual(tech_specs.title_id, title_id)
+        self.assertEqual(tech_specs.runtime, runtime)
+        self.assertEqual(sorted(tech_specs.sound_mix), sorted(sound_mix))
+        self.assertEqual(tech_specs.color, color)
+        self.assertEqual(sorted(tech_specs.aspect_ratio), sorted(aspect_ratio))
+        self.assertEqual(sorted(tech_specs.camera), sorted(camera))
+        self.assertEqual(sorted(tech_specs.laboratory), sorted(laboratory))
+        self.assertEqual(tech_specs.negative_format, negative_format)
+        self.assertEqual(sorted(tech_specs.cinematographic_process), sorted(cinematographic_process))
+        self.assertEqual(tech_specs.printed_film_format, printed_film_format)
 
     def test_get_tech_specs_bad_request(self):
         title_id = 'nm123456789'
