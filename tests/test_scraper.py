@@ -741,3 +741,60 @@ class TestGetTechSpecs(unittest.TestCase):
         scraper = PyMDbScraper()
         with self.assertRaises(HTTPError):
             scraper.get_tech_specs(title_id)
+
+
+class TestGetTree(unittest.TestCase):
+    def test_get_tree_200(self):
+        request = 'https://www.imdb.com/'
+        tree = PyMDbScraper()._get_tree(request)
+        self.assertIsNotNone(tree)
+
+    def test_get_tree_400(self):
+        request = 'https://postman-echo.com/status/400'
+        with self.assertRaises(HTTPError):
+            PyMDbScraper()._get_tree(request)
+
+    def test_get_tree_401(self):
+        request = 'https://postman-echo.com/status/401'
+        with self.assertRaises(HTTPError):
+            PyMDbScraper()._get_tree(request)
+
+    def test_get_tree_403(self):
+        request = 'https://postman-echo.com/status/403'
+        with self.assertRaises(HTTPError):
+            PyMDbScraper()._get_tree(request)
+
+    def test_get_tree_404(self):
+        request = 'https://postman-echo.com/status/404'
+        with self.assertRaises(HTTPError):
+            PyMDbScraper()._get_tree(request)
+
+    def test_get_tree_500(self):
+        request = 'https://postman-echo.com/status/500'
+        with self.assertRaises(HTTPError):
+            PyMDbScraper()._get_tree(request)
+
+    def test_get_tree_501(self):
+        request = 'https://postman-echo.com/status/501'
+        with self.assertRaises(HTTPError):
+            PyMDbScraper()._get_tree(request)
+
+    def test_get_tree_502(self):
+        request = 'https://postman-echo.com/status/502'
+        with self.assertRaises(HTTPError):
+            PyMDbScraper()._get_tree(request)
+
+    def test_get_tree_503(self):
+        request = 'https://postman-echo.com/status/503'
+        with self.assertRaises(HTTPError):
+            PyMDbScraper()._get_tree(request)
+
+    def test_get_tree_522(self):
+        request = 'https://postman-echo.com/status/522'
+        with self.assertRaises(HTTPError):
+            PyMDbScraper()._get_tree(request)
+
+    def test_get_tree_524(self):
+        request = 'https://postman-echo.com/status/524'
+        with self.assertRaises(HTTPError):
+            PyMDbScraper()._get_tree(request)
