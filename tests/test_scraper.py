@@ -248,10 +248,97 @@ class TestGetTitle(unittest.TestCase):
 
 class TestGetFullCast(unittest.TestCase):
     def test_get_full_cast_movie(self):
-        pass
+        title_id = 'tt4154796'
+        scraper = PyMDbScraper()
+
+        # Correct values
+        job_title = 'actor'
+        actor1_id = 'nm0421822'
+        actor1_credit = 'Security Guard'
+        actor2_id = 'nm0000982'
+        actor2_credit = 'Thanos'
+        actor3_id = 'nm1165110'
+        actor3_credit = 'Thor'
+        actor4_id = 'nm9320991'
+        actor4_credit = 'Security Guard (uncredited)'
+        actor_ids = {actor1_id, actor2_id, actor3_id, actor4_id}
+        actor_count = 0
+
+        for credit in scraper.get_full_cast(title_id):
+            actor_count += 1
+            if credit.name_id in actor_ids:
+                self.assertEqual(credit.title_id, title_id)
+                self.assertEqual(credit.job_title, job_title)
+                self.assertIsNone(credit.episode_count)
+                self.assertIsNone(credit.episode_year_start)
+                self.assertIsNone(credit.episode_year_end)
+
+                if credit.name_id == actor1_id:
+                    self.assertEqual(credit.credit, actor1_credit)
+                elif credit.name_id == actor2_id:
+                    self.assertEqual(credit.credit, actor2_credit)
+                elif credit.name_id == actor3_id:
+                    self.assertEqual(credit.credit, actor3_credit)
+                elif credit.name_id == actor4_id:
+                    self.assertEqual(credit.credit, actor4_credit)
+        self.assertEqual(actor_count, 164)
 
     def test_get_full_cast_tv_series(self):
-        pass
+        title_id = 'tt0149460'
+        scraper = PyMDbScraper()
+
+        # Correct values
+        job_title = 'actor'
+        actor1_id = 'nm0224007'
+        actor1_credit = 'Bender / ...'
+        actor1_episode_count = 124
+        actor1_start_year = 1999
+        actor1_end_year = 2013
+        actor2_id = 'nm0005277'
+        actor2_credit = 'Conan O\'Brien'
+        actor2_episode_count = 1
+        actor2_start_year = 1999
+        actor2_end_year = None
+        actor3_id = 'nm0065059'
+        actor3_credit = 'Himself'
+        actor3_episode_count = 1
+        actor3_start_year = 2001
+        actor3_end_year = None
+        actor4_id = 'nm2858163'
+        actor4_credit = 'Himself (uncredited)'
+        actor4_episode_count = 5
+        actor4_start_year = 2001
+        actor4_end_year = 2013
+        actor_ids = {actor1_id, actor2_id, actor3_id, actor4_id}
+        actor_count = 0
+
+        for credit in scraper.get_full_cast(title_id):
+            actor_count += 1
+            if credit.name_id in actor_ids:
+                self.assertEqual(credit.title_id, title_id)
+                self.assertEqual(credit.job_title, job_title)
+
+                if credit.name_id == actor1_id:
+                    self.assertEqual(credit.credit, actor1_credit)
+                    self.assertEqual(credit.episode_count, actor1_episode_count)
+                    self.assertEqual(credit.episode_year_start, actor1_start_year)
+                    self.assertEqual(credit.episode_year_end, actor1_end_year)
+                elif credit.name_id == actor2_id:
+                    self.assertEqual(credit.credit, actor2_credit)
+                    self.assertEqual(credit.episode_count, actor2_episode_count)
+                    self.assertEqual(credit.episode_year_start, actor2_start_year)
+                    self.assertEqual(credit.episode_year_end, actor2_end_year)
+                elif credit.name_id == actor3_id:
+                    self.assertEqual(credit.credit, actor3_credit)
+                    self.assertEqual(credit.episode_count, actor3_episode_count)
+                    self.assertEqual(credit.episode_year_start, actor3_start_year)
+                    self.assertEqual(credit.episode_year_end, actor3_end_year)
+                elif credit.name_id == actor4_id:
+                    self.assertEqual(credit.credit, actor4_credit)
+                    self.assertEqual(credit.episode_count, actor4_episode_count)
+                    self.assertEqual(credit.episode_year_start, actor4_start_year)
+                    self.assertEqual(credit.episode_year_end, actor4_end_year)
+        self.assertEqual(actor_count, 85)
 
     def test_get_full_cast_tv_series_and_episodes(self):
         pass
