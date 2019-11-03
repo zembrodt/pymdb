@@ -341,10 +341,91 @@ class TestGetFullCast(unittest.TestCase):
         self.assertEqual(actor_count, 85)
 
     def test_get_full_cast_tv_series_and_episodes(self):
-        pass
+        title_id = 'tt0149460'
+        scraper = PyMDbScraper()
+
+        # Correct values
+        job_title = 'actor'
+        actor1_id = 'nm0224007'
+        actor1_ep1_credit = 'Bender / Elzar (voice)'
+        actor1_ep1_start_year = 2013
+        actor1_ep1_title_id = 'tt2005616'
+        actor1_ep2_credit = 'Bender / URL / Mr. Panucci / ... (voice)'
+        actor1_ep2_start_year = 1999
+        actor1_ep2_title_id = 'tt0584449'
+        actor2_id = 'nm0370071'
+        actor2_ep1_credit = 'Stephen Hawking\'s Head (voice)'
+        actor2_ep1_start_year = 2011
+        actor2_ep1_title_id = 'tt1642360'
+        actor2_ep2_credit = ' Stephen Hawking (voice)'
+        actor2_ep2_start_year = 2000
+        actor2_ep2_title_id = 'tt0584432'
+        actor_ids = {actor1_id, actor2_id}
+
+        for credit in scraper.get_full_cast(title_id):
+            if credit.name_id in actor_ids:
+                self.assertEqual(credit.job_title, job_title)
+
+                if credit.title_id == actor1_ep1_title_id:
+                    self.assertEqual(credit.name_id, actor1_id)
+                    self.assertEqual(credit.credit, actor1_ep1_credit)
+                    self.assertIsNone(credit.episode_count)
+                    self.assertEqual(credit.episode_year_start, actor1_ep1_start_year)
+                    self.assertIsNone(credit.episode_year_end)
+                elif credit.title_id == actor1_ep2_title_id:
+                    self.assertEqual(credit.name_id, actor1_id)
+                    self.assertEqual(credit.credit, actor1_ep2_credit)
+                    self.assertIsNone(credit.episode_count)
+                    self.assertEqual(credit.episode_year_start, actor1_ep2_start_year)
+                    self.assertIsNone(credit.episode_year_end)
+                elif credit.title_id == actor2_ep1_title_id:
+                    self.assertEqual(credit.name_id, actor2_id)
+                    self.assertEqual(credit.credit, actor2_ep1_credit)
+                    self.assertIsNone(credit.episode_count)
+                    self.assertEqual(credit.episode_year_start, actor2_ep1_start_year)
+                    self.assertIsNone(credit.episode_year_end)
+                elif credit.title_id == actor2_ep2_title_id:
+                    self.assertEqual(credit.name_id, actor2_id)
+                    self.assertEqual(credit.credit, actor2_ep2_credit)
+                    self.assertIsNone(credit.episode_count)
+                    self.assertEqual(credit.episode_year_start, actor2_ep2_start_year)
+                    self.assertIsNone(credit.episode_year_end)
 
     def test_get_full_cast_episode(self):
-        pass
+        title_id = 'tt4283088'
+        scraper = PyMDbScraper()
+
+        # Correct values
+        job_title = 'actor'
+        actor1_id = 'nm0227759'
+        actor1_credit = 'Tyrion Lannister'
+        actor2_id = 'nm0654295'
+        actor2_credit = 'Theon Greyjoy'
+        actor3_id = 'nm8256997'
+        actor3_credit = 'Stark Soldier (uncredited)'
+        actor4_id = 'nm2502703'
+        actor4_credit = 'Meereen Guard (uncredited)'
+        actor_ids = {actor1_id, actor2_id, actor3_id, actor4_id}
+        actor_count = 0
+
+        for credit in scraper.get_full_cast(title_id):
+            actor_count += 1
+            if credit.name_id in actor_ids:
+                self.assertEqual(credit.title_id, title_id)
+                self.assertEqual(credit.job_title, job_title)
+                self.assertIsNone(credit.episode_count)
+                self.assertIsNone(credit.episode_year_start)
+                self.assertIsNone(credit.episode_year_end)
+
+                if credit.name_id == actor1_id:
+                    self.assertEqual(credit.credit, actor1_credit)
+                elif credit.name_id == actor2_id:
+                    self.assertEqual(credit.credit, actor2_credit)
+                elif credit.name_id == actor3_id:
+                    self.assertEqual(credit.credit, actor3_credit)
+                elif credit.name_id == actor4_id:
+                    self.assertEqual(credit.credit, actor4_credit)
+        self.assertEqual(actor_count, 36)
 
     def test_get_full_cast_bad_request(self):
         title_id = 'nm123456789'
