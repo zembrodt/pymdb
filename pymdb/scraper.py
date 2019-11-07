@@ -374,23 +374,44 @@ class PyMDbScraper:
                             if name_node:
                                 name_id = get_name_id(name_node)
                                 credit = None
+                                episode_count = None
+                                episode_year_start = None
+                                episode_year_end = None
                                 credit_node = item.css_first('td.credit')
                                 if credit_node:
                                     credit = credit_node.text().strip()
+                                    # Grab episode count and years if TV series
+                                    episode_details_regex = r'\(\d+\s*episodes?,\s*\d{4}(-\d{4})?\)'
+                                    episode_details_match = re.search(episode_details_regex, credit)
+                                    if episode_details_match:
+                                        episode_count_details, episode_year_details = episode_details_match.group(0).strip('()').split(',')
+                                        episode_count_match = re.search(r'\d+', episode_count_details)
+                                        if episode_count_match:
+                                            episode_count = episode_count_match.group(0)
+                                        episode_year_split = episode_year_details.strip().split('-')
+                                        episode_year_start = episode_year_split[0]
+                                        if len(episode_year_split) > 1:
+                                            episode_year_end = episode_year_split[1]
+                                        credit = re.sub(episode_details_regex, '', credit).strip()
                                     # Strip ending 'and' for a credit
                                     if credit[-3:] == 'and':
                                         credit = credit[:-3].strip()
                                     # Remove surrounding parentheses
-                                    credit = credit.strip('()')
+                                    parentheses_match = re.search(r'^\(.*\)$', credit)
+                                    if parentheses_match:
+                                        credit = credit.strip('()')
+                                    # Final catch for empty credit
+                                    if len(credit.strip()) == 0:
+                                        credit = None
 
                                 yield CreditScrape(
                                     name_id=name_id,
                                     title_id=title_id,
                                     job_title=curr_title,
                                     credit=credit,
-                                    episode_count=None,
-                                    episode_year_start=None,
-                                    episode_year_end=None
+                                    episode_count=episode_count,
+                                    episode_year_start=episode_year_start,
+                                    episode_year_end=episode_year_end
                                 )
                 found_title = False  # only because we use continue when set to True for now...
 
