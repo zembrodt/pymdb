@@ -377,6 +377,11 @@ class PyMDbScraper:
                                 credit_node = item.css_first('td.credit')
                                 if credit_node:
                                     credit = credit_node.text().strip()
+                                    # Strip ending 'and' for a credit
+                                    if credit[-3:] == 'and':
+                                        credit = credit[:-3].strip()
+                                    # Remove surrounding parentheses
+                                    credit = credit.strip('()')
 
                                 yield CreditScrape(
                                     name_id=name_id,
