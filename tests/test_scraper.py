@@ -7,7 +7,7 @@ from datetime import datetime
 from requests.exceptions import HTTPError
 from pymdb.exceptions import InvalidCompanyId
 from pymdb.scraper import PyMDbScraper
-from pymdb import CreditScrape
+from pymdb import CreditScrape, NameCreditScrape
 
 
 class TestGetTitle(unittest.TestCase):
@@ -740,7 +740,58 @@ class TestGetName(unittest.TestCase):
 
 class TestGetNameCredits(unittest.TestCase):
     def test_get_name_credits_actor(self):
-        pass
+        name_id = 'nm0000375'
+        scraper = PyMDbScraper()
+
+        # Correct values
+        correct_name_credits = {
+            'tt0942385': NameCreditScrape(
+                name_id,
+                'tt0942385',
+                'actor',
+                2008,
+                None,
+                'Kirk Lazarus - Hot LZ',
+                []
+            ),
+            'tt2094116': NameCreditScrape(
+                name_id,
+                'tt2094116',
+                'actor',
+                2021,
+                None,
+                'Sherlock Holmes',
+                ['pre-production']
+            ),
+            'tt3447362': NameCreditScrape(
+                name_id,
+                'tt3447362',
+                'actor',
+                2004,
+                None,
+                None,
+                ['Short', 'uncredited']
+            )
+        }
+        actor_credits = 92
+
+        category_count = defaultdict(int)
+        for name_credit in scraper.get_name_credits(name_id):
+            self.assertEqual(name_credit.name_id, name_id)
+            self.assertIsNotNone(name_credit.title_id)
+            self.assertIsNotNone(name_credit.category)
+            self.assertIsNotNone(name_credit.title_notes)
+            category_count[name_credit.category] += 1
+
+            if name_credit.title_id in correct_name_credits:
+                correct_credit = correct_name_credits[name_credit.title_id]
+                self.assertEqual(name_credit.title_id, correct_credit.title_id)
+                self.assertEqual(name_credit.category, correct_credit.category)
+                self.assertEqual(name_credit.start_year, correct_credit.start_year)
+                self.assertEqual(name_credit.end_year, correct_credit.end_year)
+                self.assertEqual(name_credit.role, correct_credit.role)
+                self.assertEqual(name_credit.title_notes, correct_credit.title_notes)
+        self.assertEqual(category_count['actor'], actor_credits)
 
     def test_get_name_credits_actor_with_episodes(self):
         pass
