@@ -553,8 +553,7 @@ class PyMDbScraper:
                         request = f'https://www.imdb.com/name/{name_id}/episodes/_ajax?title={title_id}' + \
                                   f'&category={category_req}&ref_marker={ref_marker}&start_index=0'
                         try:
-                            episodes_tree = self._get_tree(request)
-                            episode_nodes = HTMLParser(episodes_reponse.text)
+                            episode_nodes = self._get_tree(request)
                         except requests.exceptions.HTTPError as e:
                             # Some AJAX calls seem to 404, so ignore them and remove the "show all" link
                             if e.response.status_code == 404:
