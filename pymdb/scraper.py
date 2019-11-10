@@ -592,6 +592,8 @@ class PyMDbScraper:
                 title_info, = info
             title_info = re.sub(r'(<\s*a.*?>|<.*?a\s*>)', '', title_info)
             title_notes = [note.strip('()') for note in re.findall(r'\(.*?\)', title_info)]
+            if len(role) == 0:
+                role = None
 
             yield NameCreditScrape(
                 name_id=name_id,
