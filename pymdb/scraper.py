@@ -569,10 +569,10 @@ class PyMDbScraper:
                             episode_id = get_title_id(episode_info_node)
                         episode_info = episode_node.text().split('...')
                         episode_year = None
-                        role = None
+                        episode_role = None
                         if len(episode_info) > 1:
                             year_info = episode_info[0]
-                            role = '...'.join(episode_info[1:]).strip()
+                            episode_role = '...'.join(episode_info[1:]).strip()
                         else:
                             year_info, = episode_info
                         year_info_match = re.search(r'\([\d]{4}\)', year_info)
@@ -585,7 +585,7 @@ class PyMDbScraper:
                             category=category,
                             start_year=episode_year,
                             end_year=None,
-                            role=role,
+                            role=episode_role,
                             title_notes=[]
                         )
             else:
