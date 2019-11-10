@@ -573,6 +573,8 @@ class PyMDbScraper:
                         if len(episode_info) > 1:
                             year_info = episode_info[0]
                             episode_role = '...'.join(episode_info[1:]).strip()
+                            if len(episode_role) == 0:
+                                episode_role = None
                         else:
                             year_info, = episode_info
                         year_info_match = re.search(r'\([\d]{4}\)', year_info)
@@ -592,7 +594,7 @@ class PyMDbScraper:
                 title_info, = info
             title_info = re.sub(r'(<\s*a.*?>|<.*?a\s*>)', '', title_info)
             title_notes = [note.strip('()') for note in re.findall(r'\(.*?\)', title_info)]
-            if len(role) == 0:
+            if role is not None and len(role) == 0:
                 role = None
 
             yield NameCreditScrape(
