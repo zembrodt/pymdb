@@ -8,12 +8,12 @@ This package is able to gather information on people, titles, and companies prov
   
 The latest release of PyMDb can be installed from PyPI with:  
   
-```pip install py-imdb```  
+```pip install py-mdb```  
   
 If downloading the source from GitHub, PyMDb requires the following packages:  
   
-- [requests]([https://github.com/psf/requests](https://github.com/psf/requests))  
-- [selectolax]([https://github.com/rushter/selectolax](https://github.com/rushter/selectolax))  
+- [requests](https://github.com/psf/requests)  
+- [selectolax](https://github.com/rushter/selectolax)  
   
 ## Usage  
   
@@ -33,8 +33,8 @@ print(f'{title.title_text} came out in {title.release_date.year}!')
   
 ## Documentation  
   
-Full documentation can be found at the [PyMDb Read the Docs]([https://pymdb.readthedocs.io](https://pymdb.readthedocs.io/)) page.  
+Full documentation can be found at the [PyMDb Read the Docs](https://pymdb.readthedocs.io/) page.  
   
 ## License
 
-This project is licensed under the MIT License. Please see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. Please see the [LICENSE](https://github.com/zembrodt/pymdb/blob/master/LICENSE) file for details.
