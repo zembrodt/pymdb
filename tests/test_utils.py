@@ -31,9 +31,22 @@ class TestAppendFilenameToPath(unittest.TestCase):
         self.assertEqual(append_filename_to_path(path2, filename), correct_result)
 
 
-# TODO: test gunzip_file
-#class TestGunzipFile(unittest.TestCase):
-#    pass
+class TestGunzipFile(unittest.TestCase):
+    def test_gunzip_file_gz_extension(self):
+        # Mock
+
+        infile = 'test.csv.gz'
+        correct_result = 'test.csv'
+        self.assertEqual(gunzip_file(infile), correct_result)
+
+    def test_gunzip_file_custom_outfile(self):
+        pass
+
+    def test_gunzip_file_no_gz_extension_no_outfile(self):
+        pass
+
+    def test_gunzip_file_delete_infile(self):
+        pass
 
 
 class TestPreprocessList(unittest.TestCase):
