@@ -56,10 +56,11 @@ def gunzip_file(infile, outfile=None, delete_infile=False):
         A string of the outfile's filename for the case when the default filename was used.
     """
 
-    if outfile is None and len(infile) > 3 and infile[-3:] == '.gz':
-        outfile = infile[:-3]
-    else:
-        outfile = f'{infile}.out'
+    if outfile is None:
+        if infile[-3:] == '.gz':
+            outfile = infile[:-3]
+        else:
+            outfile = f'{infile}.out'
     with gzip.open(infile, mode='rb') as f_in:
         with open(outfile, mode='wb') as f_out:
             shutil.copyfileobj(f_in, f_out)
