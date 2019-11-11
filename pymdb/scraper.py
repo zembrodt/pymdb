@@ -374,18 +374,44 @@ class PyMDbScraper:
                             if name_node:
                                 name_id = get_name_id(name_node)
                                 credit = None
+                                episode_count = None
+                                episode_year_start = None
+                                episode_year_end = None
                                 credit_node = item.css_first('td.credit')
                                 if credit_node:
                                     credit = credit_node.text().strip()
+                                    # Grab episode count and years if TV series
+                                    episode_details_regex = r'\(\d+\s*episodes?,\s*\d{4}(-\d{4})?\)'
+                                    episode_details_match = re.search(episode_details_regex, credit)
+                                    if episode_details_match:
+                                        episode_count_details, episode_year_details = episode_details_match.group(0).strip('()').split(',')
+                                        episode_count_match = re.search(r'\d+', episode_count_details)
+                                        if episode_count_match:
+                                            episode_count = episode_count_match.group(0)
+                                        episode_year_split = episode_year_details.strip().split('-')
+                                        episode_year_start = episode_year_split[0]
+                                        if len(episode_year_split) > 1:
+                                            episode_year_end = episode_year_split[1]
+                                        credit = re.sub(episode_details_regex, '', credit).strip()
+                                    # Strip ending 'and' for a credit
+                                    if credit[-3:] == 'and':
+                                        credit = credit[:-3].strip()
+                                    # Remove surrounding parentheses
+                                    parentheses_match = re.search(r'^\(.*\)$', credit)
+                                    if parentheses_match:
+                                        credit = credit.strip('()')
+                                    # Final catch for empty credit
+                                    if len(credit.strip()) == 0:
+                                        credit = None
 
                                 yield CreditScrape(
                                     name_id=name_id,
                                     title_id=title_id,
                                     job_title=curr_title,
                                     credit=credit,
-                                    episode_count=None,
-                                    episode_year_start=None,
-                                    episode_year_end=None
+                                    episode_count=episode_count,
+                                    episode_year_start=episode_year_start,
+                                    episode_year_end=episode_year_end
                                 )
                 found_title = False  # only because we use continue when set to True for now...
 
@@ -527,8 +553,7 @@ class PyMDbScraper:
                         request = f'https://www.imdb.com/name/{name_id}/episodes/_ajax?title={title_id}' + \
                                   f'&category={category_req}&ref_marker={ref_marker}&start_index=0'
                         try:
-                            episodes_tree = self._get_tree(request)
-                            episode_nodes = HTMLParser(episodes_reponse.text)
+                            episode_nodes = self._get_tree(request)
                         except requests.exceptions.HTTPError as e:
                             # Some AJAX calls seem to 404, so ignore them and remove the "show all" link
                             if e.response.status_code == 404:
@@ -544,10 +569,12 @@ class PyMDbScraper:
                             episode_id = get_title_id(episode_info_node)
                         episode_info = episode_node.text().split('...')
                         episode_year = None
-                        role = None
+                        episode_role = None
                         if len(episode_info) > 1:
                             year_info = episode_info[0]
-                            role = '...'.join(episode_info[1:]).strip()
+                            episode_role = '...'.join(episode_info[1:]).strip()
+                            if len(episode_role) == 0:
+                                episode_role = None
                         else:
                             year_info, = episode_info
                         year_info_match = re.search(r'\([\d]{4}\)', year_info)
@@ -560,13 +587,15 @@ class PyMDbScraper:
                             category=category,
                             start_year=episode_year,
                             end_year=None,
-                            role=role,
+                            role=episode_role,
                             title_notes=[]
                         )
             else:
                 title_info, = info
             title_info = re.sub(r'(<\s*a.*?>|<.*?a\s*>)', '', title_info)
             title_notes = [note.strip('()') for note in re.findall(r'\(.*?\)', title_info)]
+            if role is not None and len(role) == 0:
+                role = None
 
             yield NameCreditScrape(
                 name_id=name_id,

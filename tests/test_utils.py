@@ -4,7 +4,10 @@ import unittest
 from pymdb.utils import *
 from pymdb.utils import _get_id, _get_from_onclick
 from datetime import datetime
+import gzip
+import os
 from selectolax.parser import HTMLParser
+from tempfile import TemporaryDirectory
 
 
 class TestAppendFilenameToPath(unittest.TestCase):
@@ -31,9 +34,86 @@ class TestAppendFilenameToPath(unittest.TestCase):
         self.assertEqual(append_filename_to_path(path2, filename), correct_result)
 
 
-# TODO: test gunzip_file
-#class TestGunzipFile(unittest.TestCase):
-#    pass
+class TestGunzipFile(unittest.TestCase):
+    content = b'test content'
+
+    def test_gunzip_file_gz_extension(self):
+        with TemporaryDirectory() as tmpdir:
+            infile = os.path.join(tmpdir, 'test.csv.gz')
+            with gzip.open(infile, 'wb') as f:
+                f.write(self.content)
+            actual_result = gunzip_file(infile)
+            correct_result = os.path.join(tmpdir, 'test.csv')
+            self.assertTrue(os.path.exists(infile))
+            self.assertTrue(os.path.exists(correct_result))
+            with open(actual_result, 'rb') as f:
+                self.assertEqual(self.content, f.read())
+        self.assertEqual(actual_result, correct_result)
+
+    def test_gunzip_file_gz_extension_delete_infile(self):
+        with TemporaryDirectory() as tmpdir:
+            infile = os.path.join(tmpdir, 'test.csv.gz')
+            with gzip.open(infile, 'wb') as f:
+                f.write(self.content)
+            actual_result = gunzip_file(infile, delete_infile=True)
+            correct_result = os.path.join(tmpdir, 'test.csv')
+            self.assertFalse(os.path.exists(infile))
+            self.assertTrue(os.path.exists(correct_result))
+            with open(actual_result, 'rb') as f:
+                self.assertEqual(self.content, f.read())
+        self.assertEqual(actual_result, correct_result)
+
+    def test_gunzip_file_custom_outfile(self):
+        with TemporaryDirectory() as tmpdir:
+            infile = os.path.join(tmpdir, 'test.csv.gz')
+            outfile = os.path.join(tmpdir, 'test2.csv')
+            with gzip.open(infile, 'wb') as f:
+                f.write(self.content)
+            actual_result = gunzip_file(infile, outfile=outfile)
+            self.assertTrue(os.path.exists(infile))
+            self.assertTrue(os.path.exists(outfile))
+            with open(actual_result, 'rb') as f:
+                self.assertEqual(self.content, f.read())
+        self.assertEqual(actual_result, outfile)
+
+    def test_gunzip_file_custom_outfile_delete_infile(self):
+        with TemporaryDirectory() as tmpdir:
+            infile = os.path.join(tmpdir, 'test.csv.gz')
+            outfile = os.path.join(tmpdir, 'test2.csv')
+            with gzip.open(infile, 'wb') as f:
+                f.write(self.content)
+            actual_result = gunzip_file(infile, outfile=outfile, delete_infile=True)
+            self.assertFalse(os.path.exists(infile))
+            self.assertTrue(os.path.exists(outfile))
+            with open(actual_result, 'rb') as f:
+                self.assertEqual(self.content, f.read())
+        self.assertEqual(actual_result, outfile)
+
+    def test_gunzip_file_no_gz_extension_no_outfile(self):
+        with TemporaryDirectory() as tmpdir:
+            infile = os.path.join(tmpdir, 'test.csv')
+            with gzip.open(infile, 'wb') as f:
+                f.write(self.content)
+            actual_result = gunzip_file(infile)
+            correct_result = os.path.join(tmpdir, 'test.csv.out')
+            self.assertTrue(os.path.exists(infile))
+            self.assertTrue(os.path.exists(correct_result))
+            with open(actual_result, 'rb') as f:
+                self.assertEqual(self.content, f.read())
+        self.assertEqual(actual_result, correct_result)
+
+    def test_gunzip_file_no_gz_extension_no_outfile_delete_infile(self):
+        with TemporaryDirectory() as tmpdir:
+            infile = os.path.join(tmpdir, 'test.csv')
+            with gzip.open(infile, 'wb') as f:
+                f.write(self.content)
+            actual_result = gunzip_file(infile, delete_infile=True)
+            correct_result = os.path.join(tmpdir, 'test.csv.out')
+            self.assertFalse(os.path.exists(infile))
+            self.assertTrue(os.path.exists(correct_result))
+            with open(actual_result, 'rb') as f:
+                self.assertEqual(self.content, f.read())
+        self.assertEqual(actual_result, correct_result)    
 
 
 class TestPreprocessList(unittest.TestCase):

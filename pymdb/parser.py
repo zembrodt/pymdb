@@ -17,6 +17,7 @@ from pymdb.models.title import (
     TitlePrincipalCrew,
     TitleRating
 )
+from pymdb.exceptions import InvalidParseFormat
 
 
 class _IMDbDataset:
@@ -94,7 +95,7 @@ class PyMDbParser:
                         yield TitleAkas(title_id, ordering, title, region, language, types, attributes,
                                         is_original_title)
                     else:
-                        print('Found title akas in incorrect format')
+                        raise InvalidParseFormat()
 
     def get_title_basics(self, path, contains_headers=True):
         """Parse the 'title.basics.tsv' dataset provided by IMDb.
@@ -126,7 +127,7 @@ class PyMDbParser:
                         yield TitleBasics(title_id, title_type, primary_title, original_title, is_adult, start_year,
                                           end_year, runtime, genres)
                     else:
-                        print('Found title basic in incorrect format')
+                        raise InvalidParseFormat()
 
     def get_title_crew(self, path, contains_headers=True):
         """Parse the 'title.crew.tsv' dataset provided by IMDb.
@@ -158,7 +159,7 @@ class PyMDbParser:
                             writer_ids = [writer_id for writer_id in writer_ids.split(',')]
                         yield TitleCrew(title_id, director_ids, writer_ids)
                     else:
-                        print('Found title crew in incorrect format')
+                        raise InvalidParseFormat()
 
     def get_title_episodes(self, path, contains_headers=True):
         """Parse the 'title.episodes.tsv' dataset provided by IMDb.
@@ -186,7 +187,7 @@ class PyMDbParser:
                         title_id, parent_title_id, season_number, episode_number = line
                         yield TitleEpisode(title_id, parent_title_id, season_number, episode_number)
                     else:
-                        print('Found title episode in incorrect format')
+                        raise InvalidParseFormat()
 
     def get_title_principals(self, path, contains_headers=True):
         """Parse the 'title.principals.tsv' dataset provided by IMDb.
@@ -218,7 +219,7 @@ class PyMDbParser:
                                           re.finditer(r'".+?"', characters)]
                         yield TitlePrincipalCrew(title_id, ordering, name_id, category, job, characters)
                     else:
-                        print('Found title principals in incorrect format')
+                        raise InvalidParseFormat()
 
     def get_title_ratings(self, path, contains_headers=True):
         """Parse the 'title.ratings.tsv' dataset provided by IMDb.
@@ -246,7 +247,7 @@ class PyMDbParser:
                         title_id, average_rating, num_votes = line
                         yield TitleRating(title_id, average_rating, num_votes)
                     else:
-                        print('Found title rating in incorrect format')
+                        raise InvalidParseFormat()
 
     def get_name_basics(self, path, contains_headers=True):
         """Parse the 'name.basics.tsv' dataset provided by IMDb.
@@ -280,8 +281,7 @@ class PyMDbParser:
                         yield NameBasics(
                             name_id, primary_name, birth_year, death_year, primary_professions, known_for_titles)
                     else:
-                        # TODO: throw error
-                        print('UNKNOWN NAME BASICS FORMAT!')
+                        raise InvalidParseFormat()
 
     def _build_path(self, path, default_filename):
         """Private function to combine a system path with a default filename.
