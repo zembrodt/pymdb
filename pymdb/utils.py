@@ -21,11 +21,11 @@ def append_filename_to_path(path, filename):
     correct path separators used within the path string.
 
     Args:
-        path: A string representing the system file path.
-        filename: A string representing the filename.
+        path (:obj:`str`): The system file path.
+        filename (:obj:`str`): The filename to append.
 
     Returns:
-        A string of the filename correctly appended to the file path.
+        :obj:`str`: The filename correctly appended to the file path.
     """
 
     if len(path) > 0 and path[-1] in ('/', '\\'):
@@ -41,19 +41,19 @@ def gunzip_file(infile, outfile=None, delete_infile=False):
     """Unzips a gzip file and returns the unzipped filename.
 
     Unzips the given gzipped file into the specified outfile, or a default
-    outfile name. If the infile's filename ends with '.gz', the oufile
+    outfile name. If the infile's filename ends with "`.gz`", the oufile
     will be the same filename with the gzip extension removed. The function is
     also capable of deleteing the gzipped infile afterwards.
 
     Args:
-        infile: A string of the gzipped file's filename.
-        outfile: A string of the filename to unzip the infile to, or None to use
+        infile (:obj:`str`): The gzipped file's filename.
+        outfile (:obj:`str`, optional): The filename to unzip the infile to, or `None` to use
             the default filename.
-        delete_infile: A boolean to determine if the gzipped infile should be deleted
+        delete_infile (:obj:`bool`, optional): Determine if the gzipped infile should be deleted
             after it is unzipped to the outfile.
 
     Returns:
-        A string of the outfile's filename for the case when the default filename was used.
+        :obj:`str`: The outfile's filename for the case when the default filename was used.
     """
 
     if outfile is None:
@@ -72,13 +72,13 @@ def gunzip_file(infile, outfile=None, delete_infile=False):
 def preprocess_list(lst):
     """Process a row of data from the IMDb datasets.
 
-    Replaces all '\\N' characters in the IMDb dataset with None.
+    Replaces all '\\&nbsp;N' characters in the IMDb dataset with `None`.
 
     Args:
-        lst: A list of strings after the row has been tab-split.
+        lst (:obj:`list`): A list of strings after the row has been tab-split.
 
     Returns:
-        A list of strings with all '\\N' strings being set to None.
+        :obj:`list`: A list of strings with all '\\&nbsp;N' strings being set to `None`.
     """
 
     for i, item in enumerate(lst):
@@ -88,16 +88,16 @@ def preprocess_list(lst):
 
 
 def split_by_br(s):
-    """Split a string by <br> tags.
+    """Split a string by `<br>` tags.
 
-    Splits by replacing each <br> tag with a '\t' character
+    Splits by replacing each `<br>` tag with a '\t' character
     and then splitting.
 
     Args:
-        s: A string containing <br> tags.    
+        s (:obj:`str`): A string containing `<br>` tags.    
 
     Returns:
-        A list of strings split around the <br> tags.
+        :obj:`list`: A list of strings split around the `<br>` tags.
     """
 
     return re.sub(r'<\s*b\s*r\s*/?\s*>', '\t', s).split('\t')
@@ -111,11 +111,11 @@ def remove_tags(s, tag):
     all table column tags.
 
     Args:
-        s: A string containing HTML information.
-        tag: A string with the tagname to be removed.
+        s (:obj:`str`): A string containing HTML information.
+        tag (:obj:`str`): A string with the tagname to be removed.
 
     Returns:
-        A string with all of the given tags removed, but other
+        :obj:`str`: A string with all of the given tags removed, but other
         HTML information intact.
     """
 
@@ -130,11 +130,11 @@ def remove_tags_and_content(s, tag):
     in between.
 
     Args:
-        s: A string containing HTML information.
-        tag: A string with the tagname to be removed.
+        s (:obj:`str`): A string containing HTML information.
+        tag (:obj:`str`): A string with the tagname to be removed.
 
     Returns:
-        A string with all of the specified tags and their content removed.
+        :obj:`str`: A string with all of the specified tags and their content removed.
     """
 
     return re.sub(rf'<\s*{tag}.*?>(.|\r|\n)*<\s*/\s*{tag}\s*>', '', s)
@@ -147,11 +147,11 @@ def _get_id(node, prefix):
     selectolax Node.
 
     Args:
-        node: A selectolax Node containing the 'href' attribute.
-        prefix: A string of the IMDb ID prefix ('co', 'nm', or 'tt').
+        node (:class:`Node`): A `Node` containing the 'href' attribute.
+        prefix (:obj:`str`): The IMDb ID prefix ('co', 'nm', or 'tt').
 
     Returns:
-        A string of the IMDb ID, or None if none was found.
+        :obj:`str`: The IMDb ID, or `None` if none was found.
     """
     if node and 'href' in node.attributes:
         id_match = re.search(rf'{prefix}\d+', node.attributes['href'])
@@ -163,13 +163,13 @@ def _get_id(node, prefix):
 def get_company_id(node):
     """Find the IMDb company ID within a selectolax Node.
 
-    Expects the ID to be within the Node's 'href' attribute.
+    Expects the ID to be within the `Node`'s 'href' attribute.
 
     Args:
-        node: A selectolax Node containing the ID.
+        node (:class:`Node`): A `Node` containing the ID.
 
     Returns:
-        A string representing the IMDb company ID.
+        :obj:`str`: The IMDb company ID.
     """
 
     return _get_id(node, 'co')
@@ -181,10 +181,10 @@ def get_name_id(node):
     Expects the ID to be within the Node's 'href' attribute.
 
     Args:
-        node: A selectolax Node containing the ID.
+        node (:class:`Node`): A `Node` containing the ID.
 
     Returns:
-        A string representing the IMDb name ID.
+        :obj:`str`: The IMDb name ID.
     """
 
     return _get_id(node, 'nm')
@@ -196,10 +196,10 @@ def get_title_id(node):
     Expects the ID to be within the Node's 'href' attribute.
 
     Args:
-        node: A selectolax Node containing the ID.
+        node (:obj:`Node`): A `Node` containing the ID.
 
     Returns:
-        A string representing the IMDb title ID.
+        :obj:`str`: The IMDb title ID.
     """
 
     return _get_id(node, 'tt')
@@ -212,12 +212,12 @@ def _get_from_onclick(node, index):
     of a selectolax Node.
 
     Args:
-        node: A selectolax Node containing the 'onclick' attribute.
-        index: An integer of the index of the value to grab.
+        node (:class:`Node`): A `Node` containing the 'onclick' attribute.
+        index (:obj:`int`): The index of the value to grab.
     
     Returns:
-        A string of the value grabbed within the 'onclick' attribute,
-        or None if it was not found.
+        :obj:`str`: The value found within the 'onclick' attribute,
+        or `None` if it was not found.
     """
 
     if node and 'onclick' in node.attributes:
@@ -233,10 +233,10 @@ def get_category(node):
     Grabs the value from the Node's 'onclick' attribute.
 
     Args:
-        node: A selectolax Node containing the 'onclick' attribute.
+        node (:class:`Node`): A `Node` containing the 'onclick' attribute.
 
     Returns:
-        A string representing the category.
+        :obj:`str`: The category.
     """
 
     return _get_from_onclick(node, _CATEGORY_INDEX)
@@ -248,10 +248,10 @@ def get_ref_marker(node):
     Grabs the value from the Node's 'onclick' attribute.
 
     Args:
-        node: A selectolax Node containing the 'onclick' attribute.
+        node (:class:`Node`): A `Node` containing the 'onclick' attribute.
 
     Returns:
-        A string representing the ref marker.
+        :obj:`str`: The ref marker.
     """
 
     return _get_from_onclick(node, _REF_MARKER_INDEX)
@@ -265,10 +265,10 @@ def trim_year(year):
     and returns just the year value.
 
     Args:
-        year: A string representing the year and roman numeral combination.
+        year (:obj:`str`): The year and roman numeral combination.
 
     Returns:
-        A string representation of the year, or None if year was None.
+        :obj:`str`: The year with roman numerals removed, or None if year was `None`.
     """
 
     return re.sub(r'/\w*', '', year) if year is not None else None
@@ -280,10 +280,10 @@ def is_money_string(s):
     Determines if the string represents a monetary value, for example: $123,456,789.
 
     Args:
-        s: A string representation of the monetary amount.
+        s (:obj:`str`): The monetary amount to check.
 
     Returns:
-        A boolean for if the string does represent a monetary value for not.
+        :obj:`bool`: If the string does represent a monetary value for not.
     """
 
     return True if re.search(r'(\$|GBP)[\d,]+', s) else False
@@ -295,10 +295,10 @@ def trim_money_string(s):
     Only keeps the digits within a monetary value, such as $123,456 to 123456. Trims dollar signs and commas.
 
     Args:
-        s: A string representation of the monetary amount.
+        s (:obj:`str`): The monetary amount to trim.
 
     Returns:
-        A string of the same amount with excess characters removed.
+        :obj:`str`: The same monetary amount with excess characters removed.
     """
 
     money_match = re.search(r'(\$|GBP)[\d,]+', s)
@@ -308,7 +308,14 @@ def trim_money_string(s):
 
 
 def is_float(f):
-    """Check if a variable is a float type."""
+    """Check if a variable is a float type.
+    
+    Args:
+        f: The object to check.
+
+    Returns:
+        :obj:`bool`: If they object can be converted to a :obj:`float`.
+    """
 
     if not f:
         return False
@@ -320,7 +327,14 @@ def is_float(f):
 
 
 def is_int(i):
-    """Check if a variable is an int type."""
+    """Check if a variable is an int type.
+    
+    Args:
+        i: The object to check.
+
+    Returns:
+        :obj:`bool`: If the object can be converted to an :obj:`int`.
+    """
 
     if not i:
         return False
@@ -332,7 +346,14 @@ def is_int(i):
 
 
 def to_bool(b):
-    """Convert a variable is a boolean type."""
+    """Convert a variable to a boolean type.
+    
+    Args:
+        b: The object to convert.
+
+    Returns:
+        :obj:`bool`: The boolean representation of the object.
+    """
 
     if is_int(b):
         return bool(int(b))
@@ -349,13 +370,13 @@ def to_datetime(d):
     - %Y-%m-%d
 
     Args:
-        d: A string to convert to a datetime object.
+        d (:obj:`str`): A string to convert to a `datetime` object.
     
     Returns:
-        A datetime object that was represented by the string, or None if d is None.
+        :obj:`datetime`: A `datetime` object that was represented by the string, or `None` if d is `None`.
     
     Raises:
-        ValueError: If the string could not be converted.
+        :class:`ValueError`: If the string could not be converted.
     """
 
     if not d:

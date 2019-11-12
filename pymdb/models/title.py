@@ -1,8 +1,8 @@
 """The classes used to represent various information about titles on IMDb.
 
 This will contain classes for both information gathered from the datasets provided by IMDb
-and information scraped from IMDb web pages. Class names ending with 'Scrape' are scraped
-from the web pages, otherwise they are gathered from the datasets.
+and information scraped from IMDb web pages. Class names ending with "`Scrape`" are scraped
+from the web pages. Otherwise, they are gathered from the datasets.
 """
 
 from pymdb.utils import (
@@ -17,24 +17,20 @@ class TitleAkas:
     """Class to store the row information from IMDb's 'title.akas.tsv' dataset.
     
     Provides additional information for a title.
+
+    Args:
+        title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
+        ordering (:obj:`int` or :obj:`str`): Integer to unqiuely identify the row for
+            a given `title_id`.
+        localized_title (:obj:`str`): The localized title for this version.
+        region (:obj:`str`): The region for this version of the title.
+        language (:obj:`str`): The language of this title.
+        types (:obj:`list` of :obj:`str`): A list of the different types attributed to this title.
+        attributes (:obj:`list` of :obj:`str`): A list of terms to describe this title.
+        is_original_title (:obj:`bool` or :obj:`str`): Determines if this version is the original title.
     """
 
     def __init__(self, title_id, ordering, localized_title, region, language, types, attributes, is_original_title):
-        """Initialize the object with all values in the row.
-
-        Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
-            ordering: An integer or string representation to unqiuely identify the row for
-                a given title_id.
-            localized_title: A string of the localized title.
-            region: A string of the region for this version of the title.
-            language: A string for the language of this title.
-            types: A list of strings for the different types attributed to this title.
-            attributes: A list of strings for terms to describe this title.
-            is_original_title:  A boolean or string representation of if this title is
-                the original title.
-        """
-
         self._title_id = title_id
         self._ordering = None
         self._localized_title = localized_title
@@ -113,29 +109,24 @@ class TitleBasics:
     """Class to store the row information from IMDb's 'title.basics.tsv' dataset.
     
     Basic information for a title.
+
+    Args:
+        title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
+        title_type (:obj:`str`): The type/format of the title (ex: movie, short,
+            tvseries, tvepisode, video, etc).
+        primary_title (:obj:`str`): The popular title used for this title.
+        original_title (:obj:`str`): The original title in the original langauge.
+        is_adult (:obj:`bool` or :obj:`str`): Determines if this is an adult title.
+        start_year (:obj:`int` or :obj:`str`): The year this title was released, or 
+            for TV series, the year the series started.
+        end_year (:obj:`int` or :obj:`str`): The year this TV series ended, otherwise `None`.
+        runtime_minutes (:obj:`int` or :obj:`str`): The length of the title's runtime in minutes.
+        genres (:obj:`list` of :obj:`str`): A list of up to three genres associated with
+            this title.
     """
 
     def __init__(self, title_id, title_type, primary_title, original_title, is_adult, start_year, end_year,
                  runtime_minutes, genres):
-        """Initialize the object with all values in the row.
-
-        Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
-            title_type: A string for the type/format of the title (ex: movie, short,
-                tvseries, tvepisode, video, etc).
-            primary_title: A string for the popular title used.
-            original_title: A string for the original title in the original langauge.
-            is_adult: A boolean or string representation of if this is an adult title.
-            start_year: An integer or string representation of the year this title
-                was released, or for TV series, the year the series started.
-            end_year: An integer or string representation for the year this TV series
-                ended, otherwise None.
-            runtime_minutes: An integer or string representation for the length of the
-                title's runtime in minutes.
-            genres: An array of strings that includes up to three genres associated with
-                this title.
-        """
-
         self._title_id = title_id
         self._title_type = title_type
         self._primary_title = primary_title
@@ -222,19 +213,16 @@ class TitleCrew:
     """Class to store the row information from IMDb's 'title.crew.tsv' dataset.
     
     Director(s) and writer(s) for a title.
+
+    Args:
+        title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
+        director_ids (:obj:`list` of :obj:`str`): A list of IDs used by IMDb for people,
+            prefixed with `nm`, representing the director(s) of the title.
+        writer_ids (:obj:`list` of :obj:`str`): A list of IDs used by IMDb for people,
+            prefixed with `nm`, representing the writer(s) of the title.
     """
 
     def __init__(self, title_id, director_ids, writer_ids):
-        """Initialize the object with all values in the row.
-
-        Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
-            director_ids: An array of strings of IDs used by IMDb for people, prefixed
-                with 'nm', represents the director(s) of the title.
-            writer_ids: An array of strings of IDs used by IMDb for people, prefixed
-                with 'nm', represents the writer(s) of the title.
-        """
-
         self._title_id = title_id
         self._director_ids = []
         self._writer_ids = []
@@ -275,21 +263,18 @@ class TitleCrew:
 
 
 class TitleEpisode:
-    """Class to store the row information from IMDb's 'title.episodes.tsv' dataset."""
+    """Class to store the row information from IMDb's 'title.episodes.tsv' dataset.
+    
+    Args:
+        title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
+        parent_title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`,
+            represents the parent TV series to the episode.
+        season_number (:obj:`int` or :obj:`str`): The season this episode was aired in.
+        episode_number (:obj:`int` or :obj:`str`): The episode number it was aired as
+            in the season.
+    """
 
     def __init__(self, title_id, parent_title_id, season_number, episode_number):
-        """Initialize the object with all values in the row.
-
-        Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
-            parent_title_id: A string of the title's ID used by IMDb prefixed with 'tt',
-                represents the parent TV series to the episode.
-            season_number: An integer or string representation of the season this episode
-                was aired in.
-            episode_number: An integer or string representation of the episode number
-                it was aired as in the season.
-        """
-
         self._title_id = title_id
         self._parent_title_id = parent_title_id
         self._season_number = None
@@ -333,21 +318,19 @@ class TitlePrincipalCrew:
     """Class to store the row information from IMDb's 'title.principals.tsv' dataset.
     
     Principal cast/crew for a title.
+
+    Args:
+            title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
+            ordering (:obj:`int` or :obj:`str`): Integer to unqiuely identify the row for
+                a given `title_id`.
+            name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
+            category (:obj:`str`): The category of job the person was in.
+            job (:obj:`str`): The specific job title if available, otherwise `None`.
+            characters (:obj:`list` of :obj:`str`): A list of characters the person played,
+                if applicable.
     """
 
     def __init__(self, title_id, ordering, name_id, category, job, characters):
-        """Initialize the object with all values in the row.
-
-        Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
-            ordering: An integer or string representation to unqiuely identify the row for
-                a given title_id.
-            name_id: A string of the person's ID used by IMDb prefixed with 'nm'.
-            category: A string for the category of job the person was in.
-            job: A string for the specific job title if available, otherwise None.
-            characters: A list of characters the person played, if applicable.
-        """
-
         self._title_id = title_id
         self._ordering = None
         self._name_id = name_id
@@ -399,19 +382,17 @@ class TitlePrincipalCrew:
 
 
 class TitleRating:
-    """Class to store the row information from IMDb's 'title.ratings.tsv' dataset."""
+    """Class to store the row information from IMDb's 'title.ratings.tsv' dataset.
+    
+    Args:
+        title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
+        average_rating (:obj:`float` or :obj:`str`): The weighted average of
+            all user ratings on IMDb.
+        num_votes (:obj:`int` or :obj:`str`): The total number of user votes the
+            title has received on IMDb.
+    """
 
     def __init__(self, title_id, average_rating, num_votes):
-        """Initialize the object with all values in the row.
-
-        Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
-            average_rating: A float or string representation for the weighted
-                average of all user ratings on IMDb.
-            num_votes: An integer or string representation for the number of user
-                votes the title has received on IMDb.
-        """
-
         self._title_id = title_id
         self._average_rating = None
         self._num_votes = None
@@ -449,6 +430,36 @@ class TitleScrape:
     """Object to represent detailed information for a title on its IMDb web page.
 
     This information is scraped from the main page for a title's IMDb web page.
+
+    Args:
+        title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
+        title_text (:obj:`str`): The title's name on its IMDb page.
+        title_parent_id (:obj:`str`): The episode's TV series parent ID used
+            by IMDb prefixed with `tt`, otherwise `None`.
+        mpaa_rating (:obj:`str`): The title's MPAA rating.
+        country (:obj:`str`): The title's country of origin.
+        language (:obj:`str`): The title's original language.
+        release_date (:obj:`datetime` or :obj:`str`): A `datetime` object or formatted
+            string for the title's original release date, or when the TV series began airing.
+        end_year (:obj:`datetime` or :obj:`str`): A `datetime` object or formatted string
+            for the year the TV series stopped airing, otherwise `None`.
+        season_number (:obj:`int` or :obj:`str`): The season number the episode is in,
+            otherwise `None`.
+        episode_number (:obj:`int` or :obj:`str`): The episode's number in the season,
+            otherwise `None`.
+        taglines (:obj:`list` of :obj:`str`): A list of all of the title's taglines.
+        plot (:obj:`str`): The title's plot.
+        storyline (:obj:`str`): The title's storyline.
+        production_companies (:obj:`list` of :obj:`str`): A list of company IDs credited with
+            producing the title. These IDs are used by IMDb and prefixed with `co`.
+        top_cast (:obj:`list` of :obj:`str`): A list of person IDs for the top cast in the title.
+            These IDs are used by IMDb and prefixed with `nm`.
+        budget (:obj:`int` or :obj:`str`): The budget for the title as an integer.
+        opening_weekend_gross (:obj:`int` or :obj:`str`): The title's gross on its opening weekend.
+        opening_weekend_date (:obj:`datetime` or :obj:`str`): A `datetime` object or formatted string
+            for the title's opening weekend date.
+        usa_gross (:obj:`int` or :obj:`str`): The title's gross in the USA as an integer.
+        worldwide_gross (:obj:`int` or :obj:`str`): The title's gross worldwide as an integer.
     """
 
     def __init__(
@@ -456,40 +467,6 @@ class TitleScrape:
             season_number, episode_number, taglines, plot, storyline, production_companies, top_cast,
             budget, opening_weekend_gross, opening_weekend_date, usa_gross, worldwide_gross
     ):
-        """Initialize a CreditScrape object with all information it will store.
-
-        Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
-            title_text: A string for the title's name on its IMDb page.
-            title_parent_id: A string of the episode's TV series parent ID used
-                by IMDb prefixed with 'tt', otherwise None.
-            mpaa_rating: A string for the title's MPAA rating.
-            country: A string for the title's country of origin.
-            language: A string for the title's original language.
-            release_date: A datetime object or formatted string for the title's
-                original release date, or when the TV series began airing.
-            end_year: A datetime object or formatted string for the year the
-                TV series stopped airing, otherwise None.
-            season_number: An integer or string representation for the season
-                the episode is in, otherwise None.
-            episode_number: An integer or string representation for the episode's
-                number in the season, otherwise None.
-            taglines: A list of strings for all of the title's taglines.
-            plot: A string for the title's plot.
-            storyline: A string for the title's storyline.
-            production_companies: A list of strings of company IDs credited with
-                producing the title. These IDs are used by IMDb and prefixed with 'co'.
-            top_cast: A list of strings of person IDs for the top cast in the title.
-                These IDs are used by IMDb and prefixed with 'nm'.
-            budget: An integer or string representation for the budget of the title.
-            opening_weekend_gross: An integer or string representation of the title's
-                gross on opening weekend.
-            opening_weekend_date: A datetime object or formatted string for the title's
-                opening weekend date.
-            usa_gross: An integer or string representation of the title's gross in the USA.
-            worldwide_gross: An integer or string representation of the title's gross worldwide.
-        """
-
         self._title_id = title_id
         self._title_text = title_text
         self._title_parent_id = title_parent_id
@@ -655,31 +632,27 @@ class TitleScrape:
 class TitleTechSpecsScrape:
     """Object to represent information for a title's technical specifications.
 
-    This information is scraped from the technical IMDb web page for a title
+    This information is scraped from the technical IMDb web page for a title.
+
+    Args:
+        title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
+        runtime (:obj:`int` or :obj:`str`): The length of the title's runtime in minutes.
+        sound_mix (:obj:`list` of :obj:`str`): A list of the title's sound mixes
+        color (:obj:`str`): The color used in the title.
+        aspect_ratio (:obj:`list` of :obj:`str`): A list of each aspect ratio the title
+            is available in.
+        camera (:obj:`list` of :obj:`str`): A list the cameras used in the title.
+        laboratory (:obj:`list` of :obj:`str`): A list of all the title's laboratories.
+        negative_format (:obj:`str`): The title's negative format.
+        cinematographic_process (:obj:`list` of :obj:`str`): A list of each of the title's
+            cinematographic processes.
+        printed_film_format (:obj:`str`): The title's printed film format.
     """
 
     def __init__(
             self, title_id, runtime, sound_mix, color, aspect_ratio, camera, laboratory, negative_format,
             cinematographic_process, printed_film_format
     ):
-        """Initialize a CreditScrape object with all information it will store.
-
-        Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
-            runtime: An integer or string representation for the length of the
-                title's runtime in minutes.
-            sound_mix: A list of strings for each of the title's sound mixes
-            color: A string for the color used in the title.
-            aspect_ratio: A list of strings for each aspect ratio the title
-                is available in.
-            camera: A list of strings for each camera used for the title.
-            laboratory: A list of strings for all the title's laboratories.
-            negative_format: A string for the title's negative format.
-            cinematographic_process: A list of strings for each of the title's
-                cinematographic processes.
-            printed_film_format: A string for the title's printed film format.
-        """
-
         self._title_id = title_id
         self._runtime = None
         self._sound_mix = sound_mix

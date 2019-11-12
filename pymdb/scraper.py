@@ -47,15 +47,18 @@ class PyMDbScraper:
         """Scrapes information from the IMDb web page for the specified title.
 
         Uses the given title ID to request the IMDb page for the title and scrapes
-        the page's information into a new TitleScrape object.
+        the page's information into a new `TitleScrape` object.
 
         Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
-            include_taglines: A boolean to determine if an extra request should be
+            title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
+            include_taglines (:obj:`bool`, optional): Specify if an extra request should be
                 made to get all the taglines for the title
 
         Returns:
-            A TitleScrape object containing the page's information, or None if the request failed.
+            :class:`~.models.title.TitleScrape`: An object containing the page's information.
+
+        Raises:
+            HTTPError: If the request failed.
         """
 
         request = f'https://www.imdb.com/title/{title_id}/'
@@ -234,17 +237,20 @@ class PyMDbScraper:
     def get_full_cast(self, title_id, include_episodes=False):
         """Scrapes the full cast of actors for a specified title.
 
-        Will scrape the full cast of actors for a title, each into their own CreditScrape object.
-        An optional argument include_episodes will also scrape each episode an actor is in
+        Will scrape the full cast of actors for a title, each into their own `CreditScrape` object.
+        An optional argument `include_episodes` will also scrape each episode an actor is in
         if the title is a TV series.
 
         Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
-            include_episodes: An optional boolean to specify if individual episodes of a TV series should also be
-                scraped.
+            title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
+            include_episodes (:obj:`bool`, optional): Specify if individual episodes of a 
+                TV series should also be scraped.
 
         Yields:
-            A CreditScrape object for each cast member in the title, or None if the request failed.
+            :class:`~.models.title.CreditScrape`: An object for each cast member in the title.
+
+        Raises:
+            HTTPError: If a request failed.
         """
 
         request = f'https://www.imdb.com/title/{title_id}/fullcredits'
@@ -345,10 +351,13 @@ class PyMDbScraper:
         include all directors, writers, producers, cinematographers, etc.
 
         Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
+            title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
 
         Yields:
-            A CreditScrape object for each credited member in the title, or None if the request failed.
+            :class:`~.models.title.CreditScrape`: An object for each credited member in the title.
+
+        Raises:
+            HTTPError: If the request failed.
         """
 
         request = f'https://www.imdb.com/title/{title_id}/fullcredits'
@@ -419,13 +428,16 @@ class PyMDbScraper:
         """Scrapes detailed information from a person's personal IMDb web page.
 
         Will scrape detailed information on a person's IMDb page into a new
-        NameScrape object.
+        `NameScrape` object.
 
         Args:
-            name_id: A string of the person's ID used by IMDb prefixed with 'nm'.
+            name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
 
         Returns:
-            A NameScrape object with the person's information, or None if the request failed.
+            :class:`~.models.name.NameScrape`: An object with the person's information.
+
+        Raises:
+            HTTPError: If the request failed.
         """
         request = f'https://www.imdb.com/name/{name_id}/bio'
         tree = self._get_tree(request)
@@ -504,14 +516,18 @@ class PyMDbScraper:
 
         Scrapes the full filmography from a person's IMDb page to get each
         title they are credited in, and what category that credit is under.
-        Each credit is created with a new NameCreditScrape object.
+        Each credit is created with a new `NameCreditScrape` object.
 
         Args:
-            name_id: A string of the person's ID used by IMDb prefixed with 'nm'.
-            include_episodes: An optional boolean to specify if individual episodes of a TV series should also be
-                scraped.
+            name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
+            include_episodes (:obj:`bool`, optional): Specify if individual episodes of a TV series
+                should also be scraped.
 
-        Yields: A NameCreditScrape object for each credit in the person's filmography, or None if the request failed.
+        Yields: 
+            :class:`~.models.name.NameCreditScrape`: An object for each credit in the person's filmography.
+
+        Raises:
+            HTTPError: If a request failed.
         """
 
         request = f'https://www.imdb.com/name/{name_id}/'
@@ -615,10 +631,14 @@ class PyMDbScraper:
         each title and 'notes' for each listed on IMDb.
 
         Args:
-            company_id: A string of the company's ID used by IMDb prefixed with 'co'.
+            company_id (:obj:`str`): The company's ID used by IMDb prefixed with `co`.
 
         Yields:
-            A CompanyScrape object for each title the company is credited for, or None if the initial request failed.
+            :class:`~.models.company.CompanyScrape`: An object for each title the company is credited for.
+
+        Raises:
+            HTTPError: If a request failed.
+            InvalidCompanyId: If an invalid company ID was given.
         """
 
         index = 1
@@ -692,13 +712,16 @@ class PyMDbScraper:
         """Gets all companies credited for a title.
 
         Scrapes a title's company credits page on IMDb to find information for each
-        company that was credited. Each company creates a new CompanyCreditScrape object.
+        company that was credited. Each company creates a new `CompanyCreditScrape` object.
 
         Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
+            title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
 
         Yields:
-            A CompanyCreditScrape object for each company, or None if the request failed.
+            :class:`~.models.company.CompanyCreditScrape`: An object for each company.
+
+        Raises:
+            HTTPError: If the request failed.
         """
 
         request = f'https://www.imdb.com/title/{title_id}/companycredits'
@@ -733,13 +756,16 @@ class PyMDbScraper:
         """Gets information for all tech specs for a title.
 
         Uses a title's technical web page on IMDb to scrape all technical
-        specifications listed. Each tech spec creates a new TitleTechSpecScrape object.
+        specifications listed. Each tech spec creates a new `TitleTechSpecScrape` object.
 
         Args:
-            title_id: A string of the title's ID used by IMDb prefixed with 'tt'.
+            title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
 
         Returns:
-            A TitleTechSpecScrape object containing the information, or None if the request failed.
+            :class:`~.models.title.TitleTechSpecScrape`: An object containing the information.
+
+        Raises:
+            HTTPError: If the request failed.
         """
 
         request = f'https://www.imdb.com/title/{title_id}/technical/'
@@ -814,13 +840,16 @@ class PyMDbScraper:
         )
 
     def _get_tree(self, request):
-        """Get the selectolax HTML tree given a request
+        """Get the selectolax HTML tree given a request.
 
         Args:
-            request: A string for the HTTP GET request
+            request (:obj:`str`): The HTTP GET request.
 
         Returns:
-            A selectolax HTML tree from the GET request, or None if the request failed.
+            :class:`HTMLTree`: The HTML tree from the GET request.
+        
+        Raises:
+            HTTPError: If a non successful response was returned.
         """
 
         response = requests.get(request, headers=self._headers)

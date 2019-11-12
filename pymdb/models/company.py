@@ -11,21 +11,18 @@ class CompanyScrape:
 
     This information is taken from IMDb's search by company ID for titles
     that include it in their credits.
+
+    Args:
+        company_id (:obj:`str`): The companys's ID used by IMDb prefixed with `co`.
+        title_id (:obj:`str`): The titles's ID used by IMDb prefixed with `tt`.
+        start_year (:obj:`int` or :obj:`str`): The year the title released,
+            or the year the company started being credited for a TV series.
+        end_year (:obj:`int` or :obj:`str`): The year the company stopped
+            being credited for a TV series, or `None` otherwise.
+        notes (:obj:`list` of :obj:`str`): A list of further notes IMDb gives about the credit.
     """
 
     def __init__(self, company_id, title_id, start_year, end_year, notes):
-        """Initialize a CompanyScrape object with all information it will store.
-
-        Args:
-            company_id: A string of the companys's ID used by IMDb prefixed with 'co'.
-            title_id: A string of the titles's ID used by IMDb prefixed with 'tt'.
-            start_year: An integer or string representation of the year the title released,
-                or the year the company started being credited if a TV series.
-            end_year: An integer or string representation of the year the company stopped
-                being credited if a TV series, or None otherwise.
-            notes: A list of strings for further notes IMDb gives about the credit.
-        """
-
         self._company_id = company_id
         self._title_id = title_id
         self._start_year = None
@@ -75,19 +72,16 @@ class CompanyCreditScrape:
 
     This information is taken from a title's IMDb company credits page, and contains
     more information on what a company is credited on a title for.
+
+    Args:
+        company_id (:obj:`str`): The company's ID used by IMDb prefixed with `co`.
+        title_id (:obj:`str`): The titles's ID used by IMDb prefixed with `tt`.
+        company_name (:obj:`str`): The company's name it was credited under.
+        category (:obj:`str`): The category the company was credited for.
+        notes (:obj:`list` of :obj:`str`): A list of further notes IMDb gives about the credit.
     """
 
     def __init__(self, company_id, title_id, company_name, category, notes):
-        """Initialize a CompanyCreditScrape object with all information it will store.
-
-        Args:
-            company_id: A string of the company's ID used by IMDb prefixed with 'co'.
-            title_id: A string of the titles's ID used by IMDb prefixed with 'tt'.
-            company_name: A string of the company's name it was credited under.
-            category: A string of the category the company was credited for.
-            notes: A list of strings for further notes IMDb gives about the credit.
-        """
-
         self._company_id = company_id
         self._title_id = title_id
         self._company_name = company_name
