@@ -66,6 +66,7 @@ class TestGetTitle(unittest.TestCase):
             'nm0377120'
         ]
         budget = 11000000
+        budget_denomination = 'USD'
         opening_weekend_gross = 1554475
         opening_weekend_date = datetime(1977, 5, 30)
         usa_gross = 460998507
@@ -87,6 +88,7 @@ class TestGetTitle(unittest.TestCase):
         self.assertEqual(sorted(title.production_companies), sorted(production_companies))
         self.assertEqual(sorted(title.top_cast), sorted(top_cast))
         self.assertEqual(title.budget, budget)
+        self.assertEqual(title.budget_denomination, budget_denomination)
         self.assertEqual(title.opening_weekend_gross, opening_weekend_gross)
         self.assertEqual(title.opening_weekend_date, opening_weekend_date)
         self.assertEqual(title.usa_gross, usa_gross)
@@ -136,6 +138,7 @@ class TestGetTitle(unittest.TestCase):
             'nm0379114'
         ]
         budget = None
+        budget_denomination = None
         opening_weekend_gross = None
         opening_weekend_date = None
         usa_gross = None
@@ -157,6 +160,7 @@ class TestGetTitle(unittest.TestCase):
         self.assertEqual(sorted(title.production_companies), sorted(production_companies))
         self.assertEqual(sorted(title.top_cast), sorted(top_cast))
         self.assertEqual(title.budget, budget)
+        self.assertEqual(title.budget_denomination, budget_denomination)
         self.assertEqual(title.opening_weekend_gross, opening_weekend_gross)
         self.assertEqual(title.opening_weekend_date, opening_weekend_date)
         self.assertEqual(title.usa_gross, usa_gross)
@@ -214,6 +218,7 @@ class TestGetTitle(unittest.TestCase):
             'nm1613839'
         ]
         budget = 10000000
+        budget_denomination = 'GBP'
         opening_weekend_gross = None
         opening_weekend_date = None
         usa_gross = None
@@ -235,6 +240,7 @@ class TestGetTitle(unittest.TestCase):
         self.assertEqual(sorted(title.production_companies), sorted(production_companies))
         self.assertEqual(sorted(title.top_cast), sorted(top_cast))
         self.assertEqual(title.budget, budget)
+        self.assertEqual(title.budget_denomination, budget_denomination)
         self.assertEqual(title.opening_weekend_gross, opening_weekend_gross)
         self.assertEqual(title.opening_weekend_date, opening_weekend_date)
         self.assertEqual(title.usa_gross, usa_gross)

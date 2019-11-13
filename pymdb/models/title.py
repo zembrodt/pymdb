@@ -455,17 +455,18 @@ class TitleScrape:
         top_cast (:obj:`list` of :obj:`str`): A list of person IDs, used by IMDb and prefixed with `nm`,
             that are the top cast in the title.
         budget (:obj:`int` or :obj:`str`): The budget for the title as an integer.
-        opening_weekend_gross (:obj:`int` or :obj:`str`): The title's gross on its opening weekend.
+        budget_denomination (:obj:`str`): The denomination the budget value is listed as
+        opening_weekend_gross (:obj:`int` or :obj:`str`): The title's gross in USD on its opening weekend.
         opening_weekend_date (:obj:`datetime` or :obj:`str`): A `datetime` object or formatted string
             for the title's opening weekend date.
-        usa_gross (:obj:`int` or :obj:`str`): The title's gross in the USA as an integer.
-        worldwide_gross (:obj:`int` or :obj:`str`): The title's gross worldwide as an integer.
+        usa_gross (:obj:`int` or :obj:`str`): The title's gross in USD in the USA as an integer.
+        worldwide_gross (:obj:`int` or :obj:`str`): The title's gross in USD worldwide as an integer.
     """
 
     def __init__(
             self, title_id, title_text, title_parent_id, mpaa_rating, country, language, release_date, end_year,
             season_number, episode_number, taglines, plot, storyline, production_companies, top_cast,
-            budget, opening_weekend_gross, opening_weekend_date, usa_gross, worldwide_gross
+            budget, budget_denomination, opening_weekend_gross, opening_weekend_date, usa_gross, worldwide_gross
     ):
         self._title_id = title_id
         self._title_text = title_text
@@ -483,6 +484,7 @@ class TitleScrape:
         self._production_companies = production_companies
         self._top_cast = top_cast
         self._budget = None
+        self._budget_denomination = budget_denomination
         self._opening_weekend_gross = None
         self._opening_weekend_date = None
         self._usa_gross = None
@@ -584,6 +586,10 @@ class TitleScrape:
     def budget(self, value):
         if is_int(value):
             self._budget = int(value)
+
+    @property
+    def budget_denomination(self):
+        return self._budget_denomination
 
     @property
     def opening_weekend_gross(self):

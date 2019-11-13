@@ -16,6 +16,7 @@ from pymdb.models import (
 from pymdb.utils import (
     get_category,
     get_company_id,
+    get_denomination,
     get_name_id,
     get_ref_marker,
     get_title_id,
@@ -81,6 +82,7 @@ class PyMDbScraper:
         production_companies = []
         cast_members = []
         budget = None
+        budget_denomination = None
         opening_weekend_gross = None
         opening_weekend_date = None
         usa_gross = None
@@ -168,6 +170,7 @@ class PyMDbScraper:
                 elif 'budget' in text_block_id:
                     if is_money_string(text_block_text):
                         budget = trim_money_string(text_block_text)
+                        budget_denomination = get_denomination(text_block_text)
                 elif 'opening weekend' in text_block_id:
                     if is_money_string(text_block_text):
                         opening_weekend_gross = trim_money_string(text_block_text)
@@ -230,6 +233,7 @@ class PyMDbScraper:
             production_companies=production_companies,
             top_cast=cast_members,
             budget=budget,
+            budget_denomination=budget_denomination,
             opening_weekend_gross=opening_weekend_gross,
             opening_weekend_date=opening_weekend_date,
             usa_gross=usa_gross,

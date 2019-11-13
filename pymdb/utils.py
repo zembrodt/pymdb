@@ -11,6 +11,7 @@ from datetime import datetime
 
 _CATEGORY_INDEX = 3
 _REF_MARKER_INDEX = 4
+_SUPPORTED_DENOMINATIONS = '|'.join((r'\$', 'GBP'))
 
 
 def append_filename_to_path(path, filename):
@@ -284,7 +285,7 @@ def is_money_string(s):
         :obj:`bool`: If the string does represent a monetary value for not.
     """
 
-    return True if re.search(r'(\$|GBP)[\d,]+', s) else False
+    return True if re.search(rf'({_SUPPORTED_DENOMINATIONS})[\d,]+', s) else False
 
 
 def trim_money_string(s):
@@ -299,10 +300,35 @@ def trim_money_string(s):
         :obj:`str`: The same monetary amount with excess characters removed.
     """
 
-    money_match = re.search(r'(\$|GBP)[\d,]+', s)
+    money_match = re.search(rf'({_SUPPORTED_DENOMINATIONS})[\d,]+', s)
     if money_match:
-        return re.sub(r'(\$|GBP|,)+', '', money_match.group(0))
+        return re.sub(rf'({_SUPPORTED_DENOMINATIONS}|,)+', '', money_match.group(0))
     return s
+
+def get_denomination(s):
+    """Returns the monetary denomination for the given monetary value.
+
+    Checks if the monetary value has one of the supported denominations. In the case it is a US dollar ($), the
+    dollar sign character is replaced with "`USD`". Currently supported denominations:
+
+    - `GBP`
+    - `USD` ($)
+
+    Args:
+        s(:obj:`str`): The monetary amount to retrieve the denomination from.
+
+    Returns:
+        :obj:`str`: The denomination type, or `None` if not a monetary value or supported denomination.
+    """
+
+    if is_money_string(s):
+        denomination_match = re.search(rf'({_SUPPORTED_DENOMINATIONS})', s)
+        if denomination_match:
+            denomination = denomination_match.group(0)
+            if denomination == '$':
+                denomination = 'USD'
+            return denomination
+    return None
 
 
 def is_float(f):

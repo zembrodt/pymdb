@@ -363,8 +363,16 @@ class TestIsMoneyString(unittest.TestCase):
         s = '$123,456,789'
         self.assertTrue(is_money_string(s))
 
+    def test_is_money_string_gbp(self):
+        s = 'GBP123,456'
+        self.assertTrue(is_money_string(s))
+
     def test_is_money_string_incorrect_format(self):
         s = '123,456'
+        self.assertFalse(is_money_string(s))
+
+    def test_is_money_string_unsupported_denomination(self):
+        s = 'YEN123,456'
         self.assertFalse(is_money_string(s))
 
 
@@ -384,11 +392,39 @@ class TestTrimMoneyString(unittest.TestCase):
         correct_result = '123456789'
         self.assertEqual(trim_money_string(s), correct_result)
 
+    def test_trim_money_string_gbp(self):
+        s = 'GBP123,456'
+        correct_result = '123456'
+        self.assertEqual(trim_money_string(s), correct_result)
+
     def test_trim_money_string_incorrect_format(self):
         s = '123,456'
         correct_result = '123,456'
         self.assertEqual(trim_money_string(s), correct_result)
 
+    def test_trim_money_string_unsupported_denomination(self):
+        s = 'YEN123,456'
+        correct_result = 'YEN123,456'
+        self.assertEqual(trim_money_string(s), correct_result)
+
+class TestGetDenomination(unittest.TestCase):
+    def test_get_denomination_usd(self):
+        s = '$123,456'
+        correct_result = 'USD'
+        self.assertEqual(get_denomination(s), correct_result)
+
+    def test_get_denomination_gbp(self):
+        s = 'GBP123,456'
+        correct_result = 'GBP'
+        self.assertEqual(get_denomination(s), correct_result)
+
+    def test_get_denomination_unsupported_denomination(self):
+        s = 'YEN123,456'
+        self.assertIsNone(get_denomination(s))
+
+    def test_get_denomination_non_monetary(self):
+        s = 'test'
+        self.assertIsNone(get_denomination(s))
 
 class TestIsFloat(unittest.TestCase):
     def test_is_float_float(self):
