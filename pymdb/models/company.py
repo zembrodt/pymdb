@@ -7,7 +7,7 @@ from pymdb.utils import is_int
 
 
 class CompanyScrape:
-    """Stores a title a company is credited in on IMDb.
+    """Stores a title a company is credited for on IMDb.
 
     This information is taken from IMDb's search by company ID for titles
     that include it in their credits.

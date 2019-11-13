@@ -14,7 +14,7 @@ from pymdb.utils import (
 
 
 class TitleAkas:
-    """Class to store the row information from IMDb's 'title.akas.tsv' dataset.
+    """Class to store the row information from IMDb's "`title.akas.tsv`" dataset.
     
     Provides additional information for a title.
 
@@ -106,19 +106,19 @@ class TitleAkas:
 
 
 class TitleBasics:
-    """Class to store the row information from IMDb's 'title.basics.tsv' dataset.
+    """Class to store the row information from IMDb's "`title.basics.tsv`" dataset.
     
     Basic information for a title.
 
     Args:
         title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
-        title_type (:obj:`str`): The type/format of the title (ex: movie, short,
-            tvseries, tvepisode, video, etc).
+        title_type (:obj:`str`): The type/format of the title (ex: `movie`, `short`,
+            `tvseries`, `tvepisode`, `video`, etc).
         primary_title (:obj:`str`): The popular title used for this title.
         original_title (:obj:`str`): The original title in the original langauge.
         is_adult (:obj:`bool` or :obj:`str`): Determines if this is an adult title.
         start_year (:obj:`int` or :obj:`str`): The year this title was released, or 
-            for TV series, the year the series started.
+            for a TV series: the year the series started.
         end_year (:obj:`int` or :obj:`str`): The year this TV series ended, otherwise `None`.
         runtime_minutes (:obj:`int` or :obj:`str`): The length of the title's runtime in minutes.
         genres (:obj:`list` of :obj:`str`): A list of up to three genres associated with
@@ -210,7 +210,7 @@ class TitleBasics:
 
 
 class TitleCrew:
-    """Class to store the row information from IMDb's 'title.crew.tsv' dataset.
+    """Class to store the row information from IMDb's "`title.crew.tsv`" dataset.
     
     Director(s) and writer(s) for a title.
 
@@ -263,12 +263,12 @@ class TitleCrew:
 
 
 class TitleEpisode:
-    """Class to store the row information from IMDb's 'title.episodes.tsv' dataset.
+    """Class to store the row information from IMDb's "`title.episodes.tsv`" dataset.
     
     Args:
         title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
-        parent_title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`,
-            represents the parent TV series to the episode.
+        parent_title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
+            Represents the parent TV series to the episode.
         season_number (:obj:`int` or :obj:`str`): The season this episode was aired in.
         episode_number (:obj:`int` or :obj:`str`): The episode number it was aired as
             in the season.
@@ -315,7 +315,7 @@ class TitleEpisode:
 
 
 class TitlePrincipalCrew:
-    """Class to store the row information from IMDb's 'title.principals.tsv' dataset.
+    """Class to store the row information from IMDb's "`title.principals.tsv`" dataset.
     
     Principal cast/crew for a title.
 
@@ -382,7 +382,7 @@ class TitlePrincipalCrew:
 
 
 class TitleRating:
-    """Class to store the row information from IMDb's 'title.ratings.tsv' dataset.
+    """Class to store the row information from IMDb's "`title.ratings.tsv`" dataset.
     
     Args:
         title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
@@ -450,10 +450,10 @@ class TitleScrape:
         taglines (:obj:`list` of :obj:`str`): A list of all of the title's taglines.
         plot (:obj:`str`): The title's plot.
         storyline (:obj:`str`): The title's storyline.
-        production_companies (:obj:`list` of :obj:`str`): A list of company IDs credited with
-            producing the title. These IDs are used by IMDb and prefixed with `co`.
-        top_cast (:obj:`list` of :obj:`str`): A list of person IDs for the top cast in the title.
-            These IDs are used by IMDb and prefixed with `nm`.
+        production_companies (:obj:`list` of :obj:`str`): A list of company IDs, used by IMDb and
+            prefixed with `co`, that are credited with producing the title.
+        top_cast (:obj:`list` of :obj:`str`): A list of person IDs, used by IMDb and prefixed with `nm`,
+            that are the top cast in the title.
         budget (:obj:`int` or :obj:`str`): The budget for the title as an integer.
         opening_weekend_gross (:obj:`int` or :obj:`str`): The title's gross on its opening weekend.
         opening_weekend_date (:obj:`datetime` or :obj:`str`): A `datetime` object or formatted string
@@ -632,16 +632,16 @@ class TitleScrape:
 class TitleTechSpecsScrape:
     """Object to represent information for a title's technical specifications.
 
-    This information is scraped from the technical IMDb web page for a title.
+    This information is scraped from the `technical` IMDb web page for a title.
 
     Args:
         title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
         runtime (:obj:`int` or :obj:`str`): The length of the title's runtime in minutes.
-        sound_mix (:obj:`list` of :obj:`str`): A list of the title's sound mixes
+        sound_mix (:obj:`list` of :obj:`str`): A list of the title's sound mixes.
         color (:obj:`str`): The color used in the title.
         aspect_ratio (:obj:`list` of :obj:`str`): A list of each aspect ratio the title
             is available in.
-        camera (:obj:`list` of :obj:`str`): A list the cameras used in the title.
+        camera (:obj:`list` of :obj:`str`): A list of the cameras used in the title.
         laboratory (:obj:`list` of :obj:`str`): A list of all the title's laboratories.
         negative_format (:obj:`str`): The title's negative format.
         cinematographic_process (:obj:`list` of :obj:`str`): A list of each of the title's

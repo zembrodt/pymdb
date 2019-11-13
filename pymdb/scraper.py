@@ -47,7 +47,9 @@ class PyMDbScraper:
         """Scrapes information from the IMDb web page for the specified title.
 
         Uses the given title ID to request the IMDb page for the title and scrapes
-        the page's information into a new `TitleScrape` object.
+        the page's information into a new `TitleScrape` object. An optional argument
+        `include_taglines` allows an additional request to be made to gather all
+        taglines IMDb has for the title.
 
         Args:
             title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
@@ -347,7 +349,7 @@ class PyMDbScraper:
     def get_full_credits(self, title_id):
         """Scrapes the full list of credited people for a title, not including actors.
 
-        Will scrape the all credited members of a title, without the actors. For example, this will
+        Will scrape all the credited members of a title, without the actors. For example, this will
         include all directors, writers, producers, cinematographers, etc.
 
         Args:
@@ -514,9 +516,11 @@ class PyMDbScraper:
     def get_name_credits(self, name_id, include_episodes=False):
         """Scrapes all title credits a person is included in.
 
-        Scrapes the full filmography from a person's IMDb page to get each
+        Scrapes the `full filmography` from a person's IMDb page to get each
         title they are credited in, and what category that credit is under.
-        Each credit is created with a new `NameCreditScrape` object.
+        An optional argument `include_episodes` will also scrape each episode
+        an actor is in if the title is a TV series. Each credit is created
+        with a new `NameCreditScrape` object.
 
         Args:
             name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
@@ -627,8 +631,8 @@ class PyMDbScraper:
         """Scrapes all titles a company is credited for on IMDb.
 
         Will scrape all titles listed under a company on IMDb by going through each page
-        in IMDb's company search. This only gives the year(s) the company was involved with
-        each title and 'notes' for each listed on IMDb.
+        in IMDb's `company search`. This only gives the year(s) the company was involved with
+        each title and `notes` for each listed on IMDb.
 
         Args:
             company_id (:obj:`str`): The company's ID used by IMDb prefixed with `co`.
@@ -755,8 +759,9 @@ class PyMDbScraper:
     def get_tech_specs(self, title_id):
         """Gets information for all tech specs for a title.
 
-        Uses a title's technical web page on IMDb to scrape all technical
-        specifications listed. Each tech spec creates a new `TitleTechSpecScrape` object.
+        Uses a title's `technical` web page on IMDb to scrape all technical
+        specifications listed. A new `TitleTechSpecScrape` object is created
+        for the tech specs.
 
         Args:
             title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.

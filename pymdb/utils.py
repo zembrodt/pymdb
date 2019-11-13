@@ -13,7 +13,6 @@ _CATEGORY_INDEX = 3
 _REF_MARKER_INDEX = 4
 
 
-# TODO: add all error checking
 def append_filename_to_path(path, filename):
     """Append a filename to a system file path.
 
@@ -70,15 +69,15 @@ def gunzip_file(infile, outfile=None, delete_infile=False):
 
 
 def preprocess_list(lst):
-    """Process a row of data from the IMDb datasets.
+    r"""Process a row of data from the IMDb datasets.
 
-    Replaces all '\\&nbsp;N' characters in the IMDb dataset with `None`.
+    Replaces all "`\\N`" characters in the IMDb dataset with `None`.
 
     Args:
-        lst (:obj:`list`): A list of strings after the row has been tab-split.
+        lst (:obj:`list` of :obj:`str`): A list of strings to process.
 
     Returns:
-        :obj:`list`: A list of strings with all '\\&nbsp;N' strings being set to `None`.
+        :obj:`list` of :obj:`str`: A list of strings with all "`\\N`" strings being set to `None`.
     """
 
     for i, item in enumerate(lst):
@@ -88,9 +87,9 @@ def preprocess_list(lst):
 
 
 def split_by_br(s):
-    """Split a string by `<br>` tags.
+    r"""Split a string by `<br>` tags.
 
-    Splits by replacing each `<br>` tag with a '\t' character
+    Splits by replacing each `<br>` tag with a "`\\t`" character
     and then splitting.
 
     Args:
@@ -107,12 +106,11 @@ def remove_tags(s, tag):
     """Removes the specified opening and closing tags of the given type.
 
     This method does not remove content between the tags, rather just
-    the tags themselves. An example for tag would be: 'td' to remove
-    all table column tags.
+    the tags themselves. For example: "`td`" to remove all table column tags.
 
     Args:
-        s (:obj:`str`): A string containing HTML information.
-        tag (:obj:`str`): A string with the tagname to be removed.
+        s (:obj:`str`): The HTML to parse.
+        tag (:obj:`str`): The tag to be removed.
 
     Returns:
         :obj:`str`: A string with all of the given tags removed, but other
@@ -126,12 +124,12 @@ def remove_tags_and_content(s, tag):
     """Removes all of the specified tags from the string including their children.
 
     Greedily finds an opening and closing of specified tag and removes all content
-    between the two. Not intended to remove multiple sibling nodes with content
-    in between.
+    between the two. 
+    **Note**: Not intended to remove multiple sibling nodes with content in between.
 
     Args:
-        s (:obj:`str`): A string containing HTML information.
-        tag (:obj:`str`): A string with the tagname to be removed.
+        s (:obj:`str`): The HTML to parse.
+        tag (:obj:`str`): The tag to be removed.
 
     Returns:
         :obj:`str`: A string with all of the specified tags and their content removed.
@@ -141,14 +139,14 @@ def remove_tags_and_content(s, tag):
 
 
 def _get_id(node, prefix):
-    """Private function to find an IMDb ID within a link node
+    """Private function to find an IMDb ID within a link node.
 
-    Will only look for the IMDb ID within the 'href' attribute of a
-    selectolax Node.
+    Will only look for the IMDb ID within the "`href`" attribute of a
+    selectolax `Node`.
 
     Args:
-        node (:class:`Node`): A `Node` containing the 'href' attribute.
-        prefix (:obj:`str`): The IMDb ID prefix ('co', 'nm', or 'tt').
+        node (:class:`Node`): A `Node` containing the "`href`" attribute.
+        prefix (:obj:`str`): The IMDb ID prefix (`co`, `nm`, or `tt`).
 
     Returns:
         :obj:`str`: The IMDb ID, or `None` if none was found.
@@ -161,9 +159,9 @@ def _get_id(node, prefix):
 
 
 def get_company_id(node):
-    """Find the IMDb company ID within a selectolax Node.
+    """Find the IMDb company ID within a selectolax `Node`.
 
-    Expects the ID to be within the `Node`'s 'href' attribute.
+    Expects the ID to be within the `Node`'s "`href`" attribute.
 
     Args:
         node (:class:`Node`): A `Node` containing the ID.
@@ -176,9 +174,9 @@ def get_company_id(node):
 
 
 def get_name_id(node):
-    """Find the IMDb name ID within a selectolax Node.
+    """Find the IMDb name ID within a selectolax `Node`.
 
-    Expects the ID to be within the Node's 'href' attribute.
+    Expects the ID to be within the `Node`'s "`href`" attribute.
 
     Args:
         node (:class:`Node`): A `Node` containing the ID.
@@ -191,9 +189,9 @@ def get_name_id(node):
 
 
 def get_title_id(node):
-    """Find the IMDb title ID within a selectolax Node.
+    """Find the IMDb title ID within a selectolax `Node`.
 
-    Expects the ID to be within the Node's 'href' attribute.
+    Expects the ID to be within the `Node`'s "`href`" attribute.
 
     Args:
         node (:obj:`Node`): A `Node` containing the ID.
@@ -206,17 +204,17 @@ def get_title_id(node):
 
 
 def _get_from_onclick(node, index):
-    """Private function to grab a value in the 'onclick' attribute.
+    """Private function to grab a value in the "`onclick`" attribute.
 
-    Grabs the value in the specified index of the 'onclick' attribute
-    of a selectolax Node.
+    Grabs the value in the specified index of the "`onclick`" attribute
+    of a selectolax `Node`.
 
     Args:
-        node (:class:`Node`): A `Node` containing the 'onclick' attribute.
+        node (:class:`Node`): A `Node` containing the "`onclick`" attribute.
         index (:obj:`int`): The index of the value to grab.
     
     Returns:
-        :obj:`str`: The value found within the 'onclick' attribute,
+        :obj:`str`: The value found within the "`onclick`" attribute,
         or `None` if it was not found.
     """
 
@@ -228,12 +226,12 @@ def _get_from_onclick(node, index):
 
 
 def get_category(node):
-    """Gets the category value from a selectolax Node.
+    """Gets the category value from a selectolax `Node`.
 
-    Grabs the value from the Node's 'onclick' attribute.
+    Grabs the value from the `Node`'s "`onclick`" attribute.
 
     Args:
-        node (:class:`Node`): A `Node` containing the 'onclick' attribute.
+        node (:class:`Node`): A `Node` containing the "`onclick`" attribute.
 
     Returns:
         :obj:`str`: The category.
@@ -243,12 +241,12 @@ def get_category(node):
 
 
 def get_ref_marker(node):
-    """Gets the ref marker value from a selectolax Node.
+    """Gets the ref marker value from a selectolax `Node`.
 
-    Grabs the value from the Node's 'onclick' attribute.
+    Grabs the value from the `Node`'s "`onclick`" attribute.
 
     Args:
-        node (:class:`Node`): A `Node` containing the 'onclick' attribute.
+        node (:class:`Node`): A `Node` containing the "`onclick`" attribute.
 
     Returns:
         :obj:`str`: The ref marker.
@@ -261,14 +259,14 @@ def trim_year(year):
     """Used to trim roman numerals from year values.
 
     IMDb differentiates movies of the same title and the same year with
-    the format: YYYY/<Roman numeral>. This function removes the roman numerals
+    the format: `YYYY/<Roman numeral>`. This function removes the roman numerals
     and returns just the year value.
 
     Args:
         year (:obj:`str`): The year and roman numeral combination.
 
     Returns:
-        :obj:`str`: The year with roman numerals removed, or None if year was `None`.
+        :obj:`str`: The year with roman numerals removed, or `None` if year was `None`.
     """
 
     return re.sub(r'/\w*', '', year) if year is not None else None
@@ -290,9 +288,9 @@ def is_money_string(s):
 
 
 def trim_money_string(s):
-    """Trims excess characters from a monetary value
+    """Trims excess characters from a monetary value.
 
-    Only keeps the digits within a monetary value, such as $123,456 to 123456. Trims dollar signs and commas.
+    Only keeps the digits within a monetary value, such as trimming `$123,456` to `123456`. Trims dollar signs and commas.
 
     Args:
         s (:obj:`str`): The monetary amount to trim.
@@ -308,13 +306,13 @@ def trim_money_string(s):
 
 
 def is_float(f):
-    """Check if a variable is a float type.
+    """Check if a variable is a `float` type.
     
     Args:
         f: The object to check.
 
     Returns:
-        :obj:`bool`: If they object can be converted to a :obj:`float`.
+        :obj:`bool`: If the object can be converted to a :obj:`float`.
     """
 
     if not f:
@@ -327,7 +325,7 @@ def is_float(f):
 
 
 def is_int(i):
-    """Check if a variable is an int type.
+    """Check if a variable is an `int` type.
     
     Args:
         i: The object to check.
@@ -346,13 +344,13 @@ def is_int(i):
 
 
 def to_bool(b):
-    """Convert a variable to a boolean type.
+    """Convert a variable to a `boolean` type.
     
     Args:
         b: The object to convert.
 
     Returns:
-        :obj:`bool`: The boolean representation of the object.
+        :obj:`bool`: The `boolean` representation of the object.
     """
 
     if is_int(b):
@@ -361,19 +359,20 @@ def to_bool(b):
 
 
 def to_datetime(d):
-    """Convert a variable can be converted to a datetime object.
+    """Convert a variable to a `datetime` object.
 
     Checks various formats used in IMDb to convert the variable to a
-    datetime object under those types. The types include:
-    - %d %B %Y
-    - %Y
-    - %Y-%m-%d
+    `datetime` object under those formats. The formats include:
+
+    - `%d %B %Y`
+    - `%Y`
+    - `%Y-%m-%d`
 
     Args:
         d (:obj:`str`): A string to convert to a `datetime` object.
     
     Returns:
-        :obj:`datetime`: A `datetime` object that was represented by the string, or `None` if d is `None`.
+        :obj:`datetime`: A `datetime` object that was represented by the string, or `None` if `d` is `None`.
     
     Raises:
         :class:`ValueError`: If the string could not be converted.

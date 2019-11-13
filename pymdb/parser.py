@@ -43,9 +43,9 @@ _NAME_BASICS = _IMDbDataset('name.basics.tsv', 6)
 
 
 class PyMDbParser:
-    """Object used to parse the tsv datasets provided by IMDb.
+    """Object used to parse the `tsv` datasets provided by IMDb.
 
-    Parses each row in the tsv file into a specific PyMDb object.
+    Parses each row in the `tsv` file into a specific PyMDb object.
 
     Args:
         use_default_filenames (:obj:`bool`, optional): Determine whether the filenames for each dataset are the same as

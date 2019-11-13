@@ -13,16 +13,16 @@ from pymdb.utils import (
 
 
 class NameBasics:
-    """Class to store the row information from IMDb's 'name.basics.tsv' dataset.
+    """Class to store the row information from IMDb's "`name.basics.tsv`" dataset.
     
     Args:
-        name_id (:obj:`str`): The IMDb ID for the person prefixed with `nm`.
+        name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
         primary_name(:obj:`str`): The person's name.
         birth_year (:obj:`datetime` or :obj:`str`): A `datetime` object or correctly formatted string representing the person's birth year.
         death_year (:obj:`datetime` or :obj:`str`): A `datetime` object or correctly formatted string representing the person's death year,
-            or `None` if it does not exist.
-        primary_professions (:obj:`list` of :obj:`str`): A list of strings for all the person's primary professions.
-        known_for_titles (:obj:`list` of :obj:`str`): A list of strings of title IDs for each title the person is known for.
+            or `None` otherwise.
+        primary_professions (:obj:`list` of :obj:`str`): A list of all the person's primary professions.
+        known_for_titles (:obj:`list` of :obj:`str`): A list of title IDs for each title the person is known for.
     """
 
     def __init__(self, name_id, primary_name, birth_year, death_year, primary_professions, known_for_titles):
@@ -89,9 +89,9 @@ class NameBasics:
 
 
 class CreditScrape:
-    """Object to represent information for each person scraped from IMDb's fullcredits page for a title.
+    """Object to represent information for each person scraped from IMDb's `fullcredits` page for a title.
 
-    This information is scraped from the fullcredits IMDb web page, and will either represent an actor or
+    This information is scraped from the `fullcredits` IMDb web page, and will either represent an actor or
     another crew member.
 
     Args:
@@ -170,7 +170,7 @@ class CreditScrape:
 class NameScrape:
     """Specific information on a person scraped from IMDb.
 
-    This information is taken from IMDb's bio web page on a person to find detailed information.
+    This information is taken from IMDb's `bio` web page on a person to find detailed information.
 
     Args:
         name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
@@ -263,9 +263,9 @@ class NameScrape:
 
 
 class NameCreditScrape:
-    """Stores credit information from a person's full filmography on IMDb.
+    """Stores credit information from a person's `full filmography` on IMDb.
 
-    This information is taken from IMDb's full filmography section of a person's
+    This information is taken from IMDb's `full filmography` section of a person's
     personal web page.
 
     Args:
@@ -274,8 +274,8 @@ class NameCreditScrape:
         category (:obj:`str`): The category this credit is listed under in the filmography section.
         start_year (:obj:`int` or :obj:`str`): The year the title released, or the starting
             year they were credited for on a TV series.
-        end_year (:obj:`int` or :obj:`str`): The year the person stopped being credited,
-            or `None` if not a TV series.
+        end_year (:obj:`int` or :obj:`str`): The year the person stopped being credited on a TV series,
+            or `None` otherwise.
         role (:obj:`str`): A string of the role the person is credited for the title, such as character.
         title_notes (:obj:`list` of :obj:`str`): A list of further notes for a person's credit on a title.
     """
