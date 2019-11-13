@@ -17,8 +17,11 @@ If downloading the source from GitHub, PyMDb requires the following packages:
   
 ## Usage  
   
-```python  
-parser = PyMDbParser(gunzip_files=True)  
+```python 
+import pymdb
+from collections import defaultdict
+
+parser = pymdb.PyMDbParser(gunzip_files=True)  
 genre_count = defaultdict(int)  
 for title in parser.get_title_basics('path/to/files'):  
     for genre in title.genres:  
@@ -26,7 +29,7 @@ for title in parser.get_title_basics('path/to/files'):
 for genre in genre_count:  
     print(f'{genre}: {genre_count[genre]}')
   
-scraper = PyMDbScraper()  
+scraper = pymdb.PyMDbScraper()  
 title = scraper.get_title('tt0076759')  
 print(f'{title.title_text} came out in {title.release_date.year}!')  
 ```  
