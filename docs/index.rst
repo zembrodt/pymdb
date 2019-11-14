@@ -5,6 +5,7 @@
     :caption: Contents:
 
     modules/index
+    release_notes
 
 Indices and tables
 ==================
