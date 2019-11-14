@@ -797,48 +797,51 @@ class TestGetNameCredits(unittest.TestCase):
                 self.assertEqual(name_credit.end_year, correct_credit.end_year)
                 self.assertEqual(name_credit.role, correct_credit.role)
                 self.assertEqual(name_credit.title_notes, correct_credit.title_notes)
-        self.assertEqual(category_count['actor'], actor_credits)
+        self.assertGreaterEqual(category_count['actor'], actor_credits)
 
     def test_get_name_credits_actor_with_episodes(self):
-        name_id = 'nm0921942'
+        name_id = 'nm3229685'
         scraper = PyMDbScraper()
 
         # Correct values
         correct_name_credits = {
-            'tt0149460': NameCreditScrape(
+            'tt0944947': NameCreditScrape(
                 name_id,
-                'tt0149460',
+                'tt0944947',
                 'actor',
-                1999,
-                2013,
-                'Philip J. Fry / Dr. Zoidberg / Prof. Hubert J. Farnsworth / ...',
+                2011,
+                2019,
+                'Jon Snow',
                 ['TV Series']
             ),
-            'tt0584449': NameCreditScrape(
+            'tt6027914': NameCreditScrape(
                 name_id,
-                'tt0584449',
-                'actor',
-                1999,
-                None,
-                'Philip J. Fry / Prof. Hubert J. Farnsworth / Smitty / ... (voice)',
-                []
-            ),
-            'tt7177816': NameCreditScrape(
-                name_id,
-                'tt7177816',
+                'tt6027914',
                 'actor',
                 2019,
                 None,
-                '(voice)',
+                'Jon Snow',
+                []
+            ),
+            'tt2070135': NameCreditScrape(
+                name_id,
+                'tt2070135',
+                'actor',
+                2012,
+                None,
+                'Jon Snow',
                 []
             )
         }
+        actor_credits = 78
 
+        category_count = defaultdict(int)
         for name_credit in scraper.get_name_credits(name_id, include_episodes=True):
             self.assertEqual(name_credit.name_id, name_id)
             self.assertIsNotNone(name_credit.title_id)
             self.assertIsNotNone(name_credit.category)
             self.assertIsNotNone(name_credit.title_notes)
+            category_count[name_credit.category] += 1
 
             if name_credit.title_id in correct_name_credits and name_credit.category == 'actor':
                 correct_credit = correct_name_credits[name_credit.title_id]
@@ -848,6 +851,7 @@ class TestGetNameCredits(unittest.TestCase):
                 self.assertEqual(name_credit.end_year, correct_credit.end_year)
                 self.assertEqual(name_credit.role, correct_credit.role)
                 self.assertEqual(name_credit.title_notes, correct_credit.title_notes)
+        self.assertGreaterEqual(category_count['actor'], actor_credits)
 
     def test_get_name_credits_director(self):
         name_id = 'nm0796117'
@@ -901,7 +905,7 @@ class TestGetNameCredits(unittest.TestCase):
                 self.assertEqual(name_credit.end_year, correct_credit.end_year)
                 self.assertEqual(name_credit.role, correct_credit.role)
                 self.assertEqual(name_credit.title_notes, correct_credit.title_notes)
-        self.assertEqual(category_count['director'], director_credits)
+        self.assertGreaterEqual(category_count['director'], director_credits)
 
     def test_get_name_credits_director_with_episodes(self):
         name_id = 'nm0764601'
@@ -1005,7 +1009,7 @@ class TestGetNameCredits(unittest.TestCase):
                 self.assertEqual(name_credit.end_year, correct_credit.end_year)
                 self.assertEqual(name_credit.role, correct_credit.role)
                 self.assertEqual(name_credit.title_notes, correct_credit.title_notes)
-        self.assertEqual(category_count['composer'], composer_credits)
+        self.assertGreaterEqual(category_count['composer'], composer_credits)
 
     def test_get_name_credits_crew_member_with_episodes(self):
         name_id = 'nm1014697'
