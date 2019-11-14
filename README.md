@@ -1,8 +1,8 @@
 # PyMDb
 [![PyPI](https://img.shields.io/pypi/v/py-mdb.svg?style=flat-square)](https://pypi.org/project/py-mdb/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/py-mdb.svg?style=flat-square)](https://pypi.org/project/py-mdb/)
-[![License](https://img.shields.io/pypi/l/py-mdb.svg?style=flat-square)](https://github.com/zembrodt/pymdb/blob/master/LICENSE.txt)
-[![Build Status](https://travis-ci.org/zembrodt/pymdb.svg?branch=master)](https://travis-ci.org/zembrodt/pymdb)
+[![License](https://img.shields.io/pypi/l/py-mdb.svg?style=flat-square)](https://github.com/zembrodt/pymdb/blob/master/LICENSE)
+[![Build Status](https://travis-ci.com/zembrodt/pymdb.svg?branch=master)](https://travis-ci.com/zembrodt/pymdb)
 
 PyMDb is a package for both parsing the datasets provided by IMDb and scraping information from their web pages.
 
