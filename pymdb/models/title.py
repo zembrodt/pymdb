@@ -118,13 +118,13 @@ class TitleBasics:
         is_adult (:obj:`bool`): Determines if this is an adult title.
         start_year (:obj:`int`): The year this title was released or the year the series started.
         end_year (:obj:`int`): The year this TV series ended, otherwise `None`.
-        runtime_minutes (:obj:`int`): The length of the title's runtime in minutes.
+        runtime (:obj:`int`): The length of the title's runtime in minutes.
         genres (:obj:`list` of :obj:`str`): A list of up to three genres associated with
             this title.
     """
 
     def __init__(self, title_id, title_type, primary_title, original_title, is_adult, start_year, end_year,
-                 runtime_minutes, genres):
+                 runtime, genres):
         self._title_id = title_id
         self._title_type = title_type
         self._primary_title = primary_title
@@ -132,13 +132,13 @@ class TitleBasics:
         self._is_adult = None
         self._start_year = None
         self._end_year = None
-        self._runtime_minutes = None
+        self._runtime = None
         self._genres = []
 
         self.is_adult = is_adult
         self.start_year = start_year
         self.end_year = end_year
-        self.runtime_minutes = runtime_minutes
+        self.runtime = runtime
         self.genres = genres
 
     @property
@@ -184,13 +184,13 @@ class TitleBasics:
             self._end_year = int(value)
 
     @property
-    def runtime_minutes(self):
-        return self._runtime_minutes
+    def runtime(self):
+        return self._runtime
 
-    @runtime_minutes.setter
-    def runtime_minutes(self, value):
+    @runtime.setter
+    def runtime(self, value):
         if is_int(value):
-            self._runtime_minutes = int(value)
+            self._runtime = int(value)
 
     @property
     def genres(self):

@@ -230,7 +230,7 @@ class TestGetTitleBasics(unittest.TestCase):
         self.assertFalse(actual1.is_adult)
         self.assertEqual(actual1.start_year, int(self.start_year))
         self.assertEqual(actual1.end_year, int(self.end_year))
-        self.assertEqual(actual1.runtime_minutes, int(self.runtime))
+        self.assertEqual(actual1.runtime, int(self.runtime))
         self.assertEqual(actual1.genres, self.genres.split(','))
         self.assertIsNone(actual2.end_year)
 
@@ -252,7 +252,7 @@ class TestGetTitleBasics(unittest.TestCase):
         self.assertFalse(actual1.is_adult)
         self.assertEqual(actual1.start_year, int(self.start_year))
         self.assertEqual(actual1.end_year, int(self.end_year))
-        self.assertEqual(actual1.runtime_minutes, int(self.runtime))
+        self.assertEqual(actual1.runtime, int(self.runtime))
         self.assertEqual(actual1.genres, self.genres.split(','))
         self.assertIsNone(actual2.end_year)
 
@@ -275,7 +275,7 @@ class TestGetTitleBasics(unittest.TestCase):
         self.assertFalse(actual1.is_adult)
         self.assertEqual(actual1.start_year, int(self.start_year))
         self.assertEqual(actual1.end_year, int(self.end_year))
-        self.assertEqual(actual1.runtime_minutes, int(self.runtime))
+        self.assertEqual(actual1.runtime, int(self.runtime))
         self.assertEqual(actual1.genres, self.genres.split(','))
         self.assertIsNone(actual2.end_year)
 
@@ -298,7 +298,7 @@ class TestGetTitleBasics(unittest.TestCase):
         self.assertFalse(actual1.is_adult)
         self.assertEqual(actual1.start_year, int(self.start_year))
         self.assertEqual(actual1.end_year, int(self.end_year))
-        self.assertEqual(actual1.runtime_minutes, int(self.runtime))
+        self.assertEqual(actual1.runtime, int(self.runtime))
         self.assertEqual(actual1.genres, self.genres.split(','))
         self.assertIsNone(actual2.end_year)
 
@@ -321,7 +321,7 @@ class TestGetTitleBasics(unittest.TestCase):
         self.assertFalse(actual1.is_adult)
         self.assertEqual(actual1.start_year, int(self.start_year))
         self.assertEqual(actual1.end_year, int(self.end_year))
-        self.assertEqual(actual1.runtime_minutes, int(self.runtime))
+        self.assertEqual(actual1.runtime, int(self.runtime))
         self.assertEqual(actual1.genres, self.genres.split(','))
         self.assertIsNone(actual2.end_year)
 
@@ -344,7 +344,7 @@ class TestGetTitleBasics(unittest.TestCase):
         self.assertFalse(actual1.is_adult)
         self.assertEqual(actual1.start_year, int(self.start_year))
         self.assertEqual(actual1.end_year, int(self.end_year))
-        self.assertEqual(actual1.runtime_minutes, int(self.runtime))
+        self.assertEqual(actual1.runtime, int(self.runtime))
         self.assertEqual(actual1.genres, self.genres.split(','))
         self.assertIsNone(actual2.end_year)
 
@@ -367,7 +367,7 @@ class TestGetTitleBasics(unittest.TestCase):
         self.assertFalse(actual1.is_adult)
         self.assertEqual(actual1.start_year, int(self.start_year))
         self.assertEqual(actual1.end_year, int(self.end_year))
-        self.assertEqual(actual1.runtime_minutes, int(self.runtime))
+        self.assertEqual(actual1.runtime, int(self.runtime))
         self.assertEqual(actual1.genres, self.genres.split(','))
         self.assertIsNone(actual2.end_year)
 
