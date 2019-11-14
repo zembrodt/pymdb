@@ -18,9 +18,8 @@ class NameBasics:
     Args:
         name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
         primary_name(:obj:`str`): The person's name.
-        birth_year (:obj:`datetime` or :obj:`str`): A `datetime` object or correctly formatted string representing the person's birth year.
-        death_year (:obj:`datetime` or :obj:`str`): A `datetime` object or correctly formatted string representing the person's death year,
-            or `None` otherwise.
+        birth_year (:obj:`datetime`): The person's birth year.
+        death_year (:obj:`datetime`): The person's death year, or `None` otherwise.
         primary_professions (:obj:`list` of :obj:`str`): A list of all the person's primary professions.
         known_for_titles (:obj:`list` of :obj:`str`): A list of title IDs for each title the person is known for.
     """
@@ -99,12 +98,12 @@ class CreditScrape:
         title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
         job_title (:obj:`str`): The job title the person is credited for on the title.
         credit (:obj:`str`): Further credits for the person on the title.
-        episode_count (:obj:`int` or :obj:`str`):How many episodes the person is credited for
-            if a TV series, otherwise `None`.
-        episode_year_start (:obj:`int` or :obj:`str`): The year the person began being
-            credited for if title is a TV series, otherwise `None`.
-        episode_year_end (:obj:`int` or :obj:`str`): The year the person stopped being
-            credited for if title is a TV series, otherwise `None`.
+        episode_count (:obj:`int`): How many episodes the person is credited for if a
+            TV series, otherwise `None`.
+        episode_year_start (:obj:`int`): The year the person began being credited in the
+            title if the title is a TV series, otherwise `None`.
+        episode_year_end (:obj:`int`): The year the person stopped being credited in the
+            title if the title is a TV series, otherwise `None`.
     """
 
     def __init__(self, name_id, title_id, job_title, credit, episode_count, episode_year_start, episode_year_end):
@@ -177,14 +176,13 @@ class NameScrape:
         display_name (:obj:`str`): The name IMDb lists the person having currently. Usually
             how they are well known or credited.
         birth_name (:obj:`str`): The name IMDb lists the person born as.
-        birth_date (:obj:`datetime` or :obj:`str`): A `datetime` object or formatted string of the date the person was born.
+        birth_date (:obj:`datetime`): The date the person was born.
         birth_city (:obj:`str`): The city the person was born in.
-        death_date (:obj:`datetime` or :obj:`str`): A `datetime` object or formatted string of the date the person died,
-            or `None` otherwise.
+        death_date (:obj:`datetime`): The date the person died, or `None` otherwise.
         death_city (:obj:`str`): The city the person died in, or `None` otherwise.
         death_cause (:obj:`str`): The person's cause of death, or `None` otherwise.
         nicknames (:obj:`list` of :obj:`str`): All of the person's nicknames.
-        height (:obj:`float` or :obj:`str`): How tall the person is in meters.
+        height (:obj:`float`): How tall the person is in meters.
     """
 
     def __init__(self, name_id, display_name, birth_name, birth_date, birth_city,
@@ -272,10 +270,9 @@ class NameCreditScrape:
         name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
         title_id (:obj:`str`): The titles's ID used by IMDb prefixed with `tt`.
         category (:obj:`str`): The category this credit is listed under in the filmography section.
-        start_year (:obj:`int` or :obj:`str`): The year the title released, or the starting
-            year they were credited for on a TV series.
-        end_year (:obj:`int` or :obj:`str`): The year the person stopped being credited on a TV series,
-            or `None` otherwise.
+        start_year (:obj:`int`): The year the title released, or the starting year they were credited
+            for on a TV series.
+        end_year (:obj:`int`): The year the person stopped being credited on a TV series, or `None` otherwise.
         role (:obj:`str`): A string of the role the person is credited for the title, such as character.
         title_notes (:obj:`list` of :obj:`str`): A list of further notes for a person's credit on a title.
     """

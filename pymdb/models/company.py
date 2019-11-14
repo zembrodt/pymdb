@@ -15,10 +15,10 @@ class CompanyScrape:
     Args:
         company_id (:obj:`str`): The companys's ID used by IMDb prefixed with `co`.
         title_id (:obj:`str`): The titles's ID used by IMDb prefixed with `tt`.
-        start_year (:obj:`int` or :obj:`str`): The year the title released,
-            or the year the company started being credited for a TV series.
-        end_year (:obj:`int` or :obj:`str`): The year the company stopped
-            being credited for a TV series, or `None` otherwise.
+        start_year (:obj:`int`): The year the title released, or the year the company
+            started being credited for a TV series.
+        end_year (:obj:`int`): The year the company stopped being credited for a TV series,
+            or `None` otherwise.
         notes (:obj:`list` of :obj:`str`): A list of further notes IMDb gives about the credit.
     """
 
