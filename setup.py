@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="py-mdb",
-    version="0.0.3",
+    version="0.1.0",
     author="Ryan Zembrodt",
     author_email="ryan.zembrodt@gmail.com",
     description="Package for parsing IMDb datasets and scraping web pages",
@@ -14,11 +14,15 @@ setuptools.setup(
     url="https://github.com/zembrodt/pymdb",
     packages=setuptools.find_packages(),
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.6",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+    ],
+    keywords = ['imdb', 'pymdb', 'movie', 'film', 'tv', 'series', 'show', 'episode', 
+    'database', 'db', 'dataset', 'web scrape', 'scrape', 'actor', 'actress', 'director',
+    'writer', 'person', 'title', 'company', 'rating'
     ],
     install_requires=[
         "requests",
