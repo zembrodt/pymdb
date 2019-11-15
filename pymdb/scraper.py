@@ -430,14 +430,16 @@ class PyMDbScraper:
                                 )
                 found_title = False  # only because we use continue when set to True for now...
 
-    def get_name(self, name_id):
+    def get_name(self, name_id, include_known_for_titles=False):
         """Scrapes detailed information from a person's personal IMDb web page.
 
-        Will scrape detailed information on a person's IMDb page into a new
+        Will scrape detailed information on a person's IMDb `bio` page into a new
         `NameScrape` object.
 
         Args:
             name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
+            include_known_for_titles (:obj:`bool`, optional): Determines if an optional request should
+                be sent to get the known for titles on a person's default IMDb page.
 
         Returns:
             :class:`~.models.name.NameScrape`: An object with the person's information.
@@ -449,6 +451,7 @@ class PyMDbScraper:
         tree = self._get_tree(request)
 
         display_name = None
+        known_for_titles = []
         birth_date = None
         birth_city = None
         death_date = None
@@ -503,10 +506,20 @@ class PyMDbScraper:
                                 height_match = re.search(r'\(\d+\.*\d*', height_node.text().strip())
                                 if height_match:
                                     height = height_match.group(0).strip('(')
+        if include_known_for_titles:
+            known_for_titles_request = f'https://www.imdb.com/name/{name_id}/'
+            known_for_titles_tree = self._get_tree(known_for_titles_request)
+            known_for_titles_node = known_for_titles_tree.css_first('#knownfor, #knownfor-stacked')
+            if known_for_titles_node:
+                for known_for_title_node in known_for_titles_node.css('.knownfor-title'):
+                    known_for_title_id = get_title_id(known_for_title_node.css_first('a'))
+                    if known_for_title_id:
+                        known_for_titles.append(known_for_title_id)
 
         return NameScrape(
             name_id=name_id,
             display_name=display_name,
+            known_for_titles=known_for_titles,
             birth_name=birth_name,
             birth_date=birth_date,
             birth_city=birth_city,

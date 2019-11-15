@@ -632,10 +632,11 @@ class TestGetName(unittest.TestCase):
     def test_get_name_actor_alive(self):
         name_id = 'nm0000375'
         scraper = PyMDbScraper()
-        name = scraper.get_name(name_id)
+        name = scraper.get_name(name_id, include_known_for_titles=True)
 
         # Correct values
         display_name = 'Robert Downey Jr.'
+        known_for_titles = ['tt0371746', 'tt0988045', 'tt1300854', 'tt0848228']
         birth_date = datetime(1965, 4, 4)
         birth_city = 'Manhattan, New York City, New York, USA'
         death_date = None
@@ -647,6 +648,7 @@ class TestGetName(unittest.TestCase):
 
         self.assertEqual(name.name_id, name_id)
         self.assertEqual(name.display_name, display_name)
+        self.assertEqual(sorted(name.known_for_titles), sorted(known_for_titles))
         self.assertEqual(name.birth_date, birth_date)
         self.assertEqual(name.birth_city, birth_city)
         self.assertEqual(name.death_date, death_date)
@@ -659,10 +661,11 @@ class TestGetName(unittest.TestCase):
     def test_get_name_actor_deceased(self):
         name_id = 'nm0000122'
         scraper = PyMDbScraper()
-        name = scraper.get_name(name_id)
+        name = scraper.get_name(name_id, include_known_for_titles=True)
 
         # Correct values
         display_name = 'Charles Chaplin'
+        known_for_titles = ['tt0032553', 'tt0044837', 'tt0027977', 'tt0039631']
         birth_date = datetime(1889, 4, 16)
         birth_city = 'Walworth, London, England, UK'
         death_date = datetime(1977, 12, 25)
@@ -674,6 +677,7 @@ class TestGetName(unittest.TestCase):
 
         self.assertEqual(name.name_id, name_id)
         self.assertEqual(name.display_name, display_name)
+        self.assertEqual(sorted(name.known_for_titles), sorted(known_for_titles))
         self.assertEqual(name.birth_date, birth_date)
         self.assertEqual(name.birth_city, birth_city)
         self.assertEqual(name.death_date, death_date)
@@ -686,10 +690,11 @@ class TestGetName(unittest.TestCase):
     def test_get_name_director(self):
         name_id = 'nm0796117'
         scraper = PyMDbScraper()
-        name = scraper.get_name(name_id)
+        name = scraper.get_name(name_id, include_known_for_titles=True)
 
         # Correct values
         display_name = 'M. Night Shyamalan'
+        known_for_titles = ['tt0452637', 'tt0286106', 'tt0368447', 'tt0167404']
         birth_date = datetime(1970, 8, 6)
         birth_city = 'Mahé, Pondicherry, India'
         death_date = None
@@ -701,6 +706,7 @@ class TestGetName(unittest.TestCase):
 
         self.assertEqual(name.name_id, name_id)
         self.assertEqual(name.display_name, display_name)
+        self.assertEqual(sorted(name.known_for_titles), sorted(known_for_titles))
         self.assertEqual(name.birth_date, birth_date)
         self.assertEqual(name.birth_city, birth_city)
         self.assertEqual(name.death_date, death_date)
@@ -713,10 +719,11 @@ class TestGetName(unittest.TestCase):
     def test_get_name_crew_member(self):
         name_id = 'nm2361112'
         scraper = PyMDbScraper()
-        name = scraper.get_name(name_id)
+        name = scraper.get_name(name_id, include_known_for_titles=True)
 
         # Correct values
         display_name = 'James Sled'
+        known_for_titles = ['tt4154796', 'tt6565702', 'tt7798634', 'tt3952222']
         birth_date = None
         birth_city = None
         death_date = None
@@ -728,6 +735,7 @@ class TestGetName(unittest.TestCase):
 
         self.assertEqual(name.name_id, name_id)
         self.assertEqual(name.display_name, display_name)
+        self.assertEqual(sorted(name.known_for_titles), sorted(known_for_titles))
         self.assertEqual(name.birth_date, birth_date)
         self.assertEqual(name.birth_city, birth_city)
         self.assertEqual(name.death_date, death_date)
@@ -736,6 +744,23 @@ class TestGetName(unittest.TestCase):
         self.assertEqual(name.birth_name, birth_name)
         self.assertEqual(sorted(name.nicknames), sorted(nicknames))
         self.assertEqual(name.height, height)
+
+    def test_get_name_known_for_stacked(self):
+        name_id = 'nm2361234'
+        scraper = PyMDbScraper()
+        name = scraper.get_name(name_id, include_known_for_titles=True)
+
+        # Correct values
+        known_for_titles = ['tt0457201', 'tt5916418']
+
+        self.assertEqual(sorted(name.known_for_titles), sorted(known_for_titles))
+
+    def test_get_name_no_known_for(self):
+        name_id = 'nm0000375'
+        scraper = PyMDbScraper()
+        name = scraper.get_name(name_id, include_known_for_titles=False)
+
+        self.assertEqual(name.known_for_titles, [])
 
     def test_get_name_bad_request(self):
         name_id = 'tt123456789'

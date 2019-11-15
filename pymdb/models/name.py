@@ -175,6 +175,7 @@ class NameScrape:
         name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
         display_name (:obj:`str`): The name IMDb lists the person having currently. Usually
             how they are well known or credited.
+        known_for_titles (:obj:`list` of :obj:`str`): A list of title IDs for each title the person is known for.
         birth_name (:obj:`str`): The name IMDb lists the person born as.
         birth_date (:obj:`datetime`): The date the person was born.
         birth_city (:obj:`str`): The city the person was born in.
@@ -185,10 +186,11 @@ class NameScrape:
         height (:obj:`float`): How tall the person is in meters.
     """
 
-    def __init__(self, name_id, display_name, birth_name, birth_date, birth_city,
+    def __init__(self, name_id, display_name, known_for_titles, birth_name, birth_date, birth_city,
             death_date, death_city, death_cause, nicknames, height):
         self._name_id = name_id
         self._display_name = display_name
+        self._known_for_titles = known_for_titles
         self._birth_name = birth_name
         self._birth_date = None
         self._birth_city = birth_city
@@ -209,6 +211,10 @@ class NameScrape:
     @property
     def display_name(self):
         return self._display_name
+
+    @property
+    def known_for_titles(self):
+        return self._known_for_titles
 
     @property
     def birth_name(self):
