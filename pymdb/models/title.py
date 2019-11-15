@@ -20,7 +20,7 @@ class TitleAkas:
 
     Args:
         title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
-        ordering (:obj:`int`): Unqiuely identifies the row for a given `title_id`.
+        ordering (:obj:`int`): Uniquely identifies the row for a given `title_id`.
         localized_title (:obj:`str`): The localized title for this version.
         region (:obj:`str`): The region for this version of the title.
         language (:obj:`str`): The language of this title.
@@ -318,7 +318,7 @@ class TitlePrincipalCrew:
 
     Args:
             title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
-            ordering (:obj:`int`): Unqiuely identifies the row for a given `title_id`.
+            ordering (:obj:`int`): Uniquely identifies the row for a given `title_id`.
             name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
             category (:obj:`str`): The category of job the person was in.
             job (:obj:`str`): The specific job title if available, otherwise `None`.
@@ -435,7 +435,7 @@ class TitleScrape:
         language (:obj:`str`): The title's original language.
         release_date (:obj:`datetime`): The title's original release date, or when the
             TV series began airing.
-        end_year (:obj:`datetime`): The year the TV series stopped airing, otherwise `None`.
+        end_year (:obj:`int`): The year the TV series stopped airing, otherwise `None`.
         season_number (:obj:`int`): The season number the episode is in, otherwise `None`.
         episode_number (:obj:`int`): The episode's number in the season, otherwise `None`.
         taglines (:obj:`list` of :obj:`str`): A list of all of the title's taglines.
@@ -528,7 +528,8 @@ class TitleScrape:
 
     @end_year.setter
     def end_year(self, value):
-        self._end_year = to_datetime(value)
+        if is_int(value):
+            self._end_year = int(value)
 
     @property
     def season_number(self):

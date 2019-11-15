@@ -106,7 +106,7 @@ class TestGetTitle(unittest.TestCase):
         country = 'USA'
         language = 'English'
         release_date = datetime(1999, 3, 28)
-        end_year = datetime(2013, 1, 1)
+        end_year = 2013
         season_number = None
         episode_number = None
         taglines = [
@@ -1152,9 +1152,9 @@ class TestGetCompanyCredits(unittest.TestCase):
                 self.assertEqual(sorted(company_credit.notes), sorted(['specially formatted in',]))
         self.assertEqual(discovered_ids, 3)
         self.assertEqual(company_info[production_companies], production_companies_num)
-        self.assertEqual(company_info[distributors], distributors_num)
-        self.assertEqual(company_info[special_effects], special_effects_num)
-        self.assertEqual(company_info[other_companies], other_companies_num)
+        self.assertGreaterEqual(company_info[distributors], distributors_num)
+        self.assertGreaterEqual(company_info[special_effects], special_effects_num)
+        self.assertGreaterEqual(company_info[other_companies], other_companies_num)
 
     def test_get_company_credits_tv_series(self):
         title_id = 'tt0149460'
@@ -1198,9 +1198,9 @@ class TestGetCompanyCredits(unittest.TestCase):
                 self.assertEqual(sorted(company_credit.notes), sorted(['animation produced by']))
         self.assertEqual(discovered_ids, 2)
         self.assertEqual(company_info[production_companies], production_companies_num)
-        self.assertEqual(company_info[distributors], distributors_num)
-        self.assertEqual(company_info[special_effects], special_effects_num)
-        self.assertEqual(company_info[other_companies], other_companies_num)
+        self.assertGreaterEqual(company_info[distributors], distributors_num)
+        self.assertGreaterEqual(company_info[special_effects], special_effects_num)
+        self.assertGreaterEqual(company_info[other_companies], other_companies_num)
 
     def test_get_company_credits_tv_episode(self):
         title_id = 'tt4283088'
@@ -1250,10 +1250,10 @@ class TestGetCompanyCredits(unittest.TestCase):
                 self.assertEqual(company_credit.category, other_companies)
                 self.assertEqual(sorted(company_credit.notes), sorted(['main title design',]))
         self.assertEqual(discovered_ids, 3)
-        self.assertEqual(company_info[production_companies], production_companies_num)
-        self.assertEqual(company_info[distributors], distributors_num)
-        self.assertEqual(company_info[special_effects], special_effects_num)
-        self.assertEqual(company_info[other_companies], other_companies_num)
+        self.assertGreaterEqual(company_info[production_companies], production_companies_num)
+        self.assertGreaterEqual(company_info[distributors], distributors_num)
+        self.assertGreaterEqual(company_info[special_effects], special_effects_num)
+        self.assertGreaterEqual(company_info[other_companies], other_companies_num)
 
     def test_get_company_credits_bad_request(self):
         title_id = 'nm123456789'
