@@ -18,8 +18,8 @@ class NameBasics:
     Args:
         name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
         primary_name(:obj:`str`): The person's name.
-        birth_year (:obj:`datetime`): The person's birth year.
-        death_year (:obj:`datetime`): The person's death year, or `None` otherwise.
+        birth_year (:obj:`int`): The person's birth year.
+        death_year (:obj:`int`): The person's death year, or `None` otherwise.
         primary_professions (:obj:`list` of :obj:`str`): A list of all the person's primary professions.
         known_for_titles (:obj:`list` of :obj:`str`): A list of title IDs for each title the person is known for.
     """
