@@ -67,7 +67,7 @@ class PyMDbScraper:
         request = f'https://www.imdb.com/title/{title_id}/'
         tree = self._get_tree(request)
 
-        title_text = None
+        display_title = None
         title_parent_id = None
         rating = None
         country = None
@@ -95,7 +95,7 @@ class PyMDbScraper:
             title_year_node = title_text_node.css_first('span#titleYear')
             if title_year_node:
                 title_year_node.decompose()
-            title_text = title_text_node.text().strip()
+            display_title = title_text_node.text().strip()
 
         # Get title parent (if TV episode)
         title_parent_node = tree.css_first('div.titleParent > a')
@@ -218,7 +218,7 @@ class PyMDbScraper:
 
         return TitleScrape(
             title_id=title_id,
-            title_text=title_text,
+            display_title=display_title,
             title_parent_id=title_parent_id,
             mpaa_rating=rating,
             country=country,

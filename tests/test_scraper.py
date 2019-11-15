@@ -17,7 +17,7 @@ class TestGetTitle(unittest.TestCase):
         title = scraper.get_title(title_id, include_taglines=True)
 
         # Correct values
-        title_text = 'Star Wars: Episode IV - A New Hope'
+        display_title = 'Star Wars: Episode IV - A New Hope'
         title_parent_id = None
         mpaa_rating = 'PG'
         country = 'USA'
@@ -73,7 +73,7 @@ class TestGetTitle(unittest.TestCase):
         worldwide_gross = 775512064
 
         self.assertEqual(title.title_id, title_id)
-        self.assertEqual(title.title_text, title_text)
+        self.assertEqual(title.display_title, display_title)
         self.assertEqual(title.title_parent_id, title_parent_id)
         self.assertEqual(title.mpaa_rating, mpaa_rating)
         self.assertEqual(title.country, country)
@@ -100,7 +100,7 @@ class TestGetTitle(unittest.TestCase):
         title = scraper.get_title(title_id, include_taglines=True)
 
         # Correct values
-        title_text = 'Futurama'
+        display_title = 'Futurama'
         title_parent_id = None
         mpaa_rating = 'TV-14'
         country = 'USA'
@@ -145,7 +145,7 @@ class TestGetTitle(unittest.TestCase):
         worldwide_gross = None
 
         self.assertEqual(title.title_id, title_id)
-        self.assertEqual(title.title_text, title_text)
+        self.assertEqual(title.display_title, display_title)
         self.assertEqual(title.title_parent_id, title_parent_id)
         self.assertEqual(title.mpaa_rating, mpaa_rating)
         self.assertEqual(title.country, country)
@@ -172,7 +172,7 @@ class TestGetTitle(unittest.TestCase):
         title = scraper.get_title(title_id, include_taglines=True)
 
         # Correct values
-        title_text = 'Battle of the Bastards'
+        display_title = 'Battle of the Bastards'
         title_parent_id = 'tt0944947'
         mpaa_rating = 'TV-MA'
         country = 'USA'
@@ -225,7 +225,7 @@ class TestGetTitle(unittest.TestCase):
         worldwide_gross = None
 
         self.assertEqual(title.title_id, title_id)
-        self.assertEqual(title.title_text, title_text)
+        self.assertEqual(title.display_title, display_title)
         self.assertEqual(title.title_parent_id, title_parent_id)
         self.assertEqual(title.mpaa_rating, mpaa_rating)
         self.assertEqual(title.country, country)

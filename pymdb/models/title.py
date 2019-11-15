@@ -427,7 +427,7 @@ class TitleScrape:
 
     Args:
         title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
-        title_text (:obj:`str`): The title's name on its IMDb page.
+        display_title (:obj:`str`): The title's name on its IMDb page.
         title_parent_id (:obj:`str`): The episode's TV series parent ID used
             by IMDb prefixed with `tt`, otherwise `None`.
         mpaa_rating (:obj:`str`): The title's MPAA rating.
@@ -454,12 +454,12 @@ class TitleScrape:
     """
 
     def __init__(
-            self, title_id, title_text, title_parent_id, mpaa_rating, country, language, release_date, end_year,
+            self, title_id, display_title, title_parent_id, mpaa_rating, country, language, release_date, end_year,
             season_number, episode_number, taglines, plot, storyline, production_companies, top_cast,
             budget, budget_denomination, opening_weekend_gross, opening_weekend_date, usa_gross, worldwide_gross
     ):
         self._title_id = title_id
-        self._title_text = title_text
+        self._display_title = display_title
         self._title_parent_id = title_parent_id
         self._mpaa_rating = mpaa_rating
         self._country = country
@@ -495,8 +495,8 @@ class TitleScrape:
         return self._title_id
 
     @property
-    def title_text(self):
-        return self._title_text
+    def display_title(self):
+        return self._display_title
 
     @property
     def title_parent_id(self):
