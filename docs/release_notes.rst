@@ -1,6 +1,18 @@
 Release Notes
 =============
 
+* Release 0.1.1 (TBD)
+
+   - Changed the type of :class:`~.models.title.TitleScrape`'s member variable `end_year`
+     from :obj:`datetime` to :obj:`int` to be more consistent with other classes.
+   - Changed the name of :class:`~.models.title.TitleScrape`'s member variable `title_text`
+     to `display_title`.
+   - Added the member variable `known_for_titles` to :class:`~.models.name.NameScrape` to
+     store a person's known for titles as listed on their IMDb page.
+   - Added an optional parameter `include_known_for_titles` to :class:`~.scraper.PyMDbScraper`'s
+     method :obj:`~.scraper.PyMDbScraper.get_name` since an extra request needs to be sent to retrieve data for
+     `known_for_titles`. 
+
 * Release 0.1.0 (14 November 2019)
 
     - Initial pre-release of PyMDb
