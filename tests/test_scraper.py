@@ -348,55 +348,60 @@ class TestGetFullCast(unittest.TestCase):
         self.assertEqual(actor_count, 85)
 
     def test_get_full_cast_tv_series_and_episodes(self):
-        title_id = 'tt0149460'
+        title_id = 'tt7366338'
         scraper = PyMDbScraper()
 
         # Correct values
         job_title = 'actor'
-        actor1_id = 'nm0224007'
-        actor1_ep1_credit = 'Bender / Elzar (voice)'
-        actor1_ep1_start_year = 2013
-        actor1_ep1_title_id = 'tt2005616'
-        actor1_ep2_credit = 'Bender / URL / Mr. Panucci / ... (voice)'
-        actor1_ep2_start_year = 1999
-        actor1_ep2_title_id = 'tt0584449'
-        actor2_id = 'nm0370071'
-        actor2_ep1_credit = 'Stephen Hawking\'s Head (voice)'
-        actor2_ep1_start_year = 2011
-        actor2_ep1_title_id = 'tt1642360'
-        actor2_ep2_credit = ' Stephen Hawking (voice)'
-        actor2_ep2_start_year = 2000
-        actor2_ep2_title_id = 'tt0584432'
-        actor_ids = {actor1_id, actor2_id}
+        actor1_id = 'nm0364813'
+        actor1_ep1_credit = 'Valery Legasov'
+        actor1_ep1_start_year = 2019
+        actor1_ep1_title_id = 'tt9166696'
+        actor1_ep2_credit = 'Valery Legasov'
+        actor1_ep2_start_year = 2019
+        actor1_ep2_title_id = 'tt8162428'
+        actor2_id = 'nm2523072'
+        actor2_ep1_credit = 'Mikhail'
+        actor2_ep1_start_year = 2019
+        actor2_ep1_title_id = 'tt9166696'
+        actor2_ep2_credit = 'Mikhail'
+        actor2_ep2_start_year = 2019
+        actor2_ep2_title_id = 'tt8162428'
+        episode_count = 4
 
-        for credit in scraper.get_full_cast(title_id):
-            if credit.name_id in actor_ids:
-                self.assertEqual(credit.job_title, job_title)
+        episodes_found = 0
+        for credit in scraper.get_full_cast(title_id, include_episodes=True):
+            self.assertEqual(credit.job_title, job_title)
 
-                if credit.title_id == actor1_ep1_title_id:
-                    self.assertEqual(credit.name_id, actor1_id)
-                    self.assertEqual(credit.credit, actor1_ep1_credit)
-                    self.assertIsNone(credit.episode_count)
-                    self.assertEqual(credit.episode_year_start, actor1_ep1_start_year)
-                    self.assertIsNone(credit.episode_year_end)
-                elif credit.title_id == actor1_ep2_title_id:
-                    self.assertEqual(credit.name_id, actor1_id)
-                    self.assertEqual(credit.credit, actor1_ep2_credit)
-                    self.assertIsNone(credit.episode_count)
-                    self.assertEqual(credit.episode_year_start, actor1_ep2_start_year)
-                    self.assertIsNone(credit.episode_year_end)
-                elif credit.title_id == actor2_ep1_title_id:
-                    self.assertEqual(credit.name_id, actor2_id)
-                    self.assertEqual(credit.credit, actor2_ep1_credit)
-                    self.assertIsNone(credit.episode_count)
-                    self.assertEqual(credit.episode_year_start, actor2_ep1_start_year)
-                    self.assertIsNone(credit.episode_year_end)
-                elif credit.title_id == actor2_ep2_title_id:
-                    self.assertEqual(credit.name_id, actor2_id)
-                    self.assertEqual(credit.credit, actor2_ep2_credit)
-                    self.assertIsNone(credit.episode_count)
-                    self.assertEqual(credit.episode_year_start, actor2_ep2_start_year)
-                    self.assertIsNone(credit.episode_year_end)
+            if credit.title_id == actor1_ep1_title_id and credit.name_id == actor1_id:
+                episodes_found += 1
+                self.assertEqual(credit.name_id, actor1_id)
+                self.assertEqual(credit.credit, actor1_ep1_credit)
+                self.assertIsNone(credit.episode_count)
+                self.assertEqual(credit.episode_year_start, actor1_ep1_start_year)
+                self.assertIsNone(credit.episode_year_end)
+            elif credit.title_id == actor1_ep2_title_id and credit.name_id == actor1_id:
+                episodes_found += 1
+                self.assertEqual(credit.name_id, actor1_id)
+                self.assertEqual(credit.credit, actor1_ep2_credit)
+                self.assertIsNone(credit.episode_count)
+                self.assertEqual(credit.episode_year_start, actor1_ep2_start_year)
+                self.assertIsNone(credit.episode_year_end)
+            elif credit.title_id == actor2_ep1_title_id and credit.name_id == actor2_id:
+                episodes_found += 1
+                self.assertEqual(credit.name_id, actor2_id)
+                self.assertEqual(credit.credit, actor2_ep1_credit)
+                self.assertIsNone(credit.episode_count)
+                self.assertEqual(credit.episode_year_start, actor2_ep1_start_year)
+                self.assertIsNone(credit.episode_year_end)
+            elif credit.title_id == actor2_ep2_title_id and credit.name_id == actor2_id:
+                episodes_found += 1
+                self.assertEqual(credit.name_id, actor2_id)
+                self.assertEqual(credit.credit, actor2_ep2_credit)
+                self.assertIsNone(credit.episode_count)
+                self.assertEqual(credit.episode_year_start, actor2_ep2_start_year)
+                self.assertIsNone(credit.episode_year_end)
+        self.assertEqual(episodes_found, episode_count)
 
     def test_get_full_cast_episode(self):
         title_id = 'tt4283088'
@@ -442,8 +447,8 @@ class TestGetFullCast(unittest.TestCase):
                 pass
 
 
-class TestGetFullCredits(unittest.TestCase):
-    def test_get_full_credits_movie(self):
+class TestGetFullCrew(unittest.TestCase):
+    def test_get_full_crew_movie(self):
         title_id = 'tt4154796'
         scraper = PyMDbScraper()
 
@@ -480,25 +485,25 @@ class TestGetFullCredits(unittest.TestCase):
         credit_types_count = 30
 
         credit_types = set()
-        for credit in scraper.get_full_credits(title_id):
-            if credit.job_title not in credit_types:
-                credit_types.add(credit.job_title)
+        for crew_member in scraper.get_full_crew(title_id):
+            if crew_member.job_title not in credit_types:
+                credit_types.add(crew_member.job_title)
 
-            self.assertEqual(credit.title_id, title_id)
-            self.assertIsNone(credit.episode_count)
-            self.assertIsNone(credit.episode_year_start)
-            self.assertIsNone(credit.episode_year_end)
-            self.assertIsNotNone(credit.name_id)
-            self.assertIsNotNone(credit.job_title)
+            self.assertEqual(crew_member.title_id, title_id)
+            self.assertIsNone(crew_member.episode_count)
+            self.assertIsNone(crew_member.episode_year_start)
+            self.assertIsNone(crew_member.episode_year_end)
+            self.assertIsNotNone(crew_member.name_id)
+            self.assertIsNotNone(crew_member.job_title)
 
-            if credit.name_id in correct_credits:
-                correct_credit = correct_credits[credit.name_id]
-                self.assertEqual(credit.name_id, correct_credit.name_id)
-                self.assertEqual(credit.job_title, correct_credit.job_title)
-                self.assertEqual(credit.credit, correct_credit.credit)
+            if crew_member.name_id in correct_credits:
+                correct_credit = correct_credits[crew_member.name_id]
+                self.assertEqual(crew_member.name_id, correct_credit.name_id)
+                self.assertEqual(crew_member.job_title, correct_credit.job_title)
+                self.assertEqual(crew_member.credit, correct_credit.credit)
         self.assertEqual(credit_types_count, len(credit_types))
 
-    def test_get_full_credits_tv_series(self):
+    def test_get_full_crew_tv_series(self):
         title_id = 'tt0149460'
         scraper = PyMDbScraper()
 
@@ -544,27 +549,27 @@ class TestGetFullCredits(unittest.TestCase):
         credit_types_count = 19
 
         credit_types = set()
-        for credit in scraper.get_full_credits(title_id):
-            if credit.job_title not in credit_types:
-                credit_types.add(credit.job_title)
+        for crew_member in scraper.get_full_crew(title_id):
+            if crew_member.job_title not in credit_types:
+                credit_types.add(crew_member.job_title)
 
-            self.assertEqual(credit.title_id, title_id)
-            self.assertIsNotNone(credit.episode_count)
-            self.assertIsNotNone(credit.episode_year_start)
-            self.assertIsNotNone(credit.name_id)
-            self.assertIsNotNone(credit.job_title)
+            self.assertEqual(crew_member.title_id, title_id)
+            self.assertIsNotNone(crew_member.episode_count)
+            self.assertIsNotNone(crew_member.episode_year_start)
+            self.assertIsNotNone(crew_member.name_id)
+            self.assertIsNotNone(crew_member.job_title)
 
-            if credit.name_id in correct_credits:
-                correct_credit = correct_credits[credit.name_id]
-                self.assertEqual(credit.name_id, correct_credit.name_id)
-                self.assertEqual(credit.job_title, correct_credit.job_title)
-                self.assertEqual(credit.credit, correct_credit.credit)
-                self.assertEqual(credit.episode_count, correct_credit.episode_count)
-                self.assertEqual(credit.episode_year_start, correct_credit.episode_year_start)
-                self.assertEqual(credit.episode_year_end, correct_credit.episode_year_end)
+            if crew_member.name_id in correct_credits:
+                correct_credit = correct_credits[crew_member.name_id]
+                self.assertEqual(crew_member.name_id, correct_credit.name_id)
+                self.assertEqual(crew_member.job_title, correct_credit.job_title)
+                self.assertEqual(crew_member.credit, correct_credit.credit)
+                self.assertEqual(crew_member.episode_count, correct_credit.episode_count)
+                self.assertEqual(crew_member.episode_year_start, correct_credit.episode_year_start)
+                self.assertEqual(crew_member.episode_year_end, correct_credit.episode_year_end)
         self.assertEqual(credit_types_count, len(credit_types))
 
-    def test_get_full_credits_tv_episode(self):
+    def test_get_full_crew_tv_episode(self):
         title_id = 'tt4283088'
         scraper = PyMDbScraper()
 
@@ -601,6 +606,69 @@ class TestGetFullCredits(unittest.TestCase):
         credit_types_count = 28
 
         credit_types = set()
+        for crew_member in scraper.get_full_crew(title_id):
+            if crew_member.job_title not in credit_types:
+                credit_types.add(crew_member.job_title)
+
+            self.assertIsNone(crew_member.episode_count)
+            self.assertIsNone(crew_member.episode_year_start)
+            self.assertIsNone(crew_member.episode_year_end)
+            self.assertIsNotNone(crew_member.name_id)
+            self.assertIsNotNone(crew_member.job_title)
+
+            if crew_member.name_id in correct_credits:
+                correct_credit = correct_credits[crew_member.name_id]
+                self.assertEqual(crew_member.name_id, correct_credit.name_id)
+                self.assertEqual(crew_member.job_title, correct_credit.job_title)
+                self.assertEqual(crew_member.credit, correct_credit.credit)
+        self.assertEqual(credit_types_count, len(credit_types))
+
+    def test_get_full_crew_bad_request(self):
+        title_id = 'nm123456789'
+        scraper = PyMDbScraper()
+        with self.assertRaises(HTTPError):
+            for c in scraper.get_full_crew(title_id):
+                pass
+
+
+class TestGetFullCredits(unittest.TestCase):
+    def test_get_full_credits_movie(self):
+        title_id = 'tt4154796'
+        scraper = PyMDbScraper()
+
+        # Correct values
+        correct_credits = {
+            'nm0751577': CreditScrape(
+                'nm0751577',
+                title_id,
+                'Directed by',
+                None,
+                None,
+                None,
+                None
+            ),
+            'nm2757098': CreditScrape(
+                'nm2757098',
+                title_id,
+                'Writing Credits',
+                'Rocket Raccoon created by',
+                None,
+                None,
+                None
+            ),
+            'nm0000982': CreditScrape(
+                'nm0000982',
+                title_id,
+                'actor',
+                'Thanos',
+                None,
+                None,
+                None
+            )
+        }
+        credit_types_count = 31
+
+        credit_types = set()
         for credit in scraper.get_full_credits(title_id):
             if credit.job_title not in credit_types:
                 credit_types.add(credit.job_title)
@@ -619,6 +687,173 @@ class TestGetFullCredits(unittest.TestCase):
                 self.assertEqual(credit.credit, correct_credit.credit)
         self.assertEqual(credit_types_count, len(credit_types))
 
+    def test_get_full_credits_tv_series(self):
+        title_id = 'tt0149460'
+        scraper = PyMDbScraper()
+
+        # Correct values
+        correct_credits = {
+            'nm0547772': CreditScrape(
+                'nm0547772',
+                title_id,
+                'Series Directed by',
+                None,
+                8,
+                2010,
+                2013
+            ),
+            'nm0592546': CreditScrape(
+                'nm0592546',
+                title_id,
+                'Series Writing Credits',
+                None,
+                26,
+                2001,
+                2003
+            ),
+            'nm0224007': CreditScrape(
+                'nm0224007',
+                title_id,
+                'actor',
+                'Bender / ...',
+                124,
+                1999,
+                2013
+            )
+        }
+        credit_types_count = 20
+
+        credit_types = set()
+        for credit in scraper.get_full_credits(title_id):
+            if credit.job_title not in credit_types:
+                credit_types.add(credit.job_title)
+
+            self.assertEqual(credit.title_id, title_id)
+            self.assertIsNotNone(credit.episode_count)
+            self.assertIsNotNone(credit.episode_year_start)
+            self.assertIsNotNone(credit.name_id)
+            self.assertIsNotNone(credit.job_title)
+
+            if credit.name_id in correct_credits:
+                correct_credit = correct_credits[credit.name_id]
+                self.assertEqual(credit.name_id, correct_credit.name_id)
+                self.assertEqual(credit.job_title, correct_credit.job_title)
+                self.assertEqual(credit.credit, correct_credit.credit)
+                self.assertEqual(credit.episode_count, correct_credit.episode_count)
+                self.assertEqual(credit.episode_year_start, correct_credit.episode_year_start)
+                self.assertEqual(credit.episode_year_end, correct_credit.episode_year_end)
+        self.assertEqual(credit_types_count, len(credit_types))
+
+    def test_get_full_credits_tv_series_and_episodes(self):
+        title_id = 'tt7366338'
+        scraper = PyMDbScraper()
+
+        # Correct values
+        correct_credits = {
+            'nm0269957': CreditScrape(
+                'nm0269957',
+                title_id,
+                'Series Produced by',
+                'executive producer',
+                5,
+                2019,
+                None
+            ),
+            'nm3723390': CreditScrape(
+                'nm3723390',
+                title_id,
+                'Series Music by',
+                None,
+                5,
+                2019,
+                None
+            ),
+            'nm0364813': CreditScrape(
+                'nm0364813',
+                'tt9166696',
+                'actor',
+                'Valery Legasov',
+                None,
+                2019,
+                None
+            )
+        }
+        credit_types_count = 30
+
+        credit_types = set()
+        for credit in scraper.get_full_credits(title_id, include_episodes=True):
+            if credit.job_title not in credit_types:
+                credit_types.add(credit.job_title)
+            
+            self.assertIsNotNone(credit.name_id)
+            self.assertIsNotNone(credit.job_title)
+
+            if credit.name_id in correct_credits:
+                if credit.name_id == 'nm0364813' and title_id != 'tt9166696':
+                    continue
+                correct_credit = correct_credits[credit.name_id]
+                self.assertEqual(credit.name_id, correct_credit.name_id)
+                self.assertEqual(credit.job_title, correct_credit.job_title)
+                self.assertEqual(credit.credit, correct_credit.credit)
+                self.assertEqual(credit.episode_count, correct_credit.episode_count)
+                self.assertEqual(credit.episode_year_start, correct_credit.episode_year_start)
+                self.assertEqual(credit.episode_year_end, correct_credit.episode_year_end)
+        self.assertEqual(credit_types_count, len(credit_types))
+
+    def test_get_full_credits_tv_episode(self):
+        title_id = 'tt4283088'
+        scraper = PyMDbScraper()
+
+        # Correct values
+        correct_credits = {
+            'nm0764601': CreditScrape(
+                'nm0764601',
+                title_id,
+                'Directed by',
+                None,
+                None,
+                None,
+                None
+            ),
+            'nm2388673': CreditScrape(
+                'nm2388673',
+                title_id,
+                'Produced by',
+                'co-producer',
+                None,
+                None,
+                None
+            ),
+            'nm0227759': CreditScrape(
+                'nm0227759',
+                title_id,
+                'actor',
+                'Tyrion Lannister',
+                None,
+                None,
+                None
+            )
+        }
+        credit_types_count = 29
+
+        credit_types = set()
+        for credit in scraper.get_full_credits(title_id):
+            if credit.job_title not in credit_types:
+                credit_types.add(credit.job_title)
+
+            self.assertEqual(credit.title_id, title_id)
+            self.assertIsNone(credit.episode_count)
+            self.assertIsNone(credit.episode_year_start)
+            self.assertIsNone(credit.episode_year_end)
+            self.assertIsNotNone(credit.name_id)
+            self.assertIsNotNone(credit.job_title)
+
+            if credit.name_id in correct_credits:
+                correct_credit = correct_credits[credit.name_id]
+                self.assertEqual(credit.name_id, correct_credit.name_id)
+                self.assertEqual(credit.job_title, correct_credit.job_title)
+                self.assertEqual(credit.credit, correct_credit.credit)
+        self.assertEqual(credit_types_count, len(credit_types))
 
     def test_get_full_credits_bad_request(self):
         title_id = 'nm123456789'

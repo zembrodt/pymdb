@@ -89,13 +89,30 @@ class PyMDbScraper:
         worldwide_gross = None
 
         # Get title text
-        title_text_node = tree.css_first('div.title_wrapper > h1')
-        if title_text_node:
-            # Remove title year
-            title_year_node = title_text_node.css_first('span#titleYear')
-            if title_year_node:
-                title_year_node.decompose()
-            display_title = title_text_node.text().strip()
+        title_node = tree.css_first('div.title_wrapper')
+        if title_node:
+            display_title_node = title_node.css_first('h1')
+            if display_title_node:
+                # Remove title year
+                title_year_node = display_title_node.css_first('span#titleYear')
+                if title_year_node:
+                    title_year_node.decompose()
+                display_title = display_title_node.text().strip()
+            title_info_node = title_node.css_first('div.subtext')
+            if title_info_node:
+                # If this is a TV series, get the year the show ended
+                for link_node in title_info_node.css('a'):
+                    if 'href' in link_node.attributes and 'releaseinfo' in link_node.attributes['href']:
+                        series_dates_match = re.search(r'[\d]{4}[-–][\d]{4}', link_node.text())
+                        if series_dates_match:
+                            end_year_split = re.sub(r'[-–]', '\t', series_dates_match.group(0)).split('\t')
+                            if len(end_year_split) > 1:
+                                end_year = end_year_split[1]
+                                break
+
+                # Get MPAA Rating
+                title_info_node.strip_tags(['span', 'a', 'time'])
+                rating = re.sub(r'(\s|,)*', '', title_info_node.text()).strip()
 
         # Get title parent (if TV episode)
         title_parent_node = tree.css_first('div.titleParent > a')
@@ -122,24 +139,6 @@ class PyMDbScraper:
                 for tagline_node in tagline_tree.css('div.soda'):
                     # TODO: should a Tagline object be created that stores the note for each tagline separately?
                     taglines.append(tagline_node.text().strip())
-
-        title_node = tree.css_first('div.title_block > div > div > div.title_wrapper > div.subtext')
-        if title_node:
-            # If this is a TV series, get the year the show ended
-            for link_node in title_node.css('a'):
-                if 'href' in link_node.attributes and 'releaseinfo' in link_node.attributes['href']:
-                    series_dates_match = re.search(r'[\d]{4}[-–][\d]{4}', link_node.text())
-                    if series_dates_match:
-                        end_year_split = re.sub(r'[-–]', '\t', series_dates_match.group(0)).split('\t')
-                        if len(end_year_split) > 1:
-                            end_year = end_year_split[1]
-                            break
-
-            # Get MPAA Rating
-            title_node.strip_tags(['span', 'a', 'time'])
-            rating_node = tree.css_first('div.titleBar > div.title_wrapper > div.subtext')
-            if rating_node:
-                rating = re.sub(r'(\s|,)*', '', rating_node.text()).strip()
 
         # Parse through text blocks
         text_block_nodes = tree.css('div#titleDetails > div.txt-block')
@@ -197,7 +196,6 @@ class PyMDbScraper:
                     #characters = []
                     #for c_node in character_nodes:
                     #    characters.append(c_node.text().strip())
-                    #cast_members.append(f'{cast_member_name} ({cast_member_id}): {", ".join(characters)}')
                     cast_members.append(cast_member_id)
 
         # Get season and episode numbers if TV episode
@@ -300,20 +298,14 @@ class PyMDbScraper:
 
                         episode_nodes = episodes_tree.css('div.filmo-episodes')
                         for episode_node in episode_nodes:
-                            episode_id = None
+                            episode_id = get_title_id(episode_node.css_first('a'))
                             episode_year = None
                             episode_credit = None
 
-                            episode_title_info = episode_node.css_first('a')
-                            if episode_title_info and 'href' in episode_title_info:
-                                episode_id_match = re.search(r'tt\d+', episode_title_info.attributes['href'])
-                                if episode_id_match:
-                                    episode_id = episode_id_match.group(0)
-                            
                             episode_info = episode_node.text().strip().split('...')
                             if len(episode_info) > 1:
                                 episode_year_info = episode_info[0]
-                                episode_credit = '...'.join(episode_info[1:])
+                                episode_credit = '...'.join(episode_info[1:]).strip()
                             else:
                                 episode_year_info, = episode_info
 
@@ -350,17 +342,17 @@ class PyMDbScraper:
                     episode_year_end=episode_year_end
                 )
 
-    def get_full_credits(self, title_id):
-        """Scrapes the full list of credited people for a title, not including actors.
+    def get_full_crew(self, title_id):
+        """Scrapes the full list of credited crew people for a title, not including actors.
 
-        Will scrape all the credited members of a title, without the actors. For example, this will
+        Will scrape all the credited crew members of a title, without the actors. For example, this will
         include all directors, writers, producers, cinematographers, etc.
 
         Args:
             title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
 
         Yields:
-            :class:`~.models.title.CreditScrape`: An object for each credited member in the title.
+            :class:`~.models.title.CreditScrape`: An object for each credited crew member in the title.
 
         Raises:
             HTTPError: If the request failed.
@@ -430,6 +422,30 @@ class PyMDbScraper:
                                 )
                 found_title = False  # only because we use continue when set to True for now...
 
+    def get_full_credits(self, title_id, include_episodes=False):
+        """Scrapes the full list of credited people for a title.
+
+        Will scrape all the cast and crew for a title by returning both
+        :obj:`~.scraper.PyMDbScraper.get_full_cast` and :obj:`~.scraper.PyMDbScraper.get_full_crew` as a single generator.
+        An optional argument `include_episodes` will also scrape each episode an actor is in
+        if the title is a TV series.
+
+        Args:
+            title_id (:obj:`str`): The title's ID used by IMDb prefixed with `tt`.
+            include_episodes (:obj:`bool`, optional): Specify if individual episodes of a 
+                TV series should also be scraped.
+
+        Yields:
+            :class:`~.models.title.CreditScrape`: An object for each credited crew member in the title.
+
+        Raises:
+            HTTPError: If the request failed.
+        """
+        for cast_member in self.get_full_cast(title_id, include_episodes=include_episodes):
+            yield cast_member
+        for crew_member in self.get_full_crew(title_id):
+            yield crew_member
+
     def get_name(self, name_id, include_known_for_titles=False):
         """Scrapes detailed information from a person's personal IMDb web page.
 
@@ -438,7 +454,7 @@ class PyMDbScraper:
 
         Args:
             name_id (:obj:`str`): The person's ID used by IMDb prefixed with `nm`.
-            include_known_for_titles (:obj:`bool`, optional): Determines if an optional request should
+            include_known_for_titles (:obj:`bool`, optional): Determines if an second request should
                 be sent to get the known for titles on a person's default IMDb page.
 
         Returns:
