@@ -35,6 +35,10 @@ get_ref_marker
 --------------
 .. autofunction:: get_ref_marker
 
+get_episode_info
+----------------
+.. autofunction:: get_episode_info
+
 gunzip_file
 -----------
 .. autofunction:: gunzip_file

@@ -1,7 +1,7 @@
 Release Notes
 =============
 
-* Release 0.1.1 (TBD)
+* Release 0.1.1 (21 November 2019)
 
    - Changed the type of :class:`~.models.title.TitleScrape`'s member variable `end_year`
      from :obj:`datetime` to :obj:`int` to be more consistent with other classes
@@ -15,6 +15,10 @@ Release Notes
    - Renamed :obj:`get_full_credits` to :obj:`~.scraper.PyMDbScraper.get_full_crew`
    - Combined :obj:`~.scraper.PyMDbScraper.get_full_cast` and :obj:`~.scraper.PyMDbScraper.get_full_crew` into
      a single helper method of the previously used name :obj:`~.scraper.PyMDbScraper.get_full_credits`
+   - Added new utils function :obj:`~.utils.get_episode_info` to parse the episode information for an actor'scraper
+     credits on a TV series' IMDb page
+   - Modified :class:`~.models.title.TitleScrape`'s `top_cast` member variable to be a list of :class:`~.models.name.CreditScrape`
+     objects instead of a list of name IDs
 
 * Release 0.1.0 (14 November 2019)
 
