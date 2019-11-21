@@ -255,6 +255,57 @@ def get_ref_marker(node):
 
     return _get_from_onclick(node, _REF_MARKER_INDEX)
 
+def get_episode_info(node):
+    """Gets the episode count, episode year start, and episode year end for an actor.
+
+    Gets the episode information for an actor's credit within an IMDb TV series. The format
+    the information is expected is: "`episode count` episodes, `episode year start`-`episode
+    year end`". Single episodes/years are also handled. For example:
+
+    - 124 episodes, 1999-2013
+    - 2 episodes, 2010
+    - 1 episode
+
+    Args:
+        node (:class:`Node`): A `Node` containing the episode information.
+
+    Returns:
+        (:obj:`int`, :obj:`int`, :obj:`int`): 
+            The episode count, episode start year, and episode end year, or `None` if a value is not found.
+    """
+
+    episode_count = None
+    episode_year_start = None
+    episode_year_end = None
+
+    if node:
+        episode_count_str = None
+        episode_year_start_str = None
+        episode_year_end_str = None
+        episode_info = re.sub(
+            r'<\s*span.*?<\s*/\s*span\s*>', '', node.text()
+        ).strip().split(',')
+        if len(episode_info) > 1:
+            episode_count_str, episode_year_info = episode_info
+            episode_year_info = episode_year_info.strip().split('-')
+            if len(episode_year_info) > 1:
+                episode_year_start_str, episode_year_end_str = episode_year_info
+            else:
+                episode_year_start_str, = episode_year_info
+        else:
+            episode_count_str, = episode_info
+        episode_count_match = re.search(r'\d+', episode_count_str)
+        if episode_count_match:
+            episode_count_str = episode_count_match.group(0)
+        # Convert values to ints
+        if is_int(episode_count_str):
+            episode_count = int(episode_count_str)
+        if is_int(episode_year_start_str):
+            episode_year_start = int(episode_year_start_str)
+        if is_int(episode_year_end_str):
+            episode_year_end = int(episode_year_end_str)
+    return episode_count, episode_year_start, episode_year_end
+
 
 def trim_year(year):
     """Used to trim roman numerals from year values.

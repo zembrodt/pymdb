@@ -426,6 +426,131 @@ class TestGetDenomination(unittest.TestCase):
         s = 'test'
         self.assertIsNone(get_denomination(s))
 
+
+class TestGetEpisodeInfo(unittest.TestCase):
+    def test_get_episode_info_multiple_years(self):
+        html = '''
+            <a href="#" class="toggle-episodes">
+            124 episodes, 1999-2013
+
+            <span class="arrows"></span>
+            </a>
+        '''
+        node = HTMLParser(html).css_first('a')
+        actual_episode_count, actual_episode_start_year, \
+            actual_episode_end_year = get_episode_info(node)
+
+        # Correct values
+        correct_episode_count = 124
+        correct_episode_start_year = 1999
+        correct_episode_end_year = 2013
+
+        self.assertEqual(correct_episode_count, actual_episode_count)
+        self.assertEqual(correct_episode_start_year, actual_episode_start_year)
+        self.assertEqual(correct_episode_end_year, actual_episode_end_year)
+
+    def test_get_episode_info_single_year_single_episode(self):
+        html = '''
+            <a href="#" class="toggle-episodes">
+            1 episode, 1999
+
+            <span class="arrows"></span>
+            </a>
+        '''
+        node = HTMLParser(html).css_first('a')
+        actual_episode_count, actual_episode_start_year, \
+            actual_episode_end_year = get_episode_info(node)
+
+        # Correct values
+        correct_episode_count = 1
+        correct_episode_start_year = 1999
+
+        self.assertEqual(correct_episode_count, actual_episode_count)
+        self.assertEqual(correct_episode_start_year, actual_episode_start_year)
+        self.assertIsNone(actual_episode_end_year)
+
+    def test_get_episode_info_single_year_multiple_episodes(self):
+        html = '''
+            <a href="#" class="toggle-episodes">
+            5 episodes, 1999
+
+            <span class="arrows"></span>
+            </a>
+        '''
+        node = HTMLParser(html).css_first('a')
+        actual_episode_count, actual_episode_start_year, \
+            actual_episode_end_year = get_episode_info(node)
+
+        # Correct values
+        correct_episode_count = 5
+        correct_episode_start_year = 1999
+
+        self.assertEqual(correct_episode_count, actual_episode_count)
+        self.assertEqual(correct_episode_start_year, actual_episode_start_year)
+        self.assertIsNone(actual_episode_end_year)
+
+    def test_get_episode_info_only_count_single_episode(self):
+        html = '''
+            <a href="#" class="toggle-episodes">
+            1 episode
+
+            <span class="arrows"></span>
+            </a>
+        '''
+        node = HTMLParser(html).css_first('a')
+        actual_episode_count, actual_episode_start_year, \
+            actual_episode_end_year = get_episode_info(node)
+
+        # Correct values
+        correct_episode_count = 1
+
+        self.assertEqual(correct_episode_count, actual_episode_count)
+        self.assertIsNone(actual_episode_start_year)
+        self.assertIsNone(actual_episode_end_year)
+
+    def test_get_episode_info_only_count_multiple_episodes(self):
+        html = '''
+            <a href="#" class="toggle-episodes">
+            3 episodes
+
+            <span class="arrows"></span>
+            </a>
+        '''
+        node = HTMLParser(html).css_first('a')
+        actual_episode_count, actual_episode_start_year, \
+            actual_episode_end_year = get_episode_info(node)
+
+        # Correct values
+        correct_episode_count = 3
+
+        self.assertEqual(correct_episode_count, actual_episode_count)
+        self.assertIsNone(actual_episode_start_year)
+        self.assertIsNone(actual_episode_end_year)
+
+    def test_get_episode_info_incorrect_node(self):
+        html = '''
+            <a href="#" class="toggle-episodes">
+            blah
+            </a>
+        '''
+        node = HTMLParser(html).css_first('a')
+        actual_episode_count, actual_episode_start_year, \
+            actual_episode_end_year = get_episode_info(node)
+
+        self.assertIsNone(actual_episode_count)
+        self.assertIsNone(actual_episode_start_year)
+        self.assertIsNone(actual_episode_end_year)
+
+    def test_get_episode_info_none_node(self):
+        node = None
+        actual_episode_count, actual_episode_start_year, \
+            actual_episode_end_year = get_episode_info(node)
+
+        self.assertIsNone(actual_episode_count)
+        self.assertIsNone(actual_episode_start_year)
+        self.assertIsNone(actual_episode_end_year)
+
+    
 class TestIsFloat(unittest.TestCase):
     def test_is_float_float(self):
         f = 1.23
