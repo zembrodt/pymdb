@@ -443,7 +443,7 @@ class TitleScrape:
         storyline (:obj:`str`): The title's storyline.
         production_companies (:obj:`list` of :obj:`str`): A list of company IDs, used by IMDb and
             prefixed with `co`, that are credited with producing the title.
-        top_cast (:obj:`list` of :obj:`str`): A list of person IDs, used by IMDb and prefixed with `nm`,
+        top_cast (:obj:`list` of :obj:`~.models.name.CreditScrape`): A list of `CreditScrape` objects
             that are the top cast in the title.
         budget (:obj:`int`): The estimated budget for the title.
         budget_denomination (:obj:`str`): The denomination the budget value is listed as

@@ -49,21 +49,21 @@ class TestGetTitle(unittest.TestCase):
             '''
         production_companies = ['co0071326', 'co0000756']
         top_cast = [
-            'nm0000434',
-            'nm0000148',
-            'nm0000402',
-            'nm0001088',
-            'nm0000027',
-            'nm0000355',
-            'nm0048652',
-            'nm0562679',
-            'nm0001190',
-            'nm0114436',
-            'nm0292235',
-            'nm0701023',
-            'nm0567018',
-            'nm0125952',
-            'nm0377120'
+            CreditScrape('nm0000434', title_id, 'actor', 'Luke Skywalker', None, None, None),
+            CreditScrape('nm0000148', title_id, 'actor', 'Han Solo', None, None, None),
+            CreditScrape('nm0000402', title_id, 'actor', 'Princess Leia Organa', None, None, None),
+            CreditScrape('nm0001088', title_id, 'actor', 'Grand Moff Tarkin', None, None, None),
+            CreditScrape('nm0000027', title_id, 'actor', 'Ben Obi-Wan Kenobi', None, None, None),
+            CreditScrape('nm0000355', title_id, 'actor', 'C-3PO', None, None, None),
+            CreditScrape('nm0048652', title_id, 'actor', 'R2-D2', None, None, None),
+            CreditScrape('nm0562679', title_id, 'actor', 'Chewbacca', None, None, None),
+            CreditScrape('nm0001190', title_id, 'actor', 'Darth Vader', None, None, None),
+            CreditScrape('nm0114436', title_id, 'actor', 'Uncle Owen', None, None, None),
+            CreditScrape('nm0292235', title_id, 'actor', 'Aunt Beru', None, None, None),
+            CreditScrape('nm0701023', title_id, 'actor', 'Chief Jawa', None, None, None),
+            CreditScrape('nm0567018', title_id, 'actor', 'General Dodonna', None, None, None),
+            CreditScrape('nm0125952', title_id, 'actor', 'General Willard', None, None, None),
+            CreditScrape('nm0377120', title_id, 'actor', 'Red Leader (as Drewe Hemley)', None, None, None)
         ]
         budget = 11000000
         budget_denomination = 'USD'
@@ -128,14 +128,14 @@ class TestGetTitle(unittest.TestCase):
             '''
         production_companies = ['co0223402', 'co0056447', 'co0159275']
         top_cast = [
-            'nm0921942',
-            'nm0005408',
-            'nm0224007',
-            'nm0534134',
-            'nm0482851',
-            'nm0866300',
-            'nm0005606',
-            'nm0379114'
+            CreditScrape('nm0921942', title_id, 'actor', 'Philip J. Fry / ...', 124, 1999, 2013),
+            CreditScrape('nm0005408', title_id, 'actor', 'Turanga Leela / ...', 124, 1999, 2013),
+            CreditScrape('nm0224007', title_id, 'actor', 'Bender / ...', 124, 1999, 2013),
+            CreditScrape('nm0534134', title_id, 'actor', 'Linda / ...', 124, 1999, 2013),
+            CreditScrape('nm0482851', title_id, 'actor', 'Hermes Conrad / ...', 117, 1999, 2013),
+            CreditScrape('nm0866300', title_id, 'actor', 'Amy Wong / ...', 115, 1999, 2013),
+            CreditScrape('nm0005606', title_id, 'actor', 'Morbo / ...', 114, 1999, 2013),
+            CreditScrape('nm0379114', title_id, 'actor', 'Scruffy / ...', 107, 1999, 2013)
         ]
         budget = None
         budget_denomination = None
@@ -201,21 +201,21 @@ class TestGetTitle(unittest.TestCase):
             '''
         production_companies = ['co0335036', 'co0418998', 'co0343278']
         top_cast = [
-            'nm0227759',
-            'nm3229685',
-            'nm3592338',
-            'nm0192377',
-            'nm3849842',
-            'nm0318821',
-            'nm0396924',
-            'nm2812026',
-            'nm1970465',
-            'nm3701064',
-            'nm0654295',
-            'nm0401264',
-            'nm2760664',
-            'nm2247629',
-            'nm1613839'
+            CreditScrape('nm0227759', title_id, 'actor', 'Tyrion Lannister', None, None, None),
+            CreditScrape('nm3229685', title_id, 'actor', 'Jon Snow', None, None, None),
+            CreditScrape('nm3592338', title_id, 'actor', 'Daenerys Targaryen', None, None, None),
+            CreditScrape('nm0192377', title_id, 'actor', 'Davos Seaworth', None, None, None),
+            CreditScrape('nm3849842', title_id, 'actor', 'Sansa Stark', None, None, None),
+            CreditScrape('nm0318821', title_id, 'actor', 'Petyr \'Littlefinger\' Baelish', None, None, None),
+            CreditScrape('nm0396924', title_id, 'actor', 'Melisandre (as Carice Van Houten)', None, None, None),
+            CreditScrape('nm2812026', title_id, 'actor', 'Missandei', None, None, None),
+            CreditScrape('nm1970465', title_id, 'actor', 'Tormund Giantsbane', None, None, None),
+            CreditScrape('nm3701064', title_id, 'actor', 'Ramsay Bolton', None, None, None),
+            CreditScrape('nm0654295', title_id, 'actor', 'Theon Greyjoy', None, None, None),
+            CreditScrape('nm0401264', title_id, 'actor', 'Daario Naharis', None, None, None),
+            CreditScrape('nm2760664', title_id, 'actor', 'Grey Worm', None, None, None),
+            CreditScrape('nm2247629', title_id, 'actor', 'Yara Greyjoy', None, None, None),
+            CreditScrape('nm1613839', title_id, 'actor', 'Wun Wun', None, None, None)
         ]
         budget = 10000000
         budget_denomination = 'GBP'

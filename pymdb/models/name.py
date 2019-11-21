@@ -10,6 +10,7 @@ from pymdb.utils import (
     is_int,
     to_datetime
 )
+from functools import total_ordering
 
 
 class NameBasics:
@@ -87,6 +88,7 @@ class NameBasics:
             f'{"" if self._death_year is None else self._death_year}'
 
 
+@total_ordering
 class CreditScrape:
     """Object to represent information for each person scraped from IMDb's `fullcredits` page for a title.
 
@@ -162,8 +164,20 @@ class CreditScrape:
         if is_int(value):
             self._episode_year_end = int(value)
 
+    def __eq__(self, other):
+        return (self.name_id, self.title_id, self.job_title, self.credit, self.episode_count, self.episode_year_start, self.episode_year_end) == \
+            (other.name_id, other.title_id, other.job_title, other.credit, other.episode_count, other.episode_year_start, other.episode_year_end)
+
+    def __lt__(self, other):
+        return (self.name_id, self.title_id, self.job_title, self.credit, self.episode_count, self.episode_year_start, self.episode_year_end) < \
+            (other.name_id, other.title_id, other.job_title, other.credit, other.episode_count, other.episode_year_start, other.episode_year_end)
+
     def __str__(self):
-        return f'{self.name_id}: {self.job_title} in {self.title_id} as {self.credit}'
+        return f'{self.name_id}: {self.job_title} in {self.title_id} as {self.credit}' + \
+            f'{f" in {self.episode_count} episodes" if self.episode_count is not None else ""}'
+
+    def __repr__(self):
+        return self.__str__()
 
 
 class NameScrape:

@@ -17,6 +17,7 @@ from pymdb.utils import (
     get_category,
     get_company_id,
     get_denomination,
+    get_episode_info,
     get_name_id,
     get_ref_marker,
     get_title_id,
@@ -80,7 +81,7 @@ class PyMDbScraper:
         plot = None
         storyline = None
         production_companies = []
-        cast_members = []
+        top_cast = []
         budget = None
         budget_denomination = None
         opening_weekend_gross = None
@@ -189,14 +190,28 @@ class PyMDbScraper:
             for cast_member in cast_node.css('tr.odd, tr.even'):
                 cast_member_node = cast_member.css_first('td:nth-of-type(2) > a')
                 if cast_member_node:
-                    cast_member_id = get_name_id(cast_member_node)
-                    # TODO: should this be modified to store a list of Credit objects?
-                    #cast_member_name = cast_member_node.text().strip()
-                    #character_nodes = cast_member.css('td.character > a')
-                    #characters = []
-                    #for c_node in character_nodes:
-                    #    characters.append(c_node.text().strip())
-                    cast_members.append(cast_member_id)
+                    character_credit = None
+                    episode_count = None
+                    episode_year_start = None
+                    episode_year_end = None
+                    character_node = cast_member.css_first('td.character')
+                    if character_node:
+                        # Check if there is episode information, save it, then remove it
+                        episode_info_node = character_node.css_first('a.toggle-episodes')
+                        if episode_info_node:
+                            episode_count, episode_year_start, episode_year_end = get_episode_info(episode_info_node)
+                            episode_info_node.decompose()
+                        character_credit = re.sub(r'\s+', ' ', character_node.text().strip())
+                    top_cast.append(
+                        CreditScrape(
+                            name_id=get_name_id(cast_member_node),
+                            title_id=title_id,
+                            job_title='actor',
+                            credit=character_credit,
+                            episode_count=episode_count,
+                            episode_year_start=episode_year_start,
+                            episode_year_end=episode_year_end
+                    ))
 
         # Get season and episode numbers if TV episode
         heading_nodes = tree.css('div.bp_heading')
@@ -229,7 +244,7 @@ class PyMDbScraper:
             plot=plot,
             storyline=storyline,
             production_companies=production_companies,
-            top_cast=cast_members,
+            top_cast=top_cast,
             budget=budget,
             budget_denomination=budget_denomination,
             opening_weekend_gross=opening_weekend_gross,
@@ -273,21 +288,7 @@ class PyMDbScraper:
                 # Check if this is a TV series
                 toggle_episodes_node = cast_member.css_first('a.toggle-episodes')
                 if toggle_episodes_node:
-                    episode_info = re.sub(
-                        r'<\s*span.*?<\s*/\s*span\s*>', '', toggle_episodes_node.text()
-                    ).strip().split(',')
-                    if len(episode_info) > 1:
-                        episode_count, episode_year_info = episode_info
-                        episode_year_info = episode_year_info.split('-')
-                        if len(episode_year_info) > 1:
-                            episode_year_start, episode_year_end = episode_year_info
-                        else:
-                            episode_year_start, = episode_year_info
-                    else:
-                        episode_count, = episode_info
-                    episode_count_match = re.search(r'\d+', episode_count)
-                    if episode_count_match:
-                        episode_count = episode_count_match.group(0)
+                    episode_count, episode_year_start, episode_year_end = get_episode_info(toggle_episodes_node)
                 
                     # Include all individual episodes an actor is in
                     if include_episodes:
