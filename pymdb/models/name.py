@@ -13,6 +13,46 @@ from pymdb.utils import (
 from functools import total_ordering
 
 
+# Credit job title keys
+_ACTOR = 'actor'
+_DIRECTOR = 'director'
+_PRODUCER = 'producer'
+_WRITER = 'writer'
+_MUSIC = 'music'
+_CINEMATOGRAPHY = 'cinematography'
+_FILM_EDITING = 'film editing'
+_CASTING = 'casting'
+_PRODUCTION_DESIGN = 'production design'
+_ART_DIRECTOR = 'art director'
+_SET_DECORATION = 'set decoration'
+_COSTUME_DESIGN = 'costume design'
+_MAKEUP_DEPARTMENT = 'makeup department'
+_PRODUCTION_MANAGER = 'production manager'
+_ASSISTANT_DIRECTOR = 'assistant director'
+_ART_DEPARTMENT = 'art department'
+_SOUND_DEPARTMENT = 'sound department'
+_SPECIAL_EFFECTS = 'special effects'
+_VISUAL_EFFECTS = 'visual effects'
+_STUNTS = 'stunts'
+_CAMERA_AND_ELECTRICAL_DEPARTMENT = 'camera and electrical department'
+_ANIMATION_DEPARTMENT = 'animation department'
+_CASTING_DEPARTMENT = 'casting department'
+_COSTUME_AND_WARDROBE_DEPARTMENT = 'costume and wardrobe department'
+_EDITORIAL_DEPARTMENT = 'editorial department'
+_LOCATION_MANAGEMENT = 'location management'
+_MUSIC DEPARTMENT = 'music department'
+_SCRIPT_DEPARTMENT = 'script department'
+_TRANSPORTATION_DEPARTMENT = 'transportation department'
+_OTHER_CREW = 'other crew'
+_THANKS = 'thanks'
+
+# Credit title mappings
+_CREDIT_MAPPINGS = {
+    'Directed by': _DIRECTOR,
+    'Series Directed by': _DIRECTOR,
+}
+
+
 class NameBasics:
     """Class to store the row information from IMDb's "`name.basics.tsv`" dataset.
     
