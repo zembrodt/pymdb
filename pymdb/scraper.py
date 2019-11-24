@@ -13,6 +13,10 @@ from pymdb.models import (
     TitleScrape,
     TitleTechSpecsScrape,
 )
+from pymdb.models.name import (
+    _ACTOR,
+    _CREDIT_MAPPINGS,
+)
 from pymdb.utils import (
     get_category,
     get_company_id,
@@ -206,7 +210,7 @@ class PyMDbScraper:
                         CreditScrape(
                             name_id=get_name_id(cast_member_node),
                             title_id=title_id,
-                            job_title='actor',
+                            job_title=_ACTOR,
                             credit=character_credit,
                             episode_count=episode_count,
                             episode_year_start=episode_year_start,
@@ -317,7 +321,7 @@ class PyMDbScraper:
                             yield CreditScrape(
                                 name_id=name_id,
                                 title_id=episode_id,
-                                job_title='actor',
+                                job_title=_ACTOR,
                                 credit=episode_credit,
                                 episode_count=None,
                                 episode_year_start=episode_year,
@@ -336,7 +340,7 @@ class PyMDbScraper:
                 yield CreditScrape(
                     name_id=name_id,
                     title_id=title_id,
-                    job_title='actor',
+                    job_title=_ACTOR,
                     credit=credit,
                     episode_count=episode_count,
                     episode_year_start=episode_year_start,
@@ -372,7 +376,12 @@ class PyMDbScraper:
                         title = node.text().strip()
                         if len(title) > 0:
                             found_title = True
-                            curr_title = title
+                            curr_title = title.lower()
+                            curr_title = re.sub(r'series', '', curr_title).strip()
+                            if curr_title in _CREDIT_MAPPINGS:
+                                curr_title = _CREDIT_MAPPINGS[curr_title]
+                            else:
+                                print(f'Found an unknown job title: {curr_title}, for {title_id}')
                             continue
                 else:
                     if node.tag == 'table':

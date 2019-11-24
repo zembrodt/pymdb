@@ -40,7 +40,7 @@ _CASTING_DEPARTMENT = 'casting department'
 _COSTUME_AND_WARDROBE_DEPARTMENT = 'costume and wardrobe department'
 _EDITORIAL_DEPARTMENT = 'editorial department'
 _LOCATION_MANAGEMENT = 'location management'
-_MUSIC DEPARTMENT = 'music department'
+_MUSIC_DEPARTMENT = 'music department'
 _SCRIPT_DEPARTMENT = 'script department'
 _TRANSPORTATION_DEPARTMENT = 'transportation department'
 _OTHER_CREW = 'other crew'
@@ -48,8 +48,36 @@ _THANKS = 'thanks'
 
 # Credit title mappings
 _CREDIT_MAPPINGS = {
-    'Directed by': _DIRECTOR,
-    'Series Directed by': _DIRECTOR,
+    'directed by': _DIRECTOR,
+    'produced by': _PRODUCER,
+    'writing credits': _WRITER,
+    'music by': _MUSIC,
+    'cinematography by': _CINEMATOGRAPHY,
+    'film editing by': _FILM_EDITING,
+    'casting by': _CASTING,
+    'production design by': _PRODUCTION_DESIGN,
+    'art direction by': _ART_DIRECTOR,
+    'set decoration by': _SET_DECORATION,
+    'costume design by': _COSTUME_DESIGN,
+    'makeup department': _MAKEUP_DEPARTMENT,
+    'production management': _PRODUCTION_MANAGER,
+    'second unit director or assistant director': _ASSISTANT_DIRECTOR,
+    'art department': _ART_DEPARTMENT,
+    'sound department': _SOUND_DEPARTMENT,
+    'special effects by': _SPECIAL_EFFECTS,
+    'visual effects by': _VISUAL_EFFECTS,
+    'stunts': _STUNTS,
+    'camera and electrical department': _CAMERA_AND_ELECTRICAL_DEPARTMENT,
+    'animation department': _ANIMATION_DEPARTMENT,
+    'casting department': _CASTING_DEPARTMENT,
+    'costume and wardrobe department': _COSTUME_AND_WARDROBE_DEPARTMENT,
+    'editorial department': _EDITORIAL_DEPARTMENT,
+    'location management': _LOCATION_MANAGEMENT,
+    'music department': _MUSIC_DEPARTMENT,
+    'script and continuity department': _SCRIPT_DEPARTMENT,
+    'transportation department': _TRANSPORTATION_DEPARTMENT,
+    'other crew': _OTHER_CREW,
+    'thanks': _THANKS,
 }
 
 
