@@ -7,6 +7,7 @@ PyMDb modules
     exceptions
     models.company
     models.name
+    models.search
     models.title
     parser
     scraper
