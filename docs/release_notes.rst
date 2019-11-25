@@ -49,3 +49,8 @@ Release Notes
 * Release 0.0.1 (11 November 2019)
 
     - Initial stable release of PyMDb to PyPI with completed unit tests
+
+.. _#1: https://github.com/zembrodt/pymdb/issues/1
+.. _#3: https://github.com/zembrodt/pymdb/issues/3
+.. _#5: https://github.com/zembrodt/pymdb/issues/5
+.. _#6: https://github.com/zembrodt/pymdb/issues/6
