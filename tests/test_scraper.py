@@ -7,7 +7,7 @@ from datetime import datetime
 from requests.exceptions import HTTPError
 from pymdb.exceptions import InvalidCompanyId
 from pymdb.scraper import PyMDbScraper
-from pymdb import CreditScrape, NameCreditScrape
+from pymdb import CreditScrape, NameCreditScrape, SearchResultName, SearchResultTitle
 from pymdb.models.name import (
     _ACTOR,
     _ART_DEPARTMENT,
@@ -969,7 +969,7 @@ class TestGetName(unittest.TestCase):
 
         # Correct values
         display_name = 'James Sled'
-        known_for_titles = ['tt4154796', 'tt6565702', 'tt7798634', 'tt3952222']
+        known_for_titles_len = 4
         birth_date = None
         birth_city = None
         death_date = None
@@ -981,7 +981,7 @@ class TestGetName(unittest.TestCase):
 
         self.assertEqual(name.name_id, name_id)
         self.assertEqual(name.display_name, display_name)
-        self.assertEqual(sorted(name.known_for_titles), sorted(known_for_titles))
+        self.assertEqual(len(name.known_for_titles), known_for_titles_len)
         self.assertEqual(name.birth_date, birth_date)
         self.assertEqual(name.birth_city, birth_city)
         self.assertEqual(name.death_date, death_date)
@@ -1654,6 +1654,91 @@ class TestGetTechSpecs(unittest.TestCase):
         with self.assertRaises(HTTPError):
             scraper.get_tech_specs(title_id)
 
+
+class TestGetSearchResults(unittest.TestCase):
+    def test_get_search_results_names(self):
+        keyword = 'rob'
+        scraper = PyMDbScraper()
+        actual_results = scraper.get_search_results(keyword)
+
+        # Correct results
+        correct_results = [
+            SearchResultName('nm0000507', 259, 'Rob Lowe', 'Actor, St. Elmo\'s Fire (1985)'),
+            SearchResultName('nm0957772', 2471, 'Rob Zombie', 'Director, The Devil\'s Rejects (2005)'),
+            SearchResultName('nm0568390', 2822, 'Rob McElhenney', 'Writer, It\'s Always Sunny in Philadelphia (2005-2019)'),
+            SearchResultName('nm0001661', 3115, 'Rob Reiner', 'Actor, All in the Family (1971-1979)'),
+            SearchResultName('nm1443527', 3438, 'Rob Riggle', 'Self, The Daily Show (2006-2015)'),
+            SearchResultName('nm0001705', 3447, 'Rob Schneider', 'Actor, The Hot Chick (2002)'),
+            SearchResultName('nm0667326', 3969, 'Rob Paulsen', 'Actor, Animaniacs (1993-1998)'),
+            SearchResultName('nm1117791', 4723, 'Rob Corddry', 'Actor, Warm Bodies (2013)')
+        ]
+
+        self.assertEqual(sorted(actual_results), sorted(correct_results))
+    
+    def test_get_search_results_titles(self):
+        keyword = 'futuram'
+        scraper = PyMDbScraper()
+        actual_results = scraper.get_search_results(keyword)
+
+        # Correct results
+        correct_results = [
+            SearchResultTitle('tt0149460', 1348, 'Futurama', 'TV series', ['Billy West', 'John DiMaggio'], 1999, 2013),
+            SearchResultTitle('tt0471711', 24881, 'Futurama: Bender\'s Big Score', 'video', ['Billy West', 'Katey Sagal'], 2007, None),
+            SearchResultTitle('tt1054485', 25981, 'Futurama: The Beast with a Billion Backs', 'video', ['Billy West', 'Katey Sagal'], 2008, None),
+            SearchResultTitle('tt1054487', 32378, 'Futurama: Into the Wild Green Yonder', 'video', ['Billy West', 'Katey Sagal'], 2009, None),
+            SearchResultTitle('tt1054486', 34804, 'Futurama: Bender\'s Game', 'video', ['Billy West', 'Katey Sagal'], 2008, None),
+            SearchResultTitle('tt0088763', 627, 'Back to the Future', 'feature', ['Michael J. Fox', 'Christopher Lloyd'], 1985, None),
+            SearchResultTitle('tt4975856', 1801, 'Future Man', 'TV series', ['Josh Hutcherson', 'Eliza Coupe'], 2017, None),
+            SearchResultTitle('tt0377952', 63634, 'Futurama', 'video game', [], 2003, None),
+        ]
+
+        self.assertEqual(sorted(actual_results), sorted(correct_results))
+    
+
+    def test_get_search_results_mixed(self):
+        keyword = 'bo'
+        scraper = PyMDbScraper()
+        actual_results = scraper.get_search_results(keyword)
+
+        # Correct results
+        correct_results = [
+            SearchResultTitle('tt0105287', 2039, 'Sex and Zen', 'feature', ['Lawrence Ng', 'Amy Yip'], 1991, None),
+            SearchResultName('nm0000137', 46, 'Bo Derek', 'Actress, Bolero (1984)'),
+            SearchResultTitle('tt1588170', 3262, 'I Saw the Devil', 'feature', ['Byung-Hun Lee', 'Min-sik Choi'], 2010, None),
+            SearchResultTitle('tt1365048', 3930, '3-D Sex and Zen: Extreme Ecstasy', 'feature', ['Hiro Hayama', 'Leni Lan Crazybarby'], 2011, None),
+            SearchResultName('nm3102998', 7027, 'Bo Burnham', 'Writer, Eighth Grade (2018)'),
+            SearchResultName('nm0005033', 8853, 'Sammo Kam-Bo Hung', 'Stunts, Yip Man (2008)'),
+            SearchResultName('nm4773573', 9310, 'Bo Martyn', 'Actress, V-Wars (2019)')
+        ]
+
+        self.assertEqual(sorted(actual_results), sorted(correct_results))
+    
+
+    def test_get_search_results_empty(self):
+        keyword = 'callmefreddiegordyonthemforties'
+        scraper = PyMDbScraper()
+        actual_results = scraper.get_search_results(keyword)
+
+        self.assertEqual(0, len(actual_results))
+
+    def test_get_search_results_no_keyword(self):
+        keyword = ''
+        scraper = PyMDbScraper()
+        actual_results = scraper.get_search_results(keyword)
+
+        self.assertEqual(0, len(actual_results))
+
+    def test_get_search_results_none_keyword(self):
+        keyword = None
+        scraper = PyMDbScraper()
+        actual_results = scraper.get_search_results(keyword)
+
+        self.assertEqual(0, len(actual_results))
+
+    def test_get_search_results_bad_request(self):
+        keyword = 'test?'
+        with self.assertRaises(HTTPError):
+            PyMDbScraper().get_search_results(keyword)
 
 class TestGetTree(unittest.TestCase):
     def test_get_tree_200(self):

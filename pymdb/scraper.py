@@ -1,5 +1,6 @@
 """Module containing the PyMDbScraper class."""
 
+import json
 import re
 import requests
 from selectolax.parser import HTMLParser
@@ -10,6 +11,8 @@ from pymdb.models import (
     CreditScrape,
     NameCreditScrape,
     NameScrape,
+    SearchResultName,
+    SearchResultTitle,
     TitleScrape,
     TitleTechSpecsScrape,
 )
@@ -29,6 +32,7 @@ from pymdb.utils import (
     remove_tags,
     remove_tags_and_content,
     split_by_br,
+    trim_name,
     trim_year,
     trim_money_string,
 )
@@ -886,6 +890,73 @@ class PyMDbScraper:
             cinematographic_process=cinematographic_process,
             printed_film_format=printed_film_format
         )
+
+    def get_search_results(self, keyword):
+        """Gets search results for a given keyword.
+
+        Uses IMDb's GET requests for searches to retrieve a JSON response containing the search
+        result information. A list of `SearchResult` objects is created for each result that is
+        either a name or title. If the result is a name, the object is a `SearchResultName`. If
+        it is a title, the object is a `SearchResultTitle`.
+
+        Args:
+            keyword (:obj:`str`): The keyword to search for. IMDb caps keywords at 20 characters.
+
+        Returns:
+            :obj:`list` of :class:`~.models.search.SearchResult`: A list of either 
+                :class:`~.models.search.SearchResultName` and/or :class:`~.models.search.SearchResultTitle`
+                objects.
+
+        Raises:
+            HTTPError: If the request failed.
+        """
+
+        if keyword is not None and len(keyword) > 0:
+            search_results = []
+            # Trim keyword to IMDb max length
+            if len(keyword) > 20:
+                keyword = keyword[:20]
+            request = f'https://v2.sg.media-imdb.com/suggestion/{keyword[0]}/{keyword}.json'
+            response = requests.get(request, headers=self._headers)
+            response.raise_for_status()
+            response_data = json.loads(response.text)
+            if 'd' in response_data:
+                for result in response_data['d']:
+                    imdb_id = result['id']
+                    if len(imdb_id) >= 2:
+                        if imdb_id[:2] == 'nm':
+                            search_results.append(SearchResultName(
+                                imdb_id=imdb_id,
+                                search_rank=result['rank'],
+                                name=trim_name(result['l']),
+                                known_for=result['s']
+                            ))
+                        elif imdb_id[:2] == 'tt':
+                            title_type = result['q']
+                            starring = []
+                            start_year = result['y']
+                            end_year = None
+
+                            # Video games has genres instead of actors, so ignore
+                            if title_type != 'video game':
+                                starring = [actor.strip() for actor in result['s'].split(',')]
+                            # Check if this is a TV series
+                            if 'yr' in result:
+                                start_year, end_year = result['yr'].split('-')
+                                if len(end_year) == 0:
+                                    end_year = None
+                            
+                            search_results.append(SearchResultTitle(
+                                imdb_id=imdb_id,
+                                search_rank=result['rank'],
+                                display_title=result['l'],
+                                title_type=title_type,
+                                starring=starring,
+                                start_year=start_year,
+                                end_year=end_year
+                            ))
+            return search_results
+        return []
 
     def _get_tree(self, request):
         """Get the selectolax HTML tree given a request.
