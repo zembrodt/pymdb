@@ -307,6 +307,23 @@ def get_episode_info(node):
     return episode_count, episode_year_start, episode_year_end
 
 
+def trim_name(name):
+    """Used to trim roman numerals from names.
+
+    IMDb differentiates people's names that are the same with the format:
+    `<name> (<Roman numeral>)`. This function removes the roman numerals
+    and returns only the name.
+
+    Args:
+        name (:obj:`str`): The name and roman numeral combination.
+
+    Returns:
+        :obj:`str`: The name with roman numerals removed, or `None` if name was `None`.
+    """
+
+    return re.sub(r'\s*\(\w+\)', '', name) if name is not None else None
+
+
 def trim_year(year):
     """Used to trim roman numerals from year values.
 

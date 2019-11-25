@@ -331,6 +331,24 @@ class TestGetRefMarker(unittest.TestCase):
         self.assertEqual(get_ref_marker(node), correct_result)
 
 
+class TestTrimName(unittest.TestCase):
+    def test_trim_name_none(self):
+        self.assertIsNone(trim_name(None))
+
+    def test_trim_name_no_roman_numerals(self):
+        name = 'Rob Schneider'
+        correct_result = 'Rob Schneider'
+        self.assertEqual(trim_name(name), correct_result)
+
+    def test_trim_name_roman_numerals(self):
+        name1 = 'Rob Schneider (I)'
+        name2 = 'Rob Schneider (IV)'
+        name3 = 'Rob Schneider (VII)'
+        correct_result = 'Rob Schneider'
+        self.assertEqual(trim_name(name1), correct_result)
+        self.assertEqual(trim_name(name2), correct_result)
+        self.assertEqual(trim_name(name3), correct_result)
+
 class TestTrimYear(unittest.TestCase):
     def test_trim_year_None(self):
         self.assertIsNone(trim_year(None))

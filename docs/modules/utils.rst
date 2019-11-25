@@ -59,6 +59,10 @@ split_by_br
 -----------
 .. autofunction:: split_by_br
 
+trim_name
+---------
+.. autofunction:: trim_name
+
 trim_year
 ---------
 .. autofunction:: trim_year
