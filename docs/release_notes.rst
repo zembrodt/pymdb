@@ -3,11 +3,11 @@ Release Notes
 
 * Release 0.2.0 (TBD)
 
-   - #5: Mapped :class:`~.models.name.CreditScrape`'s member variable `job_title` into key values
-   - #1: Added module :obj:`~.models.search` to store different IMDb search results
-   - #1: Added method `get_search_results` to :class:`~.scraper.PyMDbScraper` to retrieve search results
-     from IMDb based on keywords
-   - #1: Added utils method :obj:`~.utils.trim_name` to trim names within IMDb search results
+   - Mapped :class:`~.models.name.CreditScrape`'s member variable `job_title` into key values (`#5`_ )
+   - Added module :obj:`~.models.search` to store different IMDb search results (`#1`_ )
+   - Added method `get_search_results` to :class:`~.scraper.PyMDbScraper` to retrieve search results
+     from IMDb based on keywords (`#1`_ )
+   - Added utils method :obj:`~.utils.trim_name` to trim names within IMDb search results (`#1`_ )
 
 * Release 0.1.1 (21 November 2019)
 
@@ -20,13 +20,13 @@ Release Notes
    - Added an optional parameter `include_known_for_titles` to :class:`~.scraper.PyMDbScraper`'s
      method :obj:`~.scraper.PyMDbScraper.get_name` since an extra request needs to be sent to retrieve data for
      `known_for_titles`.
-   - #3: Renamed :obj:`get_full_credits` to :obj:`~.scraper.PyMDbScraper.get_full_crew`
-   - #3: Combined :obj:`~.scraper.PyMDbScraper.get_full_cast` and :obj:`~.scraper.PyMDbScraper.get_full_crew` into
-     a single helper method of the previously used name :obj:`~.scraper.PyMDbScraper.get_full_credits`
+   - Renamed :obj:`get_full_credits` to :obj:`~.scraper.PyMDbScraper.get_full_crew` (`#3`_ )
+   - Combined :obj:`~.scraper.PyMDbScraper.get_full_cast` and :obj:`~.scraper.PyMDbScraper.get_full_crew` into
+     a single helper method of the previously used name :obj:`~.scraper.PyMDbScraper.get_full_credits` (`#3`_ )
    - Added new utils function :obj:`~.utils.get_episode_info` to parse the episode information for an actor'scraper
      credits on a TV series' IMDb page
-   - #6: Modified :class:`~.models.title.TitleScrape`'s `top_cast` member variable to be a list of :class:`~.models.name.CreditScrape`
-     objects instead of a list of name IDs
+   - Modified :class:`~.models.title.TitleScrape`'s `top_cast` member variable to be a list of :class:`~.models.name.CreditScrape`
+     objects instead of a list of name IDs (`#6`_ )
 
 * Release 0.1.0 (14 November 2019)
 
