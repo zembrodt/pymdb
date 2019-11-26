@@ -54,10 +54,11 @@ class PyMDbParser:
         delete_gzip_files (:obj:`bool`, optional): Determine if gzip files should be deleted after being gunzipped.
     """
 
-    def __init__(self, use_default_filenames=True, gunzip_files=False, delete_gzip_files=False):
+    def __init__(self, use_default_filenames=True, gunzip_files=False, delete_gzip_files=False, as_generators=True):
         self._use_default_filenames = use_default_filenames
         self._gunzip_files = gunzip_files
         self._delete_gzip_files = delete_gzip_files
+        self._as_generators = as_generators
 
     def get_title_akas(self, path, contains_headers=True):
         """Parse the "`title.akas.tsv`" dataset provided by IMDb.
@@ -74,6 +75,16 @@ class PyMDbParser:
             InvalidParseFormat: If a row has an incorrect column size.
         """
 
+        if self._as_generators:
+            for title_aka in self._get_title_akas(path, contains_headers):
+                yield title_aka
+        else:
+            title_akas = []
+            for title_aka in self._get_title_akas(path, contains_headers):
+                title_akas.append(title_aka)
+            return title_akas
+
+    def _get_title_akas(self, path, contains_headers):
         path = self._build_path(path, _TITLE_AKAS.default_filename)
 
         with open(path, mode='r', encoding='utf8') as f:
@@ -110,6 +121,16 @@ class PyMDbParser:
             InvalidParseFormat: If a row has an incorrect column size.
         """
 
+        if self._as_generators:
+            for title_basic in self._get_title_basics(path, contains_headers):
+                yield title_basic
+        else:
+            title_basics = []
+            for title_basic in self._get_title_basics(path, contains_headers):
+                title_basics.append(title_basic)
+            return title_basics
+
+    def _get_title_basics(self, path, contains_headers):
         path = self._build_path(path, _TITLE_BASICS.default_filename)
 
         with open(path, mode='r', encoding='utf8') as f:
@@ -145,6 +166,16 @@ class PyMDbParser:
             InvalidParseFormat: If a row has an incorrect column size.
         """
 
+        if self._as_generators:
+            for title_crew_member in self._get_title_crew(path, contains_headers):
+                yield title_crew_member
+        else:
+            title_crew = []
+            for title_crew_member in self._get_title_crew(path, contains_headers):
+                title_crew.append(title_crew_member)
+            return title_crew
+
+    def _get_title_crew(self, path, contains_headers):
         path = self._build_path(path, _TITLE_CREW.default_filename)
 
         with open(path, mode='r', encoding='utf8') as f:
@@ -180,6 +211,16 @@ class PyMDbParser:
             InvalidParseFormat: If a row has an incorrect column size.
         """
 
+        if self._as_generators:
+            for title_episode in self._get_title_episodes(path, contains_headers):
+                yield title_episode
+        else:
+            title_episodes = []
+            for title_episode in self._get_title_episodes(path, contains_headers):
+                title_episodes.append(title_episode)
+            return title_episodes
+
+    def _get_title_episodes(self, path, contains_headers):
         path = self._build_path(path, _TITLE_EPISODE.default_filename)
         
         with open(path, mode='r', encoding='utf8') as f:
@@ -211,6 +252,16 @@ class PyMDbParser:
             InvalidParseFormat: If a row has an incorrect column size.
         """
 
+        if self._as_generators:
+            for title_principal in self._get_title_principals(path, contains_headers):
+                yield title_principal
+        else:
+            title_principals = []
+            for title_principal in self._get_title_principals(path, contains_headers):
+                title_principals.append(title_principal)
+            return title_principals
+
+    def _get_title_principals(self, path, contains_headers):
         path = self._build_path(path, _TITLE_PRINCIPALS.default_filename)
 
         with open(path, mode='r', encoding='utf8') as f:
@@ -246,6 +297,16 @@ class PyMDbParser:
             InvalidParseFormat: If a row has an incorrect column size.
         """
 
+        if self._as_generators:
+            for title_rating in self._get_title_ratings(path, contains_headers):
+                yield title_rating
+        else:
+            title_ratings = []
+            for title_rating in self._get_title_ratings(path, contains_headers):
+                title_ratings.append(title_rating)
+            return title_ratings
+
+    def _get_title_ratings(self, path, contains_headers):
         path = self._build_path(path, _TITLE_RATINGS.default_filename)
 
         with open(path, mode='r', encoding='utf8') as f:
@@ -277,6 +338,16 @@ class PyMDbParser:
             InvalidParseFormat: If a row has an incorrect column size.
         """
 
+        if self._as_generators:
+            for name_basic in self._get_name_basics(path, contains_headers):
+                yield name_basic
+        else:
+            name_basics = []
+            for name_basic in self._get_name_basics(path, contains_headers):
+                name_basics.append(name_basic)
+            return name_basics
+
+    def _get_name_basics(self, path, contains_headers):
         path = self._build_path(path, _NAME_BASICS.default_filename)
         
         with open(path, 'r', encoding='utf8') as f:

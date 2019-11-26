@@ -42,6 +42,10 @@ class PyMDbScraper:
     """Scrapes various information from IMDb web pages.
 
     Contains functions for various IMDb pages and scrapes information into Python classes.
+
+    Args:
+        as_generators (:obj:`bool`): Determines if the objects scraped from IMDb should be returned as
+            generators or all at once as lists or dictionaries.
     """
 
     _headers = {
@@ -50,8 +54,8 @@ class PyMDbScraper:
         'accept': 'text/html,application/xhtml+xml,application/xml'
     }
 
-    def __init__(self):
-        pass
+    def __init__(self, as_generators=True):
+        self._as_generators = as_generators
 
     def get_title(self, title_id, include_taglines=False):
         """Scrapes information from the IMDb web page for the specified title.
@@ -280,6 +284,16 @@ class PyMDbScraper:
             HTTPError: If a request failed.
         """
 
+        if self._as_generators:
+            for credit in self._get_full_cast(title_id, include_episodes):
+                yield credit
+        else:
+            actors = []
+            for credit in self._get_full_cast(title_id, include_episodes):
+                actors.append(credit)
+            return actors
+
+    def _get_full_cast(self, title_id, include_episodes):
         request = f'https://www.imdb.com/title/{title_id}/fullcredits'
         tree = self._get_tree(request)
 
@@ -367,6 +381,19 @@ class PyMDbScraper:
             HTTPError: If the request failed.
         """
 
+        if self._as_generators:
+            for crew_member in self._get_full_crew(title_id):
+                yield crew_member
+        else:
+            crew = dict()
+            for crew_member in self._get_full_crew(title_id):
+                if crew_member.job_title in crew:
+                    crew[crew_member.job_title].append(crew_member)
+                else:
+                    crew[crew_member.job_title] = [crew_member]
+            return crew
+
+    def _get_full_crew(self, title_id):
         request = f'https://www.imdb.com/title/{title_id}/fullcredits'
         tree = self._get_tree(request)
 
@@ -455,6 +482,16 @@ class PyMDbScraper:
         Raises:
             HTTPError: If the request failed.
         """
+
+        if self._as_generators:
+            for credit in self._get_full_credits(title_id, include_episodes):
+                yield credit
+        else:
+            full_credits = self._get_full_crew(title_id)
+            full_credits[_ACTOR] = self._get_full_cast(title_id, include_episodes)
+            return full_credits
+
+    def _get_full_credits(self, title_id, include_episodes):
         for cast_member in self.get_full_cast(title_id, include_episodes=include_episodes):
             yield cast_member
         for crew_member in self.get_full_crew(title_id):
@@ -581,6 +618,16 @@ class PyMDbScraper:
             HTTPError: If a request failed.
         """
 
+        if self._as_generators:
+            for credit in self._get_name_credits(name_id, include_episodes):
+                yield credit
+        else:
+            name_credits = []
+            for credit in self._get_name_credits(name_id, include_episodes):
+                name_credits.append(credit)
+            return name_credits
+
+    def _get_name_credits(self, name_id, include_episodes):
         request = f'https://www.imdb.com/name/{name_id}/'
         tree = self._get_tree(request)
         
@@ -692,6 +739,16 @@ class PyMDbScraper:
             InvalidCompanyId: If an invalid company ID was given.
         """
 
+        if self._as_generators:
+            for title in self._get_company(company_id):
+                yield title
+        else:
+            company_titles = []
+            for title in self._get_company(company_id):
+                company_titles.append(title)
+            return company_titles
+
+    def _get_company(self, company_id):
         index = 1
         finding_titles = True
         while finding_titles:
@@ -775,6 +832,16 @@ class PyMDbScraper:
             HTTPError: If the request failed.
         """
 
+        if self._as_generators:
+            for company in self._get_company_credits(title_id):
+                yield company
+        else:
+            company_credits = []
+            for company in self._get_company_credits(title_id):
+                company_credits.append(company)
+            return company_credits
+
+    def _get_company_credits(self, title_id):
         request = f'https://www.imdb.com/title/{title_id}/companycredits'
         tree = self._get_tree(request)
 

@@ -7,4 +7,3 @@ PyMDbScraper
 ------------
 .. autoclass:: PyMDbScraper
     :members:
-    :private-members:
