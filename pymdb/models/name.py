@@ -14,70 +14,70 @@ from functools import total_ordering
 
 
 # Credit job title keys
-_ACTOR = 'actor'
-_DIRECTOR = 'director'
-_PRODUCER = 'producer'
-_WRITER = 'writer'
-_MUSIC = 'music'
-_CINEMATOGRAPHY = 'cinematography'
-_FILM_EDITING = 'film editing'
-_CASTING = 'casting'
-_PRODUCTION_DESIGN = 'production design'
-_ART_DIRECTOR = 'art director'
-_SET_DECORATION = 'set decoration'
-_COSTUME_DESIGN = 'costume design'
-_MAKEUP_DEPARTMENT = 'makeup department'
-_PRODUCTION_MANAGER = 'production manager'
-_ASSISTANT_DIRECTOR = 'assistant director'
-_ART_DEPARTMENT = 'art department'
-_SOUND_DEPARTMENT = 'sound department'
-_SPECIAL_EFFECTS = 'special effects'
-_VISUAL_EFFECTS = 'visual effects'
-_STUNTS = 'stunts'
-_CAMERA_AND_ELECTRICAL_DEPARTMENT = 'camera and electrical department'
-_ANIMATION_DEPARTMENT = 'animation department'
-_CASTING_DEPARTMENT = 'casting department'
-_COSTUME_AND_WARDROBE_DEPARTMENT = 'costume and wardrobe department'
-_EDITORIAL_DEPARTMENT = 'editorial department'
-_LOCATION_MANAGEMENT = 'location management'
-_MUSIC_DEPARTMENT = 'music department'
-_SCRIPT_DEPARTMENT = 'script department'
-_TRANSPORTATION_DEPARTMENT = 'transportation department'
-_OTHER_CREW = 'other crew'
-_THANKS = 'thanks'
+ACTOR = 'actor'
+DIRECTOR = 'director'
+PRODUCER = 'producer'
+WRITER = 'writer'
+MUSIC = 'music'
+CINEMATOGRAPHY = 'cinematography'
+FILM_EDITING = 'film editing'
+CASTING = 'casting'
+PRODUCTION_DESIGN = 'production design'
+ART_DIRECTOR = 'art director'
+SET_DECORATION = 'set decoration'
+COSTUME_DESIGN = 'costume design'
+MAKEUP_DEPARTMENT = 'makeup department'
+PRODUCTION_MANAGER = 'production manager'
+ASSISTANT_DIRECTOR = 'assistant director'
+ART_DEPARTMENT = 'art department'
+SOUND_DEPARTMENT = 'sound department'
+SPECIAL_EFFECTS = 'special effects'
+VISUAL_EFFECTS = 'visual effects'
+STUNTS = 'stunts'
+CAMERA_AND_ELECTRICAL_DEPARTMENT = 'camera and electrical department'
+ANIMATION_DEPARTMENT = 'animation department'
+CASTING_DEPARTMENT = 'casting department'
+COSTUME_AND_WARDROBE_DEPARTMENT = 'costume and wardrobe department'
+EDITORIAL_DEPARTMENT = 'editorial department'
+LOCATION_MANAGEMENT = 'location management'
+MUSIC_DEPARTMENT = 'music department'
+SCRIPT_DEPARTMENT = 'script department'
+TRANSPORTATION_DEPARTMENT = 'transportation department'
+OTHER_CREW = 'other crew'
+THANKS = 'thanks'
 
 # Credit title mappings
 _CREDIT_MAPPINGS = {
-    'directed by': _DIRECTOR,
-    'produced by': _PRODUCER,
-    'writing credits': _WRITER,
-    'music by': _MUSIC,
-    'cinematography by': _CINEMATOGRAPHY,
-    'film editing by': _FILM_EDITING,
-    'casting by': _CASTING,
-    'production design by': _PRODUCTION_DESIGN,
-    'art direction by': _ART_DIRECTOR,
-    'set decoration by': _SET_DECORATION,
-    'costume design by': _COSTUME_DESIGN,
-    'makeup department': _MAKEUP_DEPARTMENT,
-    'production management': _PRODUCTION_MANAGER,
-    'second unit director or assistant director': _ASSISTANT_DIRECTOR,
-    'art department': _ART_DEPARTMENT,
-    'sound department': _SOUND_DEPARTMENT,
-    'special effects by': _SPECIAL_EFFECTS,
-    'visual effects by': _VISUAL_EFFECTS,
-    'stunts': _STUNTS,
-    'camera and electrical department': _CAMERA_AND_ELECTRICAL_DEPARTMENT,
-    'animation department': _ANIMATION_DEPARTMENT,
-    'casting department': _CASTING_DEPARTMENT,
-    'costume and wardrobe department': _COSTUME_AND_WARDROBE_DEPARTMENT,
-    'editorial department': _EDITORIAL_DEPARTMENT,
-    'location management': _LOCATION_MANAGEMENT,
-    'music department': _MUSIC_DEPARTMENT,
-    'script and continuity department': _SCRIPT_DEPARTMENT,
-    'transportation department': _TRANSPORTATION_DEPARTMENT,
-    'other crew': _OTHER_CREW,
-    'thanks': _THANKS,
+    'directed by': DIRECTOR,
+    'produced by': PRODUCER,
+    'writing credits': WRITER,
+    'music by': MUSIC,
+    'cinematography by': CINEMATOGRAPHY,
+    'film editing by': FILM_EDITING,
+    'casting by': CASTING,
+    'production design by': PRODUCTION_DESIGN,
+    'art direction by': ART_DIRECTOR,
+    'set decoration by': SET_DECORATION,
+    'costume design by': COSTUME_DESIGN,
+    'makeup department': MAKEUP_DEPARTMENT,
+    'production management': PRODUCTION_MANAGER,
+    'second unit director or assistant director': ASSISTANT_DIRECTOR,
+    'art department': ART_DEPARTMENT,
+    'sound department': SOUND_DEPARTMENT,
+    'special effects by': SPECIAL_EFFECTS,
+    'visual effects by': VISUAL_EFFECTS,
+    'stunts': STUNTS,
+    'camera and electrical department': CAMERA_AND_ELECTRICAL_DEPARTMENT,
+    'animation department': ANIMATION_DEPARTMENT,
+    'casting department': CASTING_DEPARTMENT,
+    'costume and wardrobe department': COSTUME_AND_WARDROBE_DEPARTMENT,
+    'editorial department': EDITORIAL_DEPARTMENT,
+    'location management': LOCATION_MANAGEMENT,
+    'music department': MUSIC_DEPARTMENT,
+    'script and continuity department': SCRIPT_DEPARTMENT,
+    'transportation department': TRANSPORTATION_DEPARTMENT,
+    'other crew': OTHER_CREW,
+    'thanks': THANKS,
 }
 
 

@@ -9,18 +9,18 @@ from pymdb.exceptions import InvalidCompanyId
 from pymdb.scraper import PyMDbScraper
 from pymdb import CreditScrape, NameCreditScrape, SearchResultName, SearchResultTitle
 from pymdb.models.name import (
-    _ACTOR,
-    _ART_DEPARTMENT,
-    _ASSISTANT_DIRECTOR,
-    _CAMERA_AND_ELECTRICAL_DEPARTMENT,
-    _CINEMATOGRAPHY,
-    _DIRECTOR,
-    _MUSIC,
-    _MUSIC_DEPARTMENT,
-    _OTHER_CREW,
-    _PRODUCER,
-    _THANKS,
-    _WRITER,
+    ACTOR,
+    ART_DEPARTMENT,
+    ASSISTANT_DIRECTOR,
+    CAMERA_AND_ELECTRICAL_DEPARTMENT,
+    CINEMATOGRAPHY,
+    DIRECTOR,
+    MUSIC,
+    MUSIC_DEPARTMENT,
+    OTHER_CREW,
+    PRODUCER,
+    THANKS,
+    WRITER,
 )
 
 
@@ -63,21 +63,21 @@ class TestGetTitle(unittest.TestCase):
             '''
         production_companies = ['co0071326', 'co0000756']
         top_cast = [
-            CreditScrape('nm0000434', title_id, _ACTOR, 'Luke Skywalker', None, None, None),
-            CreditScrape('nm0000148', title_id, _ACTOR, 'Han Solo', None, None, None),
-            CreditScrape('nm0000402', title_id, _ACTOR, 'Princess Leia Organa', None, None, None),
-            CreditScrape('nm0001088', title_id, _ACTOR, 'Grand Moff Tarkin', None, None, None),
-            CreditScrape('nm0000027', title_id, _ACTOR, 'Ben Obi-Wan Kenobi', None, None, None),
-            CreditScrape('nm0000355', title_id, _ACTOR, 'C-3PO', None, None, None),
-            CreditScrape('nm0048652', title_id, _ACTOR, 'R2-D2', None, None, None),
-            CreditScrape('nm0562679', title_id, _ACTOR, 'Chewbacca', None, None, None),
-            CreditScrape('nm0001190', title_id, _ACTOR, 'Darth Vader', None, None, None),
-            CreditScrape('nm0114436', title_id, _ACTOR, 'Uncle Owen', None, None, None),
-            CreditScrape('nm0292235', title_id, _ACTOR, 'Aunt Beru', None, None, None),
-            CreditScrape('nm0701023', title_id, _ACTOR, 'Chief Jawa', None, None, None),
-            CreditScrape('nm0567018', title_id, _ACTOR, 'General Dodonna', None, None, None),
-            CreditScrape('nm0125952', title_id, _ACTOR, 'General Willard', None, None, None),
-            CreditScrape('nm0377120', title_id, _ACTOR, 'Red Leader (as Drewe Hemley)', None, None, None)
+            CreditScrape('nm0000434', title_id, ACTOR, 'Luke Skywalker', None, None, None),
+            CreditScrape('nm0000148', title_id, ACTOR, 'Han Solo', None, None, None),
+            CreditScrape('nm0000402', title_id, ACTOR, 'Princess Leia Organa', None, None, None),
+            CreditScrape('nm0001088', title_id, ACTOR, 'Grand Moff Tarkin', None, None, None),
+            CreditScrape('nm0000027', title_id, ACTOR, 'Ben Obi-Wan Kenobi', None, None, None),
+            CreditScrape('nm0000355', title_id, ACTOR, 'C-3PO', None, None, None),
+            CreditScrape('nm0048652', title_id, ACTOR, 'R2-D2', None, None, None),
+            CreditScrape('nm0562679', title_id, ACTOR, 'Chewbacca', None, None, None),
+            CreditScrape('nm0001190', title_id, ACTOR, 'Darth Vader', None, None, None),
+            CreditScrape('nm0114436', title_id, ACTOR, 'Uncle Owen', None, None, None),
+            CreditScrape('nm0292235', title_id, ACTOR, 'Aunt Beru', None, None, None),
+            CreditScrape('nm0701023', title_id, ACTOR, 'Chief Jawa', None, None, None),
+            CreditScrape('nm0567018', title_id, ACTOR, 'General Dodonna', None, None, None),
+            CreditScrape('nm0125952', title_id, ACTOR, 'General Willard', None, None, None),
+            CreditScrape('nm0377120', title_id, ACTOR, 'Red Leader (as Drewe Hemley)', None, None, None)
         ]
         budget = 11000000
         budget_denomination = 'USD'
@@ -142,14 +142,14 @@ class TestGetTitle(unittest.TestCase):
             '''
         production_companies = ['co0223402', 'co0056447', 'co0159275']
         top_cast = [
-            CreditScrape('nm0921942', title_id, _ACTOR, 'Philip J. Fry / ...', 124, 1999, 2013),
-            CreditScrape('nm0005408', title_id, _ACTOR, 'Turanga Leela / ...', 124, 1999, 2013),
-            CreditScrape('nm0224007', title_id, _ACTOR, 'Bender / ...', 124, 1999, 2013),
-            CreditScrape('nm0534134', title_id, _ACTOR, 'Linda / ...', 124, 1999, 2013),
-            CreditScrape('nm0482851', title_id, _ACTOR, 'Hermes Conrad / ...', 117, 1999, 2013),
-            CreditScrape('nm0866300', title_id, _ACTOR, 'Amy Wong / ...', 115, 1999, 2013),
-            CreditScrape('nm0005606', title_id, _ACTOR, 'Morbo / ...', 114, 1999, 2013),
-            CreditScrape('nm0379114', title_id, _ACTOR, 'Scruffy / ...', 107, 1999, 2013)
+            CreditScrape('nm0921942', title_id, ACTOR, 'Philip J. Fry / ...', 124, 1999, 2013),
+            CreditScrape('nm0005408', title_id, ACTOR, 'Turanga Leela / ...', 124, 1999, 2013),
+            CreditScrape('nm0224007', title_id, ACTOR, 'Bender / ...', 124, 1999, 2013),
+            CreditScrape('nm0534134', title_id, ACTOR, 'Linda / ...', 124, 1999, 2013),
+            CreditScrape('nm0482851', title_id, ACTOR, 'Hermes Conrad / ...', 117, 1999, 2013),
+            CreditScrape('nm0866300', title_id, ACTOR, 'Amy Wong / ...', 115, 1999, 2013),
+            CreditScrape('nm0005606', title_id, ACTOR, 'Morbo / ...', 114, 1999, 2013),
+            CreditScrape('nm0379114', title_id, ACTOR, 'Scruffy / ...', 107, 1999, 2013)
         ]
         budget = None
         budget_denomination = None
@@ -215,21 +215,21 @@ class TestGetTitle(unittest.TestCase):
             '''
         production_companies = ['co0335036', 'co0418998', 'co0343278']
         top_cast = [
-            CreditScrape('nm0227759', title_id, _ACTOR, 'Tyrion Lannister', None, None, None),
-            CreditScrape('nm3229685', title_id, _ACTOR, 'Jon Snow', None, None, None),
-            CreditScrape('nm3592338', title_id, _ACTOR, 'Daenerys Targaryen', None, None, None),
-            CreditScrape('nm0192377', title_id, _ACTOR, 'Davos Seaworth', None, None, None),
-            CreditScrape('nm3849842', title_id, _ACTOR, 'Sansa Stark', None, None, None),
-            CreditScrape('nm0318821', title_id, _ACTOR, 'Petyr \'Littlefinger\' Baelish', None, None, None),
-            CreditScrape('nm0396924', title_id, _ACTOR, 'Melisandre (as Carice Van Houten)', None, None, None),
-            CreditScrape('nm2812026', title_id, _ACTOR, 'Missandei', None, None, None),
-            CreditScrape('nm1970465', title_id, _ACTOR, 'Tormund Giantsbane', None, None, None),
-            CreditScrape('nm3701064', title_id, _ACTOR, 'Ramsay Bolton', None, None, None),
-            CreditScrape('nm0654295', title_id, _ACTOR, 'Theon Greyjoy', None, None, None),
-            CreditScrape('nm0401264', title_id, _ACTOR, 'Daario Naharis', None, None, None),
-            CreditScrape('nm2760664', title_id, _ACTOR, 'Grey Worm', None, None, None),
-            CreditScrape('nm2247629', title_id, _ACTOR, 'Yara Greyjoy', None, None, None),
-            CreditScrape('nm1613839', title_id, _ACTOR, 'Wun Wun', None, None, None)
+            CreditScrape('nm0227759', title_id, ACTOR, 'Tyrion Lannister', None, None, None),
+            CreditScrape('nm3229685', title_id, ACTOR, 'Jon Snow', None, None, None),
+            CreditScrape('nm3592338', title_id, ACTOR, 'Daenerys Targaryen', None, None, None),
+            CreditScrape('nm0192377', title_id, ACTOR, 'Davos Seaworth', None, None, None),
+            CreditScrape('nm3849842', title_id, ACTOR, 'Sansa Stark', None, None, None),
+            CreditScrape('nm0318821', title_id, ACTOR, 'Petyr \'Littlefinger\' Baelish', None, None, None),
+            CreditScrape('nm0396924', title_id, ACTOR, 'Melisandre (as Carice Van Houten)', None, None, None),
+            CreditScrape('nm2812026', title_id, ACTOR, 'Missandei', None, None, None),
+            CreditScrape('nm1970465', title_id, ACTOR, 'Tormund Giantsbane', None, None, None),
+            CreditScrape('nm3701064', title_id, ACTOR, 'Ramsay Bolton', None, None, None),
+            CreditScrape('nm0654295', title_id, ACTOR, 'Theon Greyjoy', None, None, None),
+            CreditScrape('nm0401264', title_id, ACTOR, 'Daario Naharis', None, None, None),
+            CreditScrape('nm2760664', title_id, ACTOR, 'Grey Worm', None, None, None),
+            CreditScrape('nm2247629', title_id, ACTOR, 'Yara Greyjoy', None, None, None),
+            CreditScrape('nm1613839', title_id, ACTOR, 'Wun Wun', None, None, None)
         ]
         budget = 10000000
         budget_denomination = 'GBP'
@@ -273,7 +273,7 @@ class TestGetFullCast(unittest.TestCase):
         scraper = PyMDbScraper()
 
         # Correct values
-        job_title = _ACTOR
+        job_title = ACTOR
         actor1_id = 'nm0421822'
         actor1_credit = 'Security Guard'
         actor2_id = 'nm0000982'
@@ -309,7 +309,7 @@ class TestGetFullCast(unittest.TestCase):
         scraper = PyMDbScraper()
 
         # Correct values
-        job_title = _ACTOR
+        job_title = ACTOR
         actor1_id = 'nm0224007'
         actor1_credit = 'Bender / ...'
         actor1_episode_count = 124
@@ -366,7 +366,7 @@ class TestGetFullCast(unittest.TestCase):
         scraper = PyMDbScraper()
 
         # Correct values
-        job_title = _ACTOR
+        job_title = ACTOR
         actor1_id = 'nm0364813'
         actor1_ep1_credit = 'Valery Legasov'
         actor1_ep1_start_year = 2019
@@ -422,7 +422,7 @@ class TestGetFullCast(unittest.TestCase):
         scraper = PyMDbScraper()
 
         # Correct values
-        job_title = _ACTOR
+        job_title = ACTOR
         actor1_id = 'nm0227759'
         actor1_credit = 'Tyrion Lannister'
         actor2_id = 'nm0654295'
@@ -471,7 +471,7 @@ class TestGetFullCrew(unittest.TestCase):
             'nm0751577': CreditScrape(
                 'nm0751577',
                 title_id,
-                _DIRECTOR,
+                DIRECTOR,
                 None,
                 None,
                 None,
@@ -480,7 +480,7 @@ class TestGetFullCrew(unittest.TestCase):
             'nm2757098': CreditScrape(
                 'nm2757098',
                 title_id,
-                _WRITER,
+                WRITER,
                 'Rocket Raccoon created by',
                 None,
                 None,
@@ -489,7 +489,7 @@ class TestGetFullCrew(unittest.TestCase):
             'nm10724782': CreditScrape(
                 'nm10724782',
                 title_id,
-                _THANKS,
+                THANKS,
                 'special thanks',
                 None,
                 None,
@@ -526,7 +526,7 @@ class TestGetFullCrew(unittest.TestCase):
             'nm0547772': CreditScrape(
                 'nm0547772',
                 title_id,
-                _DIRECTOR,
+                DIRECTOR,
                 None,
                 8,
                 2010,
@@ -535,7 +535,7 @@ class TestGetFullCrew(unittest.TestCase):
             'nm0592546': CreditScrape(
                 'nm0592546',
                 title_id,
-                _WRITER,
+                WRITER,
                 None,
                 26,
                 2001,
@@ -544,7 +544,7 @@ class TestGetFullCrew(unittest.TestCase):
             'nm0629628': CreditScrape(
                 'nm0629628',
                 title_id,
-                _MUSIC_DEPARTMENT,
+                MUSIC_DEPARTMENT,
                 'stock music (uncredited)',
                 1,
                 2011,
@@ -553,7 +553,7 @@ class TestGetFullCrew(unittest.TestCase):
             'nm4348107': CreditScrape(
                 'nm4348107',
                 title_id,
-                _OTHER_CREW,
+                OTHER_CREW,
                 'production assistant',
                 1,
                 2012,
@@ -592,7 +592,7 @@ class TestGetFullCrew(unittest.TestCase):
             'nm0764601': CreditScrape(
                 'nm0764601',
                 title_id,
-                _DIRECTOR,
+                DIRECTOR,
                 None,
                 None,
                 None,
@@ -601,7 +601,7 @@ class TestGetFullCrew(unittest.TestCase):
             'nm2388673': CreditScrape(
                 'nm2388673',
                 title_id,
-                _PRODUCER,
+                PRODUCER,
                 'co-producer',
                 None,
                 None,
@@ -610,7 +610,7 @@ class TestGetFullCrew(unittest.TestCase):
             'nm1268561': CreditScrape(
                 'nm1268561',
                 title_id,
-                _ART_DEPARTMENT,
+                ART_DEPARTMENT,
                 'head greensman (as Michael Gibson)',
                 None,
                 None,
@@ -655,7 +655,7 @@ class TestGetFullCredits(unittest.TestCase):
             'nm0751577': CreditScrape(
                 'nm0751577',
                 title_id,
-                _DIRECTOR,
+                DIRECTOR,
                 None,
                 None,
                 None,
@@ -664,7 +664,7 @@ class TestGetFullCredits(unittest.TestCase):
             'nm2757098': CreditScrape(
                 'nm2757098',
                 title_id,
-                _WRITER,
+                WRITER,
                 'Rocket Raccoon created by',
                 None,
                 None,
@@ -673,7 +673,7 @@ class TestGetFullCredits(unittest.TestCase):
             'nm0000982': CreditScrape(
                 'nm0000982',
                 title_id,
-                _ACTOR,
+                ACTOR,
                 'Thanos',
                 None,
                 None,
@@ -710,7 +710,7 @@ class TestGetFullCredits(unittest.TestCase):
             'nm0547772': CreditScrape(
                 'nm0547772',
                 title_id,
-                _DIRECTOR,
+                DIRECTOR,
                 None,
                 8,
                 2010,
@@ -719,7 +719,7 @@ class TestGetFullCredits(unittest.TestCase):
             'nm0592546': CreditScrape(
                 'nm0592546',
                 title_id,
-                _WRITER,
+                WRITER,
                 None,
                 26,
                 2001,
@@ -728,7 +728,7 @@ class TestGetFullCredits(unittest.TestCase):
             'nm0224007': CreditScrape(
                 'nm0224007',
                 title_id,
-                _ACTOR,
+                ACTOR,
                 'Bender / ...',
                 124,
                 1999,
@@ -767,7 +767,7 @@ class TestGetFullCredits(unittest.TestCase):
             'nm0269957': CreditScrape(
                 'nm0269957',
                 title_id,
-                _PRODUCER,
+                PRODUCER,
                 'executive producer',
                 5,
                 2019,
@@ -776,7 +776,7 @@ class TestGetFullCredits(unittest.TestCase):
             'nm3723390': CreditScrape(
                 'nm3723390',
                 title_id,
-                _MUSIC,
+                MUSIC,
                 None,
                 5,
                 2019,
@@ -785,7 +785,7 @@ class TestGetFullCredits(unittest.TestCase):
             'nm0364813': CreditScrape(
                 'nm0364813',
                 'tt9166696',
-                _ACTOR,
+                ACTOR,
                 'Valery Legasov',
                 None,
                 2019,
@@ -823,7 +823,7 @@ class TestGetFullCredits(unittest.TestCase):
             'nm0764601': CreditScrape(
                 'nm0764601',
                 title_id,
-                _DIRECTOR,
+                DIRECTOR,
                 None,
                 None,
                 None,
@@ -832,7 +832,7 @@ class TestGetFullCredits(unittest.TestCase):
             'nm2388673': CreditScrape(
                 'nm2388673',
                 title_id,
-                _PRODUCER,
+                PRODUCER,
                 'co-producer',
                 None,
                 None,
@@ -841,7 +841,7 @@ class TestGetFullCredits(unittest.TestCase):
             'nm0227759': CreditScrape(
                 'nm0227759',
                 title_id,
-                _ACTOR,
+                ACTOR,
                 'Tyrion Lannister',
                 None,
                 None,
@@ -883,19 +883,19 @@ class TestGetFullCredits(unittest.TestCase):
         camera_department = ['nm6113442']
 
         actual_results = scraper.get_full_credits_as_dict(title_id)
-        for director in actual_results[_DIRECTOR]:
+        for director in actual_results[DIRECTOR]:
             self.assertTrue(director.name_id in directors)
-        for writer in actual_results[_WRITER]:
+        for writer in actual_results[WRITER]:
             self.assertTrue(writer.name_id in writers)
-        for cast_member in actual_results[_ACTOR]:
+        for cast_member in actual_results[ACTOR]:
             self.assertTrue(cast_member.name_id in cast)
-        for cinematographer in actual_results[_CINEMATOGRAPHY]:
+        for cinematographer in actual_results[CINEMATOGRAPHY]:
             self.assertTrue(cinematographer.name_id in cinematographers)
-        for assistant_director in actual_results[_ASSISTANT_DIRECTOR]:
+        for assistant_director in actual_results[ASSISTANT_DIRECTOR]:
             self.assertTrue(assistant_director.name_id in assistant_directors)
-        for crew_member in actual_results[_ART_DEPARTMENT]:
+        for crew_member in actual_results[ART_DEPARTMENT]:
             self.assertTrue(crew_member.name_id in art_department)
-        for crew_member in actual_results[_CAMERA_AND_ELECTRICAL_DEPARTMENT]:
+        for crew_member in actual_results[CAMERA_AND_ELECTRICAL_DEPARTMENT]:
             self.assertTrue(crew_member.name_id in camera_department)
     
     def test_get_full_credits_bad_request(self):
@@ -1100,7 +1100,7 @@ class TestGetNameCredits(unittest.TestCase):
                 self.assertEqual(name_credit.end_year, correct_credit.end_year)
                 self.assertEqual(name_credit.role, correct_credit.role)
                 self.assertEqual(name_credit.title_notes, correct_credit.title_notes)
-        self.assertGreaterEqual(category_count[_ACTOR], actor_credits)
+        self.assertGreaterEqual(category_count[ACTOR], actor_credits)
 
     def test_get_name_credits_actor_with_episodes(self):
         name_id = 'nm3229685'

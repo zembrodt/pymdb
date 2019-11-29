@@ -18,7 +18,7 @@ from pymdb.models import (
     TitleTechSpecsScrape,
 )
 from pymdb.models.name import (
-    _ACTOR,
+    ACTOR,
     _CREDIT_MAPPINGS,
 )
 from pymdb.utils import (
@@ -215,7 +215,7 @@ class PyMDbScraper:
                         CreditScrape(
                             name_id=get_name_id(cast_member_node),
                             title_id=title_id,
-                            job_title=_ACTOR,
+                            job_title=ACTOR,
                             credit=character_credit,
                             episode_count=episode_count,
                             episode_year_start=episode_year_start,
@@ -326,7 +326,7 @@ class PyMDbScraper:
                             yield CreditScrape(
                                 name_id=name_id,
                                 title_id=episode_id,
-                                job_title=_ACTOR,
+                                job_title=ACTOR,
                                 credit=episode_credit,
                                 episode_count=None,
                                 episode_year_start=episode_year,
@@ -345,7 +345,7 @@ class PyMDbScraper:
                 yield CreditScrape(
                     name_id=name_id,
                     title_id=title_id,
-                    job_title=_ACTOR,
+                    job_title=ACTOR,
                     credit=credit,
                     episode_count=episode_count,
                     episode_year_start=episode_year_start,
