@@ -11,6 +11,9 @@ from pymdb import CreditScrape, NameCreditScrape, SearchResultName, SearchResult
 from pymdb.models.name import (
     _ACTOR,
     _ART_DEPARTMENT,
+    _ASSISTANT_DIRECTOR,
+    _CAMERA_AND_ELECTRICAL_DEPARTMENT,
+    _CINEMATOGRAPHY,
     _DIRECTOR,
     _MUSIC,
     _MUSIC_DEPARTMENT,
@@ -866,6 +869,35 @@ class TestGetFullCredits(unittest.TestCase):
                 self.assertEqual(credit.credit, correct_credit.credit)
         self.assertEqual(credit_types_count, len(credit_types))
 
+    def test_get_full_credits_as_dict(self):
+        title_id = 'tt3359412'
+        scraper = PyMDbScraper()
+
+        # Correct results
+        directors = ['nm6113438']
+        writers = ['nm6113440']
+        cast = ['nm4043618', 'nm6113439']
+        cinematographers = ['nm6113438']
+        assistant_directors = ['nm6113441']
+        art_department = ['nm6294206']
+        camera_department = ['nm6113442']
+
+        actual_results = scraper.get_full_credits_as_dict(title_id)
+        for director in actual_results[_DIRECTOR]:
+            self.assertTrue(director.name_id in directors)
+        for writer in actual_results[_WRITER]:
+            self.assertTrue(writer.name_id in writers)
+        for cast_member in actual_results[_ACTOR]:
+            self.assertTrue(cast_member.name_id in cast)
+        for cinematographer in actual_results[_CINEMATOGRAPHY]:
+            self.assertTrue(cinematographer.name_id in cinematographers)
+        for assistant_director in actual_results[_ASSISTANT_DIRECTOR]:
+            self.assertTrue(assistant_director.name_id in assistant_directors)
+        for crew_member in actual_results[_ART_DEPARTMENT]:
+            self.assertTrue(crew_member.name_id in art_department)
+        for crew_member in actual_results[_CAMERA_AND_ELECTRICAL_DEPARTMENT]:
+            self.assertTrue(crew_member.name_id in camera_department)
+    
     def test_get_full_credits_bad_request(self):
         title_id = 'nm123456789'
         scraper = PyMDbScraper()
