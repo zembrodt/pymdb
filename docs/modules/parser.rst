@@ -7,3 +7,4 @@ PyMDbParser
 -----------
 .. autoclass:: PyMDbParser
     :members:
+    :private-members:
