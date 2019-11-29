@@ -5,9 +5,12 @@ Release Notes
 
    - Mapped :class:`~.models.name.CreditScrape`'s member variable `job_title` into key values (`#5`_ )
    - Added module :obj:`~.models.search` to store different IMDb search results (`#1`_ )
-   - Added method `get_search_results` to :class:`~.scraper.PyMDbScraper` to retrieve search results
-     from IMDb based on keywords (`#1`_ )
+   - Added method `~.scraper.PyMDbScraper.get_search_results` to :class:`~.scraper.PyMDbScraper`
+     to retrieve search results from IMDb based on keywords (`#1`_ )
    - Added utils method :obj:`~.utils.trim_name` to trim names within IMDb search results (`#1`_ )
+   - Added method :obj:`~.scraper.PyMDbScraper.get_full_credits_as_dict` to :class:`~.scraper.PyMDbScraper`
+     to return a dictionary with `job_title` as the key for a list of :class:`~.models.name.CreditScrape`
+     objects (`#4`_)
 
 * Release 0.1.1 (21 November 2019)
 
@@ -52,5 +55,6 @@ Release Notes
 
 .. _#1: https://github.com/zembrodt/pymdb/issues/1
 .. _#3: https://github.com/zembrodt/pymdb/issues/3
+.. _#4: https://github.com/zembrodt/pymdb/issues/4
 .. _#5: https://github.com/zembrodt/pymdb/issues/5
 .. _#6: https://github.com/zembrodt/pymdb/issues/6
