@@ -3,14 +3,15 @@ Release Notes
 
 * Release 0.2.0 (29 November 2019)
 
-   - Mapped :class:`~.models.name.CreditScrape`'s member variable `job_title` into key values (`#5`_ )
-   - Added module :obj:`~.models.search` to store different IMDb search results (`#1`_ )
+   - Mapped :class:`~.models.name.CreditScrape`'s member variable `job_title` into key values (`#5`_)
+   - Added module :obj:`~.models.search` to store different IMDb search results (`#1`_)
    - Added method `~.scraper.PyMDbScraper.get_search_results` to :class:`~.scraper.PyMDbScraper`
-     to retrieve search results from IMDb based on keywords (`#1`_ )
-   - Added utils method :obj:`~.utils.trim_name` to trim names within IMDb search results (`#1`_ )
+     to retrieve search results from IMDb based on keywords (`#1`_)
+   - Added utils method :obj:`~.utils.trim_name` to trim names within IMDb search results (`#1`_)
    - Added method :obj:`~.scraper.PyMDbScraper.get_full_credits_as_dict` to :class:`~.scraper.PyMDbScraper`
      to return a dictionary with `job_title` as the key for a list of :class:`~.models.name.CreditScrape`
      objects (`#4`_)
+   - Added support for Python 3.8 by updating `selectolax` version to 0.2.3 (`#7`_)
 
 * Release 0.1.1 (21 November 2019)
 
@@ -23,13 +24,13 @@ Release Notes
    - Added an optional parameter `include_known_for_titles` to :class:`~.scraper.PyMDbScraper`'s
      method :obj:`~.scraper.PyMDbScraper.get_name` since an extra request needs to be sent to retrieve data for
      `known_for_titles`.
-   - Renamed :obj:`get_full_credits` to :obj:`~.scraper.PyMDbScraper.get_full_crew` (`#3`_ )
+   - Renamed :obj:`get_full_credits` to :obj:`~.scraper.PyMDbScraper.get_full_crew` (`#3`_)
    - Combined :obj:`~.scraper.PyMDbScraper.get_full_cast` and :obj:`~.scraper.PyMDbScraper.get_full_crew` into
-     a single helper method of the previously used name :obj:`~.scraper.PyMDbScraper.get_full_credits` (`#3`_ )
+     a single helper method of the previously used name :obj:`~.scraper.PyMDbScraper.get_full_credits` (`#3`_)
    - Added new utils function :obj:`~.utils.get_episode_info` to parse the episode information for an actor'scraper
      credits on a TV series' IMDb page
    - Modified :class:`~.models.title.TitleScrape`'s `top_cast` member variable to be a list of :class:`~.models.name.CreditScrape`
-     objects instead of a list of name IDs (`#6`_ )
+     objects instead of a list of name IDs (`#6`_)
 
 * Release 0.1.0 (14 November 2019)
 
@@ -58,3 +59,4 @@ Release Notes
 .. _#4: https://github.com/zembrodt/pymdb/issues/4
 .. _#5: https://github.com/zembrodt/pymdb/issues/5
 .. _#6: https://github.com/zembrodt/pymdb/issues/6
+.. _#7: https://github.com/zembrodt/pymdb/issues/7
