@@ -1,7 +1,7 @@
 Release Notes
 =============
 
-* Release 0.2.0 (TBD)
+* Release 0.2.0 (29 November 2019)
 
    - Mapped :class:`~.models.name.CreditScrape`'s member variable `job_title` into key values (`#5`_ )
    - Added module :obj:`~.models.search` to store different IMDb search results (`#1`_ )
