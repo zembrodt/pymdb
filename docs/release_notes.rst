@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+* Release 0.2.1 (10 December 2019)
+
+   - Fixed import of utils methods within the pymdb.models modules (`#8`_)
+
 * Release 0.2.0 (29 November 2019)
 
    - Mapped :class:`~.models.name.CreditScrape`'s member variable `job_title` into key values (`#5`_)
@@ -23,11 +27,11 @@ Release Notes
      store a person's known for titles as listed on their IMDb page
    - Added an optional parameter `include_known_for_titles` to :class:`~.scraper.PyMDbScraper`'s
      method :obj:`~.scraper.PyMDbScraper.get_name` since an extra request needs to be sent to retrieve data for
-     `known_for_titles`.
+     `known_for_titles`
    - Renamed :obj:`get_full_credits` to :obj:`~.scraper.PyMDbScraper.get_full_crew` (`#3`_)
    - Combined :obj:`~.scraper.PyMDbScraper.get_full_cast` and :obj:`~.scraper.PyMDbScraper.get_full_crew` into
      a single helper method of the previously used name :obj:`~.scraper.PyMDbScraper.get_full_credits` (`#3`_)
-   - Added new utils function :obj:`~.utils.get_episode_info` to parse the episode information for an actor'scraper
+   - Added new utils function :obj:`~.utils.get_episode_info` to parse the episode information for an actor's
      credits on a TV series' IMDb page
    - Modified :class:`~.models.title.TitleScrape`'s `top_cast` member variable to be a list of :class:`~.models.name.CreditScrape`
      objects instead of a list of name IDs (`#6`_)
@@ -60,3 +64,4 @@ Release Notes
 .. _#5: https://github.com/zembrodt/pymdb/issues/5
 .. _#6: https://github.com/zembrodt/pymdb/issues/6
 .. _#7: https://github.com/zembrodt/pymdb/issues/7
+.. _#7: https://github.com/zembrodt/pymdb/issues/8

@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='py-mdb',
-    version='0.2.0',
+    version='0.2.1',
     author='Ryan Zembrodt',
     author_email='ryan.zembrodt@gmail.com',
     description='Package for parsing IMDb datasets and scraping web pages',
