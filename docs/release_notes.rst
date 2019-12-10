@@ -64,4 +64,4 @@ Release Notes
 .. _#5: https://github.com/zembrodt/pymdb/issues/5
 .. _#6: https://github.com/zembrodt/pymdb/issues/6
 .. _#7: https://github.com/zembrodt/pymdb/issues/7
-.. _#7: https://github.com/zembrodt/pymdb/issues/8
+.. _#8: https://github.com/zembrodt/pymdb/issues/8
