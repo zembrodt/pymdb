@@ -3,7 +3,7 @@ Release Notes
 
 * Release 0.2.1 (10 December 2019)
 
-   - Fixed import of utils methods within the pymdb.models modules (`#8`_)
+   - Fixed import of :obj:`~.utils` methods within the :obj:`pymdb.models` modules (`#8`_)
 
 * Release 0.2.0 (29 November 2019)
 
