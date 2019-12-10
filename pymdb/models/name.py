@@ -5,7 +5,7 @@ and information scraped from IMDb web pages. Class names ending with "`Scrape`" 
 from the web pages. Otherwise, they are gathered from the datasets.
 """
 
-from pymdb.utils import (
+from ..utils import (
     is_float,
     is_int,
     to_datetime

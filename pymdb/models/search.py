@@ -4,7 +4,7 @@ This information is gathered from the JSON responses IMDb uses
 for various GET requests for their search results.
 """
 
-from pymdb.utils import (
+from ..utils import (
     is_int
 )
 from functools import total_ordering

@@ -3,7 +3,7 @@
 All information for the classes here will be scraped from IMDb web pages.
 """
 
-from pymdb.utils import is_int
+from ..utils import is_int
 
 
 class CompanyScrape:
