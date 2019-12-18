@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/pypi/l/py-mdb.svg)](https://github.com/zembrodt/pymdb/blob/master/LICENSE)
 [![Build Status](https://travis-ci.com/zembrodt/pymdb.svg?branch=master)](https://travis-ci.com/zembrodt/pymdb)
 
-PyMDb is a package for both parsing the datasets provided by IMDb and scraping information from their web pages.
+PyMDb is a package for both parsing the [datasets provided by IMDb](https://datasets.imdbws.com/) and scraping information from their web pages.
 
 This package is able to gather information on people, titles, and companies provided by IMDb and is split into two separate modules: one for parsing the IMDb datasets, and one for scraping webpages on [imdb.com](http://imdb.com/).
 
