@@ -1590,7 +1590,7 @@ class TestGetTechSpecs(unittest.TestCase):
         camera = [
             'Arri Alexa 65 IMAX',
             'Panavision Sphero 65',
-            'APO Panatar Lenses'
+            'Ultra Panatar Lenses'
         ]
         laboratory = [
             'Company 3 (digital intermediate)',
