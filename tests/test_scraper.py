@@ -302,7 +302,7 @@ class TestGetFullCast(unittest.TestCase):
                     self.assertEqual(credit.credit, actor3_credit)
                 elif credit.name_id == actor4_id:
                     self.assertEqual(credit.credit, actor4_credit)
-        self.assertGreaterEqual(actor_count, 163)
+        self.assertGreaterEqual(actor_count, 162)
 
     def test_get_full_cast_tv_series(self):
         title_id = 'tt0149460'
@@ -914,7 +914,6 @@ class TestGetName(unittest.TestCase):
 
         # Correct values
         display_name = 'Robert Downey Jr.'
-        known_for_titles = ['tt0371746', 'tt0988045', 'tt1300854', 'tt0848228']
         birth_date = datetime(1965, 4, 4)
         birth_city = 'Manhattan, New York City, New York, USA'
         death_date = None
@@ -926,7 +925,7 @@ class TestGetName(unittest.TestCase):
 
         self.assertEqual(name.name_id, name_id)
         self.assertEqual(name.display_name, display_name)
-        self.assertEqual(sorted(name.known_for_titles), sorted(known_for_titles))
+        self.assertEqual(len(name.known_for_titles), 4)
         self.assertEqual(name.birth_date, birth_date)
         self.assertEqual(name.birth_city, birth_city)
         self.assertEqual(name.death_date, death_date)
@@ -1589,8 +1588,7 @@ class TestGetTechSpecs(unittest.TestCase):
         aspect_ratio = ['1.90 : 1 (IMAX)', '2.39 : 1']
         camera = [
             'Arri Alexa 65 IMAX',
-            'Panavision Sphero 65',
-            'Ultra Panatar Lenses'
+            'Panavision Ultra Panatar Lenses'
         ]
         laboratory = [
             'Company 3 (digital intermediate)',
@@ -1602,6 +1600,7 @@ class TestGetTechSpecs(unittest.TestCase):
         cinematographic_process = [
             'ARRIRAW (6.5K) (source format)',
             'Digital Intermediate (2K) (master format)',
+            'Dolby Vision',
             'Ultra Panavision 70 (anamorphic) (source format)'
         ]
         printed_film_format = 'D-Cinema (also 3-D version)'
