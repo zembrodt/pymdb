@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+* Release 0.2.2 (17 January 2020)
+
+   - Updated applicable classes to use __slots__ for more efficient memory usage (`#9`_)
+
 * Release 0.2.1 (10 December 2019)
 
    - Fixed import of :obj:`~.utils` methods within the :obj:`pymdb.models` modules (`#8`_)
@@ -65,3 +69,4 @@ Release Notes
 .. _#6: https://github.com/zembrodt/pymdb/issues/6
 .. _#7: https://github.com/zembrodt/pymdb/issues/7
 .. _#8: https://github.com/zembrodt/pymdb/issues/8
+.. _#9: https://github.com/zembrodt/pymdb/issues/9
