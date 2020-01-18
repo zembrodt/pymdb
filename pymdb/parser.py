@@ -28,6 +28,8 @@ class _IMDbDataset:
         column_count (:obj:`int`): The amount of columns in the dataset.
     """
 
+    __slots__ = 'default_filename', 'column_count'
+
     def __init__(self, default_filename, column_count):
         self.default_filename = default_filename
         self.column_count = column_count

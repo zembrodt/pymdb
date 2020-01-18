@@ -22,6 +22,8 @@ class CompanyScrape:
         notes (:obj:`list` of :obj:`str`): A list of further notes IMDb gives about the credit.
     """
 
+    __slots__ = '_company_id','_title_id', '_start_year', '_end_year', '_notes'
+
     def __init__(self, company_id, title_id, start_year, end_year, notes):
         self._company_id = company_id
         self._title_id = title_id
@@ -80,6 +82,8 @@ class CompanyCreditScrape:
         category (:obj:`str`): The category the company was credited for.
         notes (:obj:`list` of :obj:`str`): A list of further notes IMDb gives about the credit.
     """
+
+    __slots__ = '_company_id', '_title_id', '_company_name', '_category', '_notes'
 
     def __init__(self, company_id, title_id, company_name, category, notes):
         self._company_id = company_id

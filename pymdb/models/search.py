@@ -22,6 +22,8 @@ class SearchResult:
         search_rank (:obj:`int`): The ranking of the result by IMDb.
     """
 
+    __slots__ = '_imdb_id', '_search_rank'
+
     def __init__(self, imdb_id, search_rank):
         self._imdb_id = imdb_id
         self._search_rank = None
@@ -68,6 +70,8 @@ class SearchResultName(SearchResult):
             is known for to build the search results.
     """
 
+    __slots__ = '_name', '_known_for'
+
     def __init__(self, imdb_id, search_rank, name, known_for):
         self._name = name
         self._known_for = known_for
@@ -106,6 +110,8 @@ class SearchResultTitle(SearchResult):
         end_year(:obj:`int`): The year a TV series was ended, or `None` if the series
             has not ended or is not a TV series.
     """
+
+    __slots__ = '_display_title', '_title_type', '_starring', '_start_year', '_end_year'
 
     def __init__(self, imdb_id, search_rank, display_title, title_type, starring, start_year, end_year):
         self._display_title = display_title

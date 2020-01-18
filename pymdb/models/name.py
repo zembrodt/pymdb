@@ -93,6 +93,8 @@ class NameBasics:
         known_for_titles (:obj:`list` of :obj:`str`): A list of title IDs for each title the person is known for.
     """
 
+    __slots__ = '_name_id', '_primary_name', '_birth_year', '_death_year', '_primary_professions', '_known_for_titles'
+
     def __init__(self, name_id, primary_name, birth_year, death_year, primary_professions, known_for_titles):
         self._name_id = name_id
         self._primary_name = primary_name
@@ -175,6 +177,8 @@ class CreditScrape:
         episode_year_end (:obj:`int`): The year the person stopped being credited in the
             title if the title is a TV series, otherwise `None`.
     """
+
+    __slots__ = '_name_id', '_title_id', '_job_title', '_credit', '_episode_count', '_episode_year_start', '_episode_year_end'
 
     def __init__(self, name_id, title_id, job_title, credit, episode_count, episode_year_start, episode_year_end):
         self._name_id = name_id
@@ -267,6 +271,9 @@ class NameScrape:
         nicknames (:obj:`list` of :obj:`str`): All of the person's nicknames.
         height (:obj:`float`): How tall the person is in meters.
     """
+
+    __slots__ = '_name_id', '_display_name', '_known_for_titles', '_birth_name', '_birth_date', '_birth_city', \
+            '_death_date', '_death_city', '_death_cause', '_nicknames', '_height'
 
     def __init__(self, name_id, display_name, known_for_titles, birth_name, birth_date, birth_city,
             death_date, death_city, death_cause, nicknames, height):
@@ -364,6 +371,8 @@ class NameCreditScrape:
         role (:obj:`str`): A string of the role the person is credited for the title, such as character.
         title_notes (:obj:`list` of :obj:`str`): A list of further notes for a person's credit on a title.
     """
+
+    __slots__ = '_name_id', '_title_id', '_category', '_start_year', '_end_year', '_role', '_title_notes'
 
     def __init__(self, name_id, title_id, category, start_year, end_year, role, title_notes):
         self._name_id = name_id

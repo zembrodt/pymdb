@@ -29,6 +29,8 @@ class TitleAkas:
         is_original_title (:obj:`bool`): Determines if this version is the original title.
     """
 
+    __slots__ = '_title_id', '_ordering', '_localized_title', '_region', '_language', '_types', '_attributes', '_is_original_title'
+
     def __init__(self, title_id, ordering, localized_title, region, language, types, attributes, is_original_title):
         self._title_id = title_id
         self._ordering = None
@@ -122,6 +124,9 @@ class TitleBasics:
         genres (:obj:`list` of :obj:`str`): A list of up to three genres associated with
             this title.
     """
+
+    __slots__ = '_title_id', '_title_type', '_primary_title', '_original_title', '_is_adult', '_start_year', '_end_year', \
+            '_runtime', '_genres'
 
     def __init__(self, title_id, title_type, primary_title, original_title, is_adult, start_year, end_year,
                  runtime, genres):
@@ -220,6 +225,8 @@ class TitleCrew:
             prefixed with `nm`, representing the writer(s) of the title.
     """
 
+    __slots__ = '_title_id', '_director_ids', '_writer_ids'
+
     def __init__(self, title_id, director_ids, writer_ids):
         self._title_id = title_id
         self._director_ids = []
@@ -270,6 +277,8 @@ class TitleEpisode:
         season_number (:obj:`int`): The season this episode was aired in.
         episode_number (:obj:`int`): The episode number it was aired as in the season.
     """
+
+    __slots__ = '_title_id', '_parent_title_id', '_season_number', '_episode_number'
 
     def __init__(self, title_id, parent_title_id, season_number, episode_number):
         self._title_id = title_id
@@ -325,6 +334,8 @@ class TitlePrincipalCrew:
             characters (:obj:`list` of :obj:`str`): A list of characters the person played,
                 if applicable.
     """
+
+    __slots__ = '_title_id', '_ordering', '_name_id', '_category', '_job', '_characters'
 
     def __init__(self, title_id, ordering, name_id, category, job, characters):
         self._title_id = title_id
@@ -385,6 +396,8 @@ class TitleRating:
         average_rating (:obj:`float`): The weighted average of all user ratings on IMDb.
         num_votes (:obj:`int`): The total number of user votes the title has received on IMDb.
     """
+
+    __slots__ = '_title_id', '_average_rating', '_num_votes'
 
     def __init__(self, title_id, average_rating, num_votes):
         self._title_id = title_id
@@ -452,6 +465,10 @@ class TitleScrape:
         usa_gross (:obj:`int`): The title's gross in the USA in USD.
         worldwide_gross (:obj:`int`): The title's gross worldwide in USD.
     """
+
+    __slots__ = '_title_id', '_display_title', '_title_parent_id', '_mpaa_rating', '_country', '_language', '_release_date', '_end_year', \
+            '_season_number', '_episode_number', '_taglines', '_plot', '_storyline', '_production_companies', '_top_cast', \
+            '_budget', '_budget_denomination', '_opening_weekend_gross', '_opening_weekend_date', '_usa_gross', '_worldwide_gross'
 
     def __init__(
             self, title_id, display_title, title_parent_id, mpaa_rating, country, language, release_date, end_year,
@@ -645,6 +662,9 @@ class TitleTechSpecsScrape:
             cinematographic processes.
         printed_film_format (:obj:`str`): The title's printed film format.
     """
+
+    __slots__ = '_title_id', '_runtime', '_sound_mix', '_color', '_aspect_ratio', '_camera', '_laboratory', '_negative_format', \
+            '_cinematographic_process', '_printed_film_format'
 
     def __init__(
             self, title_id, runtime, sound_mix, color, aspect_ratio, camera, laboratory, negative_format,
