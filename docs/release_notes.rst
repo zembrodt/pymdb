@@ -3,7 +3,7 @@ Release Notes
 
 * Release 0.2.2 (17 January 2020)
 
-   - Updated applicable classes to use __slots__ for more efficient memory usage (`#9`_)
+   - Updated applicable classes to use :obj:`__slots__` for more efficient memory usage (`#9`_)
 
 * Release 0.2.1 (10 December 2019)
 
