@@ -3,6 +3,7 @@
 import json
 import re
 import requests
+import time
 from collections import defaultdict
 from selectolax.parser import HTMLParser
 from pymdb.exceptions import InvalidCompanyId
@@ -43,7 +44,11 @@ class PyMDbScraper:
     """Scrapes various information from IMDb web pages.
 
     Contains functions for various IMDb pages and scrapes information into Python classes.
+
+    Rate limit is defaulted to 1000ms.
     """
+
+    _rate_limit = 1000 # ms
 
     _headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' +
@@ -51,8 +56,11 @@ class PyMDbScraper:
         'accept': 'text/html,application/xhtml+xml,application/xml'
     }
 
-    def __init__(self):
-        pass
+    def __init__(self, rate_limit=1000):
+        if rate_limit > 0:
+            self._rate_limit = rate_limit
+        else:
+            print(f'Invalid rate limit {rate_limit}, defaulting to {self._rate_limit}ms')
 
     def get_title(self, title_id, include_taglines=False):
         """Scrapes information from the IMDb web page for the specified title.
@@ -952,6 +960,7 @@ class PyMDbScraper:
             if len(keyword) > 20:
                 keyword = keyword[:20]
             request = f'https://v2.sg.media-imdb.com/suggestion/{keyword[0]}/{keyword}.json'
+            time.sleep(self._rate_limit / 1000)
             response = requests.get(request, headers=self._headers)
             response.raise_for_status()
             response_data = json.loads(response.text)
@@ -1005,7 +1014,7 @@ class PyMDbScraper:
         Raises:
             HTTPError: If a non successful response was returned.
         """
-
+        time.sleep(self._rate_limit / 1000)
         response = requests.get(request, headers=self._headers)
         response.raise_for_status()
         return HTMLParser(response.text)

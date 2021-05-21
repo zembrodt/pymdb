@@ -6,7 +6,8 @@ Release Notes
    - Added support for new 'Additional crew' terminology in a title's full credits
    - Added support for crew member value of 'unknown episodes' in a TV series
    - Added scraping fix for additional changes to full credits page
-   - Added support for Python 3.9
+   - Added support for Python 3.9 (`#10`_)
+   - Added a rate limiter to all GET requests to imdb.com (defaulted to 1000ms) (`#12`_)
 
 * Release 0.2.2 (17 January 2020)
 

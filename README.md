@@ -55,6 +55,7 @@ Full documentation can be found at the [PyMDb Read the Docs](https://pymdb.readt
 ## Disclaimer
 
 PyMDb is still in a pre-release state and has only been tested with a small amount of data found on [imdb.com](http://imdb.com/).
+The web scraper portion of the code does have a rate limiter value you can customize, please be kind to IMDb.
 If any bugs or issues are found, please do not hesitate to create an issue or make a pull request on [GitHub](https://github.com/zembrodt/pymdb).
 Suggestions for features to be added to PyMDb in future releases are also welcome!
 

@@ -7,4 +7,4 @@ PyMDbScraper
 ------------
 .. autoclass:: PyMDbScraper
     :members:
-    :private-members:
+    :private-members: _rate_limit
