@@ -18,11 +18,11 @@ sys.path.append(os.path.join(os.path.abspath(os.pardir)))
 # -- Project information -----------------------------------------------------
 
 project = 'PyMDb'
-copyright = '2019, Ryan Zembrodt'
+copyright = '2021, Ryan Zembrodt'
 author = 'Ryan Zembrodt'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.2'
+release = '0.2.3'
 
 
 # -- General configuration ---------------------------------------------------

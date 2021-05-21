@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+* Release 0.2.3 (21 May 2021)
+
+   - Added support for new 'Additional crew' terminology in a title's full credits
+   - Added support for crew member value of 'unknown episodes' in a TV series
+   - Added scraping fix for additional changes to full credits page
+   - Added support for Python 3.9
+
 * Release 0.2.2 (17 January 2020)
 
    - Updated applicable classes to use :obj:`__slots__` for more efficient memory usage (`#9`_)

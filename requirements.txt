@@ -1,6 +1,6 @@
-certifi==2019.9.11
-chardet==3.0.4
-idna==2.8
-requests==2.22.0
-selectolax==0.2.3
-urllib3==1.25.6
+certifi==2020.12.5
+chardet==4.0.0
+idna==2.10
+requests==2.25.1
+selectolax>=0.2.11
+urllib3==1.26.4
