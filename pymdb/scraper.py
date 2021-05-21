@@ -377,7 +377,7 @@ class PyMDbScraper:
             curr_title = None
             for node in credits_node.iter():
                 if not found_title:
-                    if node.tag == 'h4' and node.id is None:
+                    if node.tag == 'h4' and node.id != 'cast':
                         # Remove any extra info in a span next to the job title
                         title_span_node = node.css_first('span')
                         if title_span_node:

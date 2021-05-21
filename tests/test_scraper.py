@@ -18,6 +18,7 @@ from pymdb.models.name import (
     MUSIC,
     MUSIC_DEPARTMENT,
     OTHER_CREW,
+    ADDITIONAL_CREW,
     PRODUCER,
     THANKS,
     WRITER,
@@ -84,7 +85,7 @@ class TestGetTitle(unittest.TestCase):
         opening_weekend_gross = 1554475
         opening_weekend_date = datetime(1977, 5, 30)
         usa_gross = 460998507
-        worldwide_gross = 775512064
+        worldwide_gross = 775398007
 
         self.assertEqual(title.title_id, title_id)
         self.assertEqual(title.display_title, display_title)
@@ -142,14 +143,14 @@ class TestGetTitle(unittest.TestCase):
             '''
         production_companies = ['co0223402', 'co0056447', 'co0159275']
         top_cast = [
-            CreditScrape('nm0921942', title_id, ACTOR, 'Philip J. Fry / ...', 124, 1999, 2013),
-            CreditScrape('nm0005408', title_id, ACTOR, 'Turanga Leela / ...', 124, 1999, 2013),
-            CreditScrape('nm0224007', title_id, ACTOR, 'Bender / ...', 124, 1999, 2013),
-            CreditScrape('nm0534134', title_id, ACTOR, 'Linda / ...', 124, 1999, 2013),
-            CreditScrape('nm0482851', title_id, ACTOR, 'Hermes Conrad / ...', 117, 1999, 2013),
-            CreditScrape('nm0866300', title_id, ACTOR, 'Amy Wong / ...', 115, 1999, 2013),
-            CreditScrape('nm0005606', title_id, ACTOR, 'Morbo / ...', 114, 1999, 2013),
-            CreditScrape('nm0379114', title_id, ACTOR, 'Scruffy / ...', 107, 1999, 2013)
+            CreditScrape('nm0921942', title_id, ACTOR, 'Philip J. Fry / ...', 140, 1999, 2013),
+            CreditScrape('nm0005408', title_id, ACTOR, 'Turanga Leela / ...', 140, 1999, 2013),
+            CreditScrape('nm0224007', title_id, ACTOR, 'Bender / ...', 140, 1999, 2013),
+            CreditScrape('nm0534134', title_id, ACTOR, 'Linda / ...', 137, 1999, 2013),
+            CreditScrape('nm0482851', title_id, ACTOR, 'Hermes Conrad / ...', 133, 1999, 2013),
+            CreditScrape('nm0866300', title_id, ACTOR, 'Amy Wong / ...', 131, 1999, 2013),
+            CreditScrape('nm0005606', title_id, ACTOR, 'Morbo / ...', 127, 1999, 2013),
+            CreditScrape('nm0379114', title_id, ACTOR, 'Scruffy / ...', 119, 1999, 2013)
         ]
         budget = None
         budget_denomination = None
@@ -312,7 +313,7 @@ class TestGetFullCast(unittest.TestCase):
         job_title = ACTOR
         actor1_id = 'nm0224007'
         actor1_credit = 'Bender / ...'
-        actor1_episode_count = 124
+        actor1_episode_count = 140
         actor1_start_year = 1999
         actor1_end_year = 2013
         actor2_id = 'nm0005277'
@@ -321,15 +322,15 @@ class TestGetFullCast(unittest.TestCase):
         actor2_start_year = 1999
         actor2_end_year = None
         actor3_id = 'nm0065059'
-        actor3_credit = 'Himself'
+        actor3_credit = 'Beck'
         actor3_episode_count = 1
         actor3_start_year = 2001
         actor3_end_year = None
         actor4_id = 'nm2858163'
-        actor4_credit = 'Himself (uncredited)'
-        actor4_episode_count = 5
-        actor4_start_year = 2001
-        actor4_end_year = 2013
+        actor4_credit = 'Self (uncredited)'
+        actor4_episode_count = None
+        actor4_start_year = None
+        actor4_end_year = None
         actor_ids = {actor1_id, actor2_id, actor3_id, actor4_id}
         actor_count = 0
 
@@ -536,7 +537,7 @@ class TestGetFullCrew(unittest.TestCase):
                 'nm0592546',
                 title_id,
                 WRITER,
-                None,
+                'staff writer',
                 26,
                 2001,
                 2003
@@ -545,15 +546,15 @@ class TestGetFullCrew(unittest.TestCase):
                 'nm0629628',
                 title_id,
                 MUSIC_DEPARTMENT,
-                'stock music (uncredited)',
-                1,
-                2011,
+                'stock music (uncredited) (unknown episodes)',
+                None,
+                None,
                 None
             ),
             'nm4348107': CreditScrape(
                 'nm4348107',
                 title_id,
-                OTHER_CREW,
+                ADDITIONAL_CREW,
                 'production assistant',
                 1,
                 2012,
@@ -568,8 +569,6 @@ class TestGetFullCrew(unittest.TestCase):
                 credit_types.add(crew_member.job_title)
 
             self.assertEqual(crew_member.title_id, title_id)
-            self.assertIsNotNone(crew_member.episode_count)
-            self.assertIsNotNone(crew_member.episode_year_start)
             self.assertIsNotNone(crew_member.name_id)
             self.assertIsNotNone(crew_member.job_title)
 
@@ -688,8 +687,6 @@ class TestGetFullCredits(unittest.TestCase):
                 credit_types.add(credit.job_title)
 
             self.assertEqual(credit.title_id, title_id)
-            self.assertIsNone(credit.episode_count)
-            self.assertIsNone(credit.episode_year_start)
             self.assertIsNone(credit.episode_year_end)
             self.assertIsNotNone(credit.name_id)
             self.assertIsNotNone(credit.job_title)
@@ -720,7 +717,7 @@ class TestGetFullCredits(unittest.TestCase):
                 'nm0592546',
                 title_id,
                 WRITER,
-                None,
+                'staff writer',
                 26,
                 2001,
                 2003
@@ -730,7 +727,7 @@ class TestGetFullCredits(unittest.TestCase):
                 title_id,
                 ACTOR,
                 'Bender / ...',
-                124,
+                140,
                 1999,
                 2013
             )
@@ -743,8 +740,6 @@ class TestGetFullCredits(unittest.TestCase):
                 credit_types.add(credit.job_title)
 
             self.assertEqual(credit.title_id, title_id)
-            self.assertIsNotNone(credit.episode_count)
-            self.assertIsNotNone(credit.episode_year_start)
             self.assertIsNotNone(credit.name_id)
             self.assertIsNotNone(credit.job_title)
 
@@ -942,7 +937,7 @@ class TestGetName(unittest.TestCase):
 
         # Correct values
         display_name = 'Charles Chaplin'
-        known_for_titles = ['tt0032553', 'tt0044837', 'tt0027977', 'tt0039631']
+        known_for_titles = ['tt0032553', 'tt0044837', 'tt0027977', 'tt0018773']
         birth_date = datetime(1889, 4, 16)
         birth_city = 'Walworth, London, England, UK'
         death_date = datetime(1977, 12, 25)
@@ -1066,7 +1061,7 @@ class TestGetNameCredits(unittest.TestCase):
                 name_id,
                 'tt2094116',
                 'actor',
-                2021,
+                None,
                 None,
                 'Sherlock Holmes',
                 ['pre-production']
@@ -1077,8 +1072,8 @@ class TestGetNameCredits(unittest.TestCase):
                 'actor',
                 2004,
                 None,
-                None,
-                ['Short', 'uncredited']
+                'Traveller (uncredited)',
+                ['Short']
             )
         }
         actor_credits = 92
@@ -1386,7 +1381,7 @@ class TestGetCompany(unittest.TestCase):
         company_id = 'co0076091'
         scraper = PyMDbScraper()
         valid_titles = {
-            'tt1856101', 'tt1219827', 'tt0338526', 'tt1136608', 'tt1596576', 'tt0477407', 'tt0806017', 'tt4656248'
+            'tt1856101', 'tt1219827', 'tt0338526', 'tt1136608', 'tt0477407', 'tt0806017', 'tt4656248'
         }
         for company in scraper.get_company(company_id):
             self.assertEqual(company.company_id, company_id)
@@ -1412,7 +1407,7 @@ class TestGetCompanyCredits(unittest.TestCase):
         production_company_id = 'co0051941'
         production_company_name = 'Marvel Studios'
         production_companies = 'production'
-        production_companies_num = 1
+        production_companies_num = 2
         distributors = 'distributors'
         distributors_num = 53
         special_effects = 'specialEffects'
@@ -1521,7 +1516,7 @@ class TestGetCompanyCredits(unittest.TestCase):
         special_effects_company_id = 'co0069055'
         special_effects_company_name = 'Image Engine Design'
         other_companies = 'other'
-        other_companies_num = 34
+        other_companies_num = 33
         other_company_id = 'co0280563'
         other_company_name = 'Elastic'
 
@@ -1585,16 +1580,16 @@ class TestGetTechSpecs(unittest.TestCase):
             'SDDS'
         ]
         color = 'Color (ACES)'
-        aspect_ratio = ['1.90 : 1 (IMAX)', '2.39 : 1']
+        aspect_ratio = ['1.90 : 1 (IMAX version)', '2.39 : 1']
         camera = [
             'Arri Alexa 65 IMAX',
-            'Panavision Ultra Panatar Lenses'
+            'Panavision Sphero 65',
+            'Ultra Panatar Lenses'
         ]
         laboratory = [
-            'Company 3 (digital intermediate)',
+            'Company 3, Los Angeles (CA), USA (digital intermediate)',
             'PIX System, San Francisco (CA), USA (additional dailies services)',
-            'Pinewood Digital, London, UK (digital dailies)',
-            'Technicolor, Hollywood (CA), USA (digital intermediate)'
+            'Pinewood Digital, London, UK (digital dailies)'
         ]
         negative_format = 'Codex'
         cinematographic_process = [

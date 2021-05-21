@@ -635,7 +635,7 @@ class TitleScrape:
             self._worldwide_gross = int(value)
 
     def __str__(self):
-        return f'{self.title_text} ({self.title_id}): {self.mpaa_rating}, {self.release_date} by ' + \
+        return f'{self.display_title} ({self.title_id}): {self.mpaa_rating}, {self.release_date} by ' + \
                f'{self.production_companies}. {f"Ended {self.end_year}" if self.end_year is not None else ""} ' + \
                f'{self.taglines} {f" S{self.season_number}" if self.season_number is not None else ""}' + \
                f'{f"E{self.episode_number}" if self.episode_number is not None else ""}' + \

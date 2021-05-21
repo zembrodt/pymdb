@@ -545,10 +545,10 @@ class TestGetEpisodeInfo(unittest.TestCase):
         self.assertIsNone(actual_episode_start_year)
         self.assertIsNone(actual_episode_end_year)
 
-    def test_get_episode_info_incorrect_node(self):
+    def test_get_episode_info_unknown_episodes(self):
         html = '''
             <a href="#" class="toggle-episodes">
-            blah
+            unknown epsiodes
             </a>
         '''
         node = HTMLParser(html).css_first('a')

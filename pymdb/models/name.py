@@ -44,6 +44,7 @@ MUSIC_DEPARTMENT = 'music department'
 SCRIPT_DEPARTMENT = 'script department'
 TRANSPORTATION_DEPARTMENT = 'transportation department'
 OTHER_CREW = 'other crew'
+ADDITIONAL_CREW = 'additional crew'
 THANKS = 'thanks'
 
 # Credit title mappings
@@ -77,6 +78,7 @@ _CREDIT_MAPPINGS = {
     'script and continuity department': SCRIPT_DEPARTMENT,
     'transportation department': TRANSPORTATION_DEPARTMENT,
     'other crew': OTHER_CREW,
+    'additional crew': ADDITIONAL_CREW,
     'thanks': THANKS,
 }
 
