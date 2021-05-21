@@ -1,4 +1,5 @@
 # PyMDb
+
 [![PyPI](https://img.shields.io/pypi/v/py-mdb.svg)](https://pypi.org/project/py-mdb/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/py-mdb.svg)](https://pypi.org/project/py-mdb/)
 [![License](https://img.shields.io/pypi/l/py-mdb.svg)](https://github.com/zembrodt/pymdb/blob/master/LICENSE)
@@ -42,7 +43,7 @@ Talk-Show: 584252
 Reality-TV: 307037
 Adult: 178493
 >>>
->>> scraper = pymdb.PyMDbScraper()
+>>> scraper = pymdb.PyMDbScraper(rate_limit=500)
 >>> title = scraper.get_title("tt0076759")
 >>> print(f"{title.display_title} came out in {title.release_date.year}!")
 Star Wars: Episode IV - A New Hope came out in 1977!
